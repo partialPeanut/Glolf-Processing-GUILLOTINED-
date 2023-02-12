@@ -150,3 +150,7 @@ Fruity
 Juiced
 Sanguine
 Mechanic
+Dead
+Hate
+Styleness
+Novel
