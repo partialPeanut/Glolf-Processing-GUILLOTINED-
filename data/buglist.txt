@@ -1,0 +1,7 @@
+Whiffs don't take players off tee
+Gaussy gets too low for big z-scores
+Par is unbalanced
+Low scrappiness is massive advantage in oversmooth situations
+Capitalization bad when switching holes
+Make tourneyManager exit sketch
+Clean up boolean last in tourMan
