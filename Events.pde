@@ -31,19 +31,8 @@ class EventHoleSetup implements GlolfEvent {
     hole = h;
   }
 
-  EventPhase nextPhase() { return EventPhase.FIRST_PLAYER; }
-  String toText() { return "Next up: Hole number " + holeNumber + "."; }
-}
-
-
-
-class EventPlayerUp implements GlolfEvent {
-  Player player;
-
-  EventPlayerUp(Player p) { player = p; }
-
   EventPhase nextPhase() { return EventPhase.STROKE_TYPE; }
-  String toText() { return "Next to glolf: " + Format.playerToName(player); }
+  String toText() { return "Next up: Hole number " + holeNumber + "."; }
 }
 
 
@@ -97,7 +86,7 @@ class EventStrokeOutcome implements GlolfEvent {
   }
 
   EventPhase nextPhase() {
-    if (!last) return EventPhase.NEXT_PLAYER;
+    if (!last) return EventPhase.STROKE_TYPE;
     else return EventPhase.HOLE_FINISH;
   }
   String toText() {

@@ -31,23 +31,14 @@ class HoleControl {
   GlolfEvent nextEvent() {
     GlolfEvent lastEvent = feed.lastEvent();
     switch(lastEvent.nextPhase()) {
-      case FIRST_PLAYER:
-        playState = new PlayState(currentBall(), hole, tourney);
-        holeVisualizer.setPlayState(playState);
-        lastEvent = new EventPlayerUp(currentPlayer());
-        return lastEvent;
-        
-      case NEXT_PLAYER:
+      case STROKE_TYPE:
         currentBall = (currentBall+1) % activeBalls.size();
         if (currentBall == 0) {
           startRound();
         }
         playState = new PlayState(currentBall(), hole, tourney);
         holeVisualizer.setPlayState(playState);
-        lastEvent = new EventPlayerUp(currentPlayer());
-        return lastEvent;
         
-      case STROKE_TYPE:
         nextStrokeType = Calculation.calculateStrokeType(playState);
         if (nextStrokeType != StrokeType.NOTHING) currentBall().stroke++;
         lastEvent = new EventStrokeType(currentPlayer(), nextStrokeType);

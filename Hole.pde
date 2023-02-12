@@ -65,13 +65,7 @@ class Hole {
 
   // Determines the length in gallons
   float generateRealLength() {
-    switch(par) {
-      case 3: return random(100, 300);
-      case 4: return random(300, 500);
-      case 5: return random(500, 750);
-      case 6: return random(750, 1000);
-      default: return random(0, 10000);
-    }
+    return random(0,2000);
   }
   
   // Determines the width in gallons

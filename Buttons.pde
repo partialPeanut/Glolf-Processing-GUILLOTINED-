@@ -50,7 +50,6 @@ class ButtonNextEvent extends Button {
   }
 
   void onClick() {
-    if (feed.lastEvent() instanceof EventTourneyFinish) exit();
     tourneyManager.nextEvent();
   }
 }

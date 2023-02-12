@@ -29,11 +29,12 @@ Tourney tourney;
 TourneyManager tourneyManager;
 Feed feed = new Feed();
 
+HashMap<Float,Float> sizeAndRealPar = new HashMap<Float,Float>();
+
 int margin = 10;
-int buttonSetHeight = 80;
+int buttonSetHeight = 0;
 int varDisplayWidth = 600;
 int eventDisplayHeight = 120;
-int buttonWidth;
 
 Button[] buttons = new Button[6];
 VariableDisplayer variableDisplayer;
@@ -48,20 +49,12 @@ void setup() {
   PFont font = loadFont("data/Calibri-Light-48.vlw");
   textFont(font);
 
-  buttonWidth = int((width - (buttons.length+1) * margin)/buttons.length);
-  buttons[0] = new ButtonNextEvent("Next Event", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 0);
-  buttons[1] = new Button("Next Hole", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 1);
-  buttons[2] = new Button("Show Feed", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 2);
-  buttons[3] = new Button("Debugging", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 3);
-  buttons[4] = new ButtonGirl("Girl Button", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 4);
-  buttons[5] = new ButtonSavePlayers("Save Players", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 5);
-
   eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
   holeVisualizer = new HoleVisualizer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
   
   playerManager.clearAllPlayers();
-  playerManager.addNewPlayers(16);
-  tourney = new Tourney(playerManager.allPlayers, 18);
+  playerManager.addNewPlayers(60);
+  tourney = new Tourney(playerManager.allPlayers, 10000);
   tourneyManager = new TourneyManager(tourney);
   
   variableDisplayer = new VariableDisplayer(tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);
@@ -71,10 +64,6 @@ void setup() {
 void draw() {
   background(200);
 
-  for (Button button : buttons) {
-    button.display();
-  }
-
   strokeWeight(2);
   stroke(0);
   line(0, buttonSetHeight, width, buttonSetHeight);
@@ -82,13 +71,18 @@ void draw() {
   variableDisplayer.display();
   eventDisplayer.display();
   holeVisualizer.display();
+  
+  try {
+    for (int i = 0; i < 1000; i++) {
+      tourneyManager.nextEvent();
+    }
+  } catch (IndexOutOfBoundsException e) {
+    // uwu
+  }
 }
 
 // When mouse is pressed
 void mousePressed() {
-  for (Button button : buttons) {
-    if (button.isOver()) button.onClick();
-  }
   for (Button button : variableDisplayer.displayChangeButtons) {
     if (button.isOver()) {
       button.onClick();

@@ -69,6 +69,7 @@ class Player {
 
   // Generates a random float via normal distribution w mean 6 and s.d. 2
   float generateRandomStat() {
-    return 6 + randomGaussian() * 2;
+    //return 6 + 2*randomGaussian();
+    return 6;
   }
 }
