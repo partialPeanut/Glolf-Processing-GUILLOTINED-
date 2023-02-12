@@ -4,21 +4,15 @@ class Button {
   color strokeCol = 0;
   color textCol = 0;
   String text;
+  String onClick;
 
-  Button(String t, int _x, int _y, int _w, int _h) {
+  Button(String t, String oc, int _x, int _y, int _w, int _h) {
     text = t;
     x = _x;
     y = _y;
     w = _w;
     h = _h;
-  }
-
-  Button(String t, int _x, int _y, int _w, int _h, int mar, int idx) {
-    text = t;
-    x = _x + idx * (_w + mar);
-    y = _y;
-    w = _w;
-    h = _h;
+    onClick = oc;
   }
 
   void display() {
@@ -37,60 +31,6 @@ class Button {
   boolean isOver() {
     return mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h;
   }
-
-  void onClick() {
-  }
-}
-
-
-
-class ButtonNextEvent extends Button {
-  ButtonNextEvent(String t, int _x, int _y, int _w, int _h, int _m, int _i) {
-    super(t, _x, _y, _w, _h, _m, _i);
-  }
-
-  void onClick() {
-    if (feed.lastEvent() instanceof EventTourneyFinish) exit();
-    tourneyManager.nextEvent();
-  }
-}
-
-
-
-class ButtonGeneratePlayer extends Button {
-  ButtonGeneratePlayer(String t, int _x, int _y, int _w, int _h) {
-    super(t, _x, _y, _w, _h);
-  }
-
-  void onClick() {
-    playerManager.addNewPlayer();
-  }
-}
-
-
-
-class ButtonSavePlayers extends Button {
-  ButtonSavePlayers(String t, int _x, int _y, int _w, int _h) {
-    super(t, _x, _y, _w, _h);
-  }
-  ButtonSavePlayers(String t, int _x, int _y, int _w, int _h, int _m, int _i) {
-    super(t, _x, _y, _w, _h, _m, _i);
-  }
-
-  void onClick() {
-    playerManager.savePlayersToJSON();
-  }
-}
-
-
-
-class ButtonGirl extends Button {
-  ButtonGirl(String t, int _x, int _y, int _w, int _h, int _m, int _i) {
-    super(t, _x, _y, _w, _h, _m, _i);
-  }
-  void onClick() {
-    println("Mauuuuu <- that's 'I love my geef' in kitty cat <333");
-  }
 }
 
 
@@ -105,7 +45,7 @@ class ButtonChangeVarDisplay extends Button {
   color inactiveTextCol = 0;
 
   ButtonChangeVarDisplay(String t, DisplayType dt, int _x, int _y, int _w, int _h) {
-    super(t, _x, _y, _w, _h);
+    super(t, "", _x, _y, _w, _h);
     displayType = dt;
   }
 
