@@ -131,3 +131,7 @@ Xerxes
 Red
 "Hot Dog"
 Canigeta
+Canta
+Lup
+Tacos
+Crab

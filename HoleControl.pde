@@ -32,7 +32,7 @@ class HoleControl {
     GlolfEvent lastEvent = feed.lastEvent();
     switch(lastEvent.nextPhase()) {
       case FIRST_PLAYER:
-        playState = new PlayState(currentBall(), hole, tourney);
+        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
         holeVisualizer.setPlayState(playState);
         lastEvent = new EventPlayerUp(currentPlayer());
         return lastEvent;
@@ -42,7 +42,7 @@ class HoleControl {
         if (currentBall == 0) {
           startRound();
         }
-        playState = new PlayState(currentBall(), hole, tourney);
+        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
         holeVisualizer.setPlayState(playState);
         lastEvent = new EventPlayerUp(currentPlayer());
         return lastEvent;
@@ -72,7 +72,7 @@ class HoleControl {
         boolean last = true;
         for (Ball b : activeBalls) if (!b.sunk) last = false;
         lastEvent = new EventStrokeOutcome(playState, so, last);
-        playState = new PlayState(currentBall(), hole, tourney);
+        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
         holeVisualizer.setPlayState(playState);
         return lastEvent;
         
