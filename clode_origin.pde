@@ -24,9 +24,8 @@
 // Clubs
 // Course/hole names
 
-import g4p_controls.*;
-
 PlayerManager playerManager = new PlayerManager();
+Tourney tourney;
 TourneyManager tourneyManager;
 Feed feed = new Feed();
 
@@ -36,8 +35,7 @@ int varDisplayWidth = 600;
 int eventDisplayHeight = 120;
 int buttonWidth;
 
-GGroup buttonGroup;
-GButton[] buttons = new GButton[6];
+Button[] buttons = new Button[6];
 VariableDisplayer variableDisplayer;
 EventDisplayer eventDisplayer;
 HoleVisualizer holeVisualizer;
@@ -46,43 +44,36 @@ HoleVisualizer holeVisualizer;
 void setup() {
   surface.setTitle("Glolf!");
   size(1800, 800);
-  
-  G4P.messagesEnabled(false);
-  G4P.setGlobalColorScheme(4);
-  
-  G4P.setDisplayFont("data/Calibri-Light-48.vlw", G4P.PLAIN, 36);
-  GButton.useRoundCorners(false);
+
+  PFont font = loadFont("data/Calibri-Light-48.vlw");
+  textFont(font);
 
   buttonWidth = int((width - (buttons.length+1) * margin)/buttons.length);
-  buttons[0] = new GButton(this, margin + 0 * (buttonWidth + margin), margin, buttonWidth, buttonSetHeight-2*margin, "Next Event");
-  buttons[0].addEventHandler(this, "handleNextEvent");
-  buttons[1] = new GButton(this, margin + 1 * (buttonWidth + margin), margin, buttonWidth, buttonSetHeight-2*margin, "Next Hole");
-  buttons[1].addEventHandler(this, "handleNextHole");
-  buttons[2] = new GButton(this, margin + 2 * (buttonWidth + margin), margin, buttonWidth, buttonSetHeight-2*margin, "Show Feed");
-  buttons[2].addEventHandler(this, "handleShowFeed");
-  buttons[3] = new GButton(this, margin + 3 * (buttonWidth + margin), margin, buttonWidth, buttonSetHeight-2*margin, "Debugging");
-  buttons[3].addEventHandler(this, "handleDebugMenu");
-  buttons[4] = new GButton(this, margin + 4 * (buttonWidth + margin), margin, buttonWidth, buttonSetHeight-2*margin, "Girl Button");
-  buttons[4].addEventHandler(this, "handleGirlButton");
-  buttons[5] = new GButton(this, margin + 5 * (buttonWidth + margin), margin, buttonWidth, buttonSetHeight-2*margin, "Save Players");
-  buttons[5].addEventHandler(this, "handleSavePlayers");
-  
-  buttonGroup = new GGroup(this);
-  for (GButton b : buttons) buttonGroup.addControl(b);
+  buttons[0] = new ButtonNextEvent("Next Event", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 0);
+  buttons[1] = new Button("Next Hole", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 1);
+  buttons[2] = new Button("Show Feed", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 2);
+  buttons[3] = new Button("Debugging", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 3);
+  buttons[4] = new ButtonGirl("Girl Button", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 4);
+  buttons[5] = new ButtonSavePlayers("Save Players", margin, margin, buttonWidth, buttonSetHeight-2*margin, margin, 5);
 
   eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
   holeVisualizer = new HoleVisualizer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
   
   playerManager.clearAllPlayers();
   playerManager.addNewPlayers(16);
-  tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, 18));
+  tourney = new Tourney(playerManager.allPlayers, 18);
+  tourneyManager = new TourneyManager(tourney);
   
-  variableDisplayer = new VariableDisplayer(this, tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);
+  variableDisplayer = new VariableDisplayer(tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);
 }
 
 // Draw
 void draw() {
   background(200);
+
+  for (Button button : buttons) {
+    button.display();
+  }
 
   strokeWeight(2);
   stroke(0);
@@ -93,11 +84,22 @@ void draw() {
   holeVisualizer.display();
 }
 
+// When mouse is pressed
+void mousePressed() {
+  for (Button button : buttons) {
+    if (button.isOver()) button.onClick();
+  }
+  for (Button button : variableDisplayer.displayChangeButtons) {
+    if (button.isOver()) {
+      button.onClick();
+      for (ButtonChangeVarDisplay b : variableDisplayer.displayChangeButtons) {
+        if (b != button) b.deactivate();
+      }
+    }
+  }
+}
+
 // When mouse wheel is scrolled
 void mouseWheel(MouseEvent e) {
   variableDisplayer.scroll(e.getCount());
-}
-
-void handleNextEvent(GButton button, GEvent event) {
-  tourneyManager.nextEvent();
 }

@@ -1,7 +1,6 @@
 class VariableDisplayer {
-  PApplet applet;
-  TourneyManager tourneyManager;
   DisplayType type;
+  TourneyManager tourneyManager;
 
   int x, y, w, h;
   int margin = 10;
@@ -29,14 +28,12 @@ class VariableDisplayer {
   int playerListTotalHeight;
   float listScrollOffset = 0;
   int scrollSpeed = 60;
-  
-  GGroup dcbGroup;
-  GButton[] displayOptions = new GButton[4];
+
+  ButtonChangeVarDisplay[] displayChangeButtons = new ButtonChangeVarDisplay[4];
   int varDisButtonY;
   int varDisButtonH = 40;
 
-  VariableDisplayer(PApplet app, TourneyManager tm, int _x, int _y, int _w, int _h) {
-    applet = app;
+  VariableDisplayer(TourneyManager tm, int _x, int _y, int _w, int _h) {
     type = DisplayType.PLAYER_STATS;
     tourneyManager = tm;
 
@@ -45,21 +42,17 @@ class VariableDisplayer {
     w = _w;
     h = _h;
 
-    varDisplayY = y + staticDisplayHeight + margin;
+    varDisplayY = y+staticDisplayHeight+margin;
     varDisplayH = h - staticDisplayHeight - varDisButtonH - margin;
 
     varDisButtonY = y+h - varDisButtonH;
-    
-    G4P.setDisplayFont("data/Calibri-Light-48.vlw", G4P.PLAIN, 30);
-    GButton.useRoundCorners(false);
 
-    displayOptions[0] = new GButton(applet, x+0*w/4, varDisButtonY, w/4, varDisButtonH, "Player");
-    displayOptions[1] = new GButton(applet, x+1*w/4, varDisButtonY, w/4, varDisButtonH, "Hole");
-    displayOptions[2] = new GButton(applet, x+2*w/4, varDisButtonY, w/4, varDisButtonH, "Strokes");
-    displayOptions[3] = new GButton(applet, x+3*w/4, varDisButtonY, w/4, varDisButtonH, "Tourney");
-    
-    dcbGroup = new GGroup(applet);
-    for (GButton b : displayOptions) dcbGroup.addControl(b);
+    displayChangeButtons[0] = new ButtonChangeVarDisplay("Player", DisplayType.PLAYER_STATS, x, varDisButtonY, w/4, varDisButtonH);
+    displayChangeButtons[1] = new ButtonChangeVarDisplay("Hole", DisplayType.COURSE_STATS, x+w/4, varDisButtonY, w/4, varDisButtonH);
+    displayChangeButtons[2] = new ButtonChangeVarDisplay("Strokes", DisplayType.HOLE_SCORES, x+2*w/4, varDisButtonY, w/4, varDisButtonH);
+    displayChangeButtons[3] = new ButtonChangeVarDisplay("Tourney", DisplayType.TOURNEY_SCORES, x+3*w/4, varDisButtonY, w/4, varDisButtonH);
+
+    displayChangeButtons[0].activate();
   }
 
   void changeType(DisplayType dt) { type = dt; }
@@ -92,6 +85,9 @@ class VariableDisplayer {
     fill(bgCol);
     stroke(strokeCol);
     rect(x, varDisplayY, w, varDisplayH);
+
+    // Var display buttons
+    for (Button b : displayChangeButtons) b.display();
 
     // Var display contents
     clip(x, varDisplayY, w, varDisplayH);
