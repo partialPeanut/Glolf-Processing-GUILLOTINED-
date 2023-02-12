@@ -1,0 +1,47 @@
+[
+  {
+    "firstName": "Ricky",
+    "lastName": "Dandiotti",
+	"id": 900021,
+	"gender": "Effervescent",
+	"cringe": 8.370047569274902,
+	"dumbassery": 5.748697280883789,
+    "yeetness": 3.0083487033843994,
+	"trigonometry": 3.423631429672241,
+    "bisexuality": 13.81237506866455,
+	"asexuality": 3.55889892578125,
+    "scrappiness": 6.028886795043945,
+	"charisma": 9.34097671508789,
+    "autism": 3.4955785274505615
+  },
+  {
+    "firstName": "Bees Bees Bees",
+    "lastName": "Chantz",
+	"id": 900035,
+	"gender": "Impressive",
+	"cringe": 5.766139507293701,
+	"dumbassery": 8.77939510345459,
+    "yeetness": 4.0387773513793945,
+	"trigonometry": 4.917428493499756,
+    "bisexuality": 5.238615036010742,
+	"asexuality": 4.98821496963501, 
+    "scrappiness": 2.463571310043335,   
+	"charisma": 7.7786383628845215,
+    "autism": 6.329293727874756
+  },
+  {
+    "firstName": "Liquid",
+	"lastName": "Phanahan",
+	"id": "320612",
+	"gender": "Twink",
+	"cringe": 4.702517986297607,
+	"dumbassery": 8.228707313537598,
+    "yeetness": 0.48294591903686523,
+	"trigonometry": 3.3619284629821777,
+	"bisexuality": 4.9746317863464355,
+    "asexuality": 6.031370162963867,
+    "scrappiness": 4.265584945678711,
+    "charisma": 6.292604923248291,
+    "autism": 5.723794460296631
+  }
+]
