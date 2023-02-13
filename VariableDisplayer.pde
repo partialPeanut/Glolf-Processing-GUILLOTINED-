@@ -191,6 +191,7 @@ class VariableDisplayer {
     if (player == null) return statsPlaceholder;
     else return "Name: " + player.firstName + " " + player.lastName +
       "\nGender: " + player.gender +
+      "\nNet Worth " + player.networth + " Sins" +
       "\nCringe: " + player.cringe +
       "\nDumbassery: " + player.dumbassery +
       "\nYeetness: " + player.yeetness +

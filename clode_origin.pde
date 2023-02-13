@@ -116,6 +116,18 @@ void mousePressed() {
   }
 }
 
+// When mouse is moved
+void mouseMoved() {
+  for (Button button : buttons) {
+    if (button.isOver()) {
+      button.select();
+    }
+    else {
+      button.deselect(); 
+    }
+  }
+}
+
 // When mouse wheel is scrolled
 void mouseWheel(MouseEvent e) {
   variableDisplayer.scroll(e.getCount());

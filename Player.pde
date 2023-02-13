@@ -4,6 +4,7 @@
 class Player {
   String id, firstName, lastName, gender;
   float cringe, dumbassery, yeetness, trigonometry, bisexuality, asexuality, scrappiness, charisma, autism;
+  int networth;
   ArrayList<Effect> mods = new ArrayList<Effect>();
 
   // Full random player gen
@@ -21,6 +22,7 @@ class Player {
     scrappiness = generateRandomStat();
     charisma = generateRandomStat();
     autism = generateRandomStat();
+    networth = generateNetWorth();
   }
 
   // Custom player gen
@@ -38,6 +40,7 @@ class Player {
     scrappiness = json.getFloat("scrappiness");
     charisma = json.getFloat("charisma");
     autism = json.getFloat("autism");
+    networth = json.getInt("networth");
   }
 
   JSONObject toJSON() {
@@ -56,6 +59,7 @@ class Player {
     json.setFloat("scrappiness", scrappiness);
     json.setFloat("charisma", charisma);
     json.setFloat("autism", autism);
+    json.setInt("networth", networth);
 
     return json;
   }
@@ -70,5 +74,16 @@ class Player {
   // Generates a random float via normal distribution w mean 6 and s.d. 2
   float generateRandomStat() {
     return 6 + randomGaussian() * 2;
+  }
+    
+  // Generates a random net worth
+  int generateNetWorth() {
+    float r = random(1,10);
+    if (r < 9) {
+      return int(random(-20000,60000));
+    }
+    else {
+      return int(random(60000,120000));
+    }
   }
 }

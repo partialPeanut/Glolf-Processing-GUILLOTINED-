@@ -2,9 +2,12 @@ class Button {
   int x, y, w, h;
   color bgCol = 225;
   color strokeCol = 0;
+  color strokeSelected = #FF0000;
+  color strokeDeselected = #000000;
   color textCol = 0;
   String text;
   String onClick;
+  boolean selected = false;
 
   Button(String t, String oc, int _x, int _y, int _w, int _h) {
     text = t;
@@ -13,6 +16,7 @@ class Button {
     w = _w;
     h = _h;
     onClick = oc;
+    selected = false;
   }
 
   void display() {
@@ -30,6 +34,13 @@ class Button {
 
   boolean isOver() {
     return mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h;
+  }
+  
+  void select() {
+    strokeCol = strokeSelected;
+  }
+  void deselect() {
+    strokeCol = strokeDeselected;
   }
 }
 
