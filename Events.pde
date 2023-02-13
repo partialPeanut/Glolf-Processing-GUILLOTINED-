@@ -17,7 +17,7 @@ class EventVoid implements GlolfEvent {
 
 class EventTourneyStart implements GlolfEvent {
   EventPhase nextPhase() { return EventPhase.HOLE_SETUP; }
-  String toText() { return "Play ball!!"; }
+  String toText() { return "GLOLF!! BY ANY MEANS NECESSARY."; }
 }
 
 
