@@ -10,15 +10,12 @@
 // Potential future mechanics
 // Select player
 // Play, pause, and step buttons
-// Every player has a net worth
 // Prize money + guillotine
-// Terrain
 // Adding players or player death
 // Small chance of insta-guillotine
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
-// Hole size
 // Weather: type, wind speed, direction
 // Balls
 // Clubs
@@ -27,7 +24,6 @@
 // Charity Match: Atone
 // Resdistribute Wealth: "The League has been weighed down by their sins."
 // Sainthood -100000 $ins
-
 
 PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;
@@ -61,11 +57,11 @@ void setup() {
   
   homeButton = new Button("Home", "home", margin, margin, varDisplayWidth-5*(timeButtonWidth+margin), buttonSetHeight-2*margin);
  
-  timeButtons[0] = new Button("1", "pause", 2*margin+varDisplayWidth-5*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[1] = new Button("2", "play", 2*margin+varDisplayWidth-4*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[2] = new Button("3", "back", 2*margin+varDisplayWidth-3*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[3] = new Button("4", "next", 2*margin+varDisplayWidth-2*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[4] = new Button("5", "speed", 2*margin+varDisplayWidth-(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[0] = new Button("II", "pause", 2*margin+varDisplayWidth-5*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[1] = new Button(">", "play", 2*margin+varDisplayWidth-4*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[2] = new Button("I<", "back", 2*margin+varDisplayWidth-3*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[3] = new Button(">I", "next", 2*margin+varDisplayWidth-2*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[4] = new Button(">>", "speed", 2*margin+varDisplayWidth-(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
 
   headButtons[0] = new Button("Show Feed", "show_feed", 2*margin + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
   headButtons[1] = new Button("Debugging", "debug_menu", 3*margin + headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
@@ -114,18 +110,29 @@ String generateRandomFromList(String filename) {
 
 // When mouse is pressed
 void mousePressed() {
+  for (Button button : timeButtons) {
+    if (button.isOver()) {
+      switch(button.onClick) {
+        case "pause": break;
+        case "play": break;
+        case "back": break;
+        case "next":
+          tourneyManager.nextEvent();
+          break;
+        case "speed": break;
+        default: break;
+      }
+    }
+  }
   for (Button button : headButtons) {
     if (button.isOver()) {
       switch(button.onClick) {
         case "next_event":
           tourneyManager.nextEvent();
           break;
-        case "next_hole":
-          break;
-        case "show_feed":
-          break;
-        case "debug_menu":
-          break;
+        case "next_hole": break;
+        case "show_feed": break;
+        case "debug_menu": break;
         case "girl":
           println("Mauuuuu <- that's 'I love my geef' in kitty cat <333");
           break;
@@ -144,18 +151,25 @@ void mousePressed() {
       }
     }
   }
+  
+  if (variableDisplayer.isOverInfo()) variableDisplayer.selectPlayer();
 }
 
 // When mouse is moved
 void mouseMoved() {
-  for (Button button : headButtons) {
-    if (button.isOver()) {
-      button.select();
-    }
-    else {
-      button.deselect(); 
-    }
+  if (homeButton.isOver()) homeButton.select();
+  else homeButton.deselect();
+  
+  for (Button button : timeButtons) {
+    if (button.isOver()) button.select();
+    else button.deselect(); 
   }
+  for (Button button : headButtons) {
+    if (button.isOver()) button.select();
+    else button.deselect(); 
+  }
+  
+  if (!variableDisplayer.isOverInfo()) variableDisplayer.dehover();
 }
 
 // When mouse wheel is scrolled

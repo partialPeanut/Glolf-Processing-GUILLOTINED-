@@ -34,6 +34,7 @@ class HoleControl {
     switch(lastEvent.nextPhase()) {
       case FIRST_PLAYER:
         firstUp = true;
+        lastEvent = new EventPlayerUp(currentPlayer());
         return lastEvent;
         
       case STROKE_TYPE:

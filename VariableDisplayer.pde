@@ -1,6 +1,8 @@
 class VariableDisplayer {
   DisplayType type;
   TourneyManager tourneyManager;
+  Player hoveredPlayer = null;
+  Player selectedPlayer = null;
 
   int x, y, w, h;
   int margin = 10;
@@ -15,6 +17,9 @@ class VariableDisplayer {
   color strokeCol = 0;
   color textCol = 255;
   color inactiveTextCol = 160;
+  color hoveredTextCol = color(160, 160, 255);
+  color selectedTextCol = color(100, 100, 255);
+  color inactiveSelectedTextCol = color(80, 80, 140);
   int textSize = 36;
 
   int varDisplayY, varDisplayH;
@@ -106,10 +111,10 @@ class VariableDisplayer {
 
   void displayStats() {
     String text = statsPlaceholder;
-    if (type == DisplayType.PLAYER_STATS) text = playerToText(getCurrentPlayer());
+    if (type == DisplayType.PLAYER_STATS) text = playerToText(selectedPlayer == null ? getCurrentPlayer() : selectedPlayer);
     if (type == DisplayType.COURSE_STATS) {
       text = courseToText(tourneyManager.tourney,getHoleControl().hole);
-      stroke(255);
+      stroke(textCol);
       line(x+margin*2, varDisplayY+104, x+w-margin*2, varDisplayY+104);
     }
 
@@ -125,26 +130,30 @@ class VariableDisplayer {
 
     IntDict scores;
     switch(type) {
-    case HOLE_SCORES:
-      scores = getHoleControl().playersAndStrokes();
-      break;
-    case TOURNEY_SCORES:
-      scores = tourneyManager.playersByScores();
-      break;
-    default:
-      scores = null;
+      case HOLE_SCORES:
+        scores = getHoleControl().playersAndStrokes();
+        break;
+      case TOURNEY_SCORES:
+        scores = tourneyManager.playersByScores();
+        break;
+      default:
+        scores = null;
     }
 
     int i = 1;
     for (String id : scores.keys()) {
       int scoreInt = scores.get(id);
       
-      if (scoreInt < 0 || id == getCurrentPlayer().id) {
+      if (scoreInt < 0) {
         if (scoreInt < 0) scoreInt *= -1;
         
-        if (id == getCurrentPlayer().id) fill(staticTextCol);
+        if (selectedPlayer != null && id == selectedPlayer.id) fill(inactiveSelectedTextCol);
+        else if (hoveredPlayer != null && id == hoveredPlayer.id) fill(hoveredTextCol);
         else fill(inactiveTextCol);
       }
+      else if (id == getCurrentPlayer().id) fill(staticTextCol);
+      else if (selectedPlayer != null && id == selectedPlayer.id) fill(selectedTextCol);
+      else if (hoveredPlayer != null && id == hoveredPlayer.id) fill(hoveredTextCol);
       else fill(textCol);
       
       String score = null;
@@ -158,38 +167,41 @@ class VariableDisplayer {
         default:
           scores = null;
       }
+      
+      float blockY = varDisplayY+listScrollOffset+i*playerListUnitHeight;
 
       textSize(textSize);
       textAlign(LEFT, BOTTOM);
-      text(nameOf(id), x+margin, varDisplayY+listScrollOffset+margin+i*playerListUnitHeight-playerListUnitOffset);
+      text(nameOf(id), x+margin, blockY+margin-playerListUnitOffset);
       textAlign(RIGHT, BOTTOM);
-      text(score, x+w-margin, varDisplayY+listScrollOffset+margin+i*playerListUnitHeight-playerListUnitOffset);
+      text(score, x+w-margin, blockY+margin-playerListUnitOffset);
+      
+      if (mouseX >= x && mouseX <= x+w && mouseY >= blockY-playerListUnitHeight && mouseY <= blockY) {
+        hoveredPlayer = playerManager.getPlayer(id);
+      }
 
       strokeWeight(2);
       stroke(0);
-      line(x, varDisplayY+listScrollOffset+i*playerListUnitHeight, x+w, varDisplayY+listScrollOffset+i*playerListUnitHeight);
+      line(x, blockY, x+w, blockY);
 
       i++;
     }
   }
-
-  String nameOf(Player player) {
-    return Format.playerToName(player);
-  }
-  String nameOf(String id) {
-    return nameOf(playerManager.getPlayer(id));
-  }
-
-  String strokeOf(int strokes) {
-    return Format.intToStrokes(strokes);
-  }
-  String strokeOf(Player player) {
-    return strokeOf(getHoleControl().currentStrokeOf(player));
+  
+  void dehover() { hoveredPlayer = null; }
+  
+  void selectPlayer() {
+    if (selectedPlayer == hoveredPlayer) selectedPlayer = null;
+    else selectedPlayer = hoveredPlayer;
   }
 
-  String scoreOf(int score) {
-    return Format.intToScore(score);
-  }
+  String nameOf(Player player) { return Format.playerToName(player); }
+  String nameOf(String id) { return nameOf(playerManager.getPlayer(id)); }
+
+  String strokeOf(int strokes) { return Format.intToStrokes(strokes); }
+  String strokeOf(Player player) { return strokeOf(getHoleControl().currentStrokeOf(player)); }
+
+  String scoreOf(int score) { return Format.intToScore(score); }
 
   String playerToText(Player player) {
     if (player == null) return statsPlaceholder;
@@ -223,5 +235,9 @@ class VariableDisplayer {
       "\nObedience: " + hole.obedience +
       "\nQuench: " + hole.quench +
       "\nThirst: " + hole.thirst;
+  }
+  
+  boolean isOverInfo() {
+    return mouseX >= x && mouseX <= x+w && mouseY >= varDisplayY && mouseY <= varDisplayY+varDisplayH;
   }
 }

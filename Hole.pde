@@ -9,11 +9,6 @@ class Hole {
 
   // Generates random course
   Hole() {
-    realLength = generateRealLength();
-    realWidth = generateRealWidth();
-    greenLength = generateGreenLength();
-    
-    par = lengthToPar(realLength);
     roughness = generateRandomQuality();
     heterosexuality = generateRandomQuality();
     thicc = generateRandomQuality();
@@ -21,6 +16,12 @@ class Hole {
     obedience = generateRandomQuality();
     quench = generateHazardousQuality();
     thirst = generateHazardousQuality();
+    
+    realLength = generateRealLength();
+    realWidth = generateRealWidth();
+    greenLength = generateGreenLength();
+    
+    par = lengthToPar(realLength);
   }
 
   Hole(JSONObject json) {
