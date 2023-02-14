@@ -36,6 +36,7 @@ int varDisplayWidth = 600;
 int eventDisplayHeight = 120;
 int timeButtonWidth;
 int headButtonWidth;
+int timePassed = 0;
 boolean playActive = false;
 
 Button homeButton;
@@ -101,6 +102,13 @@ void draw() {
   variableDisplayer.display();
   eventDisplayer.display();
   holeVisualizer.display();
+  
+  if (playActive) {
+    if (timePassed > 1000) {
+      tourneyManager.playNextEvent();
+      timePassed = millis();
+    }
+  }
 }
 
 // Picks a random item from .txt file
@@ -123,7 +131,8 @@ void mousePressed() {
           playActive = false;
           break;
         case "play": 
-          playActive = true;
+          if (!playActive) timePassed = millis();
+          playActive = true;          
           break;
         case "back":
           if (feed.everyEvent.size() > 1 && !playActive) feed.removeLastEvent();
