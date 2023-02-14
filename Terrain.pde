@@ -8,25 +8,25 @@ static class Terrain {
   private static final float[] GRN_SMOOTH = { 0.0, 1.0, 1.0, 1.0, 1.0 };
   private static final float[] BNK_SMOOTH = { 0.0, 0.2, 0.2, 0.6, 0.1 };
   
-  static final Terrain OUT_OF_BOUNDS = new Terrain("goes back in bounds",    "out of bounds",      OOB_SMOOTH, true);
-  static final Terrain TEE =           new Terrain("leaves the tee",         "perfectly on a tee", TEE_SMOOTH, false);
-  static final Terrain ROUGH =         new Terrain("jumps from the rough",   "in the rough",       RGH_SMOOTH, false);
-  static final Terrain GREEN =         new Terrain("leaves the green",       "in the green",       GRN_SMOOTH, false);
-  static final Terrain BUNKER =        new Terrain("leaves the sand bunker", "in a sand bunker",   BNK_SMOOTH, false);
-  static final Terrain WATER_HAZARD =  new Terrain("goes back in bounds",    "in a water hazard",  WHZ_SMOOTH, true);
-  static final Terrain HOLE =          new Terrain("jumps out of the hole",  "in the hole",        HLE_SMOOTH, false);
+  static final Terrain OUT_OF_BOUNDS = new Terrain("goes back in bounds",    "out of bounds",      #007800, OOB_SMOOTH, true);
+  static final Terrain TEE =           new Terrain("leaves the tee",         "perfectly on a tee", #A0A0A0, TEE_SMOOTH, false);
+  static final Terrain ROUGH =         new Terrain("jumps from the rough",   "in the rough",       #007800, RGH_SMOOTH, false);
+  static final Terrain GREEN =         new Terrain("leaves the green",       "in the green",       #00A000, GRN_SMOOTH, false);
+  static final Terrain BUNKER =        new Terrain("leaves the sand bunker", "in a sand bunker",   #A0A0A0, BNK_SMOOTH, false);
+  static final Terrain WATER_HAZARD =  new Terrain("goes back in bounds",    "in a water hazard",  #A0A0A0, WHZ_SMOOTH, true);
+  static final Terrain HOLE =          new Terrain("jumps out of the hole",  "in the hole",        #A0A0A0, HLE_SMOOTH, false);
 
   // The ball [leaves the sand bunker] and flies X gallons, landing [in a water hazard].
   String leavingText;
   String arrivingText;
-
+  color tColor;
   float[] smoothness;
   boolean outOfBounds;
 
-  Terrain(String l, String a, float[] s, boolean o) {
+  Terrain(String l, String a, color c, float[] s, boolean o) {
     leavingText = l;
     arrivingText = a;
-
+    tColor = c;
     smoothness = s;
     outOfBounds = o;
   }

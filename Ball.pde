@@ -2,6 +2,7 @@ class Ball {
   Player player;
   int stroke;
   boolean sunk;
+  boolean past;
   float distance;
   Terrain terrain;
 
@@ -9,6 +10,7 @@ class Ball {
     player = p;
     stroke = 0;
     sunk = false;
+    past = false;
     distance = dist;
     terrain = Terrain.TEE;
   }

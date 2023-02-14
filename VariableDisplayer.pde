@@ -151,9 +151,9 @@ class VariableDisplayer {
         else if (hoveredPlayer != null && id == hoveredPlayer.id) fill(hoveredTextCol);
         else fill(inactiveTextCol);
       }
-      else if (id == getCurrentPlayer().id) fill(staticTextCol);
       else if (selectedPlayer != null && id == selectedPlayer.id) fill(selectedTextCol);
       else if (hoveredPlayer != null && id == hoveredPlayer.id) fill(hoveredTextCol);
+      else if (id == getCurrentPlayer().id) fill(staticTextCol);
       else fill(textCol);
       
       String score = null;
@@ -176,7 +176,7 @@ class VariableDisplayer {
       textAlign(RIGHT, BOTTOM);
       text(score, x+w-margin, blockY+margin-playerListUnitOffset);
       
-      if (mouseX >= x && mouseX <= x+w && mouseY >= blockY-playerListUnitHeight && mouseY <= blockY) {
+      if (mouseX >= x && mouseX <= x+w && mouseY >= blockY-playerListUnitHeight && mouseY <= blockY && isOverInfo()) {
         hoveredPlayer = playerManager.getPlayer(id);
       }
 

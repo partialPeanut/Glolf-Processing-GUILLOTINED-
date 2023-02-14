@@ -79,20 +79,20 @@ class EventStrokeOutcome implements GlolfEvent {
   Terrain fromTerrain;
   Terrain toTerrain;
   float distance;
+  float fromDistance;
+  float toDistance;
   int strokesOverPar;
   boolean last;
 
-  EventStrokeOutcome(PlayState in, StrokeOutcome out) {
+  EventStrokeOutcome(PlayState in, StrokeOutcome out, float td, boolean end) {
     player = in.ball.player;
     outcome = out;
     fromTerrain = in.ball.terrain;
     toTerrain = out.newTerrain;
     distance = out.distance;
+    fromDistance = in.ball.distance;
+    toDistance = td;
     strokesOverPar = in.ball.stroke+1 - in.hole.par;
-    last = false;
-  }
-  EventStrokeOutcome(PlayState in, StrokeOutcome out, boolean end) {
-    this(in, out);
     last = end;
   }
 

@@ -34,6 +34,7 @@ class TourneyManager {
         break;
       case HOLE_SETUP:
         lastEvent = new EventHoleSetup(currentHole, tourney.holes.get(currentHole));
+        holeVisualizer.setHole(tourney.holes.get(currentHole));
         generateNewHole();
         break;
       case HOLE_FINISH:

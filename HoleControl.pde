@@ -43,7 +43,6 @@ class HoleControl {
         if (currentBall == 0) startRound();
         
         playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
-        holeVisualizer.setPlayState(playState);
         
         nextStrokeType = Calculation.calculateStrokeType(playState);
         if (nextStrokeType != StrokeType.NOTHING) currentBall().stroke++;
@@ -60,6 +59,7 @@ class HoleControl {
           case FLY:
           case WHIFF:
             if (!so.newTerrain.outOfBounds) {
+              if (so.distance > currentBall().distance) currentBall().past = !currentBall().past;
               currentBall().distance = Calculation.newDistToHole(currentBall().distance, so.distance, so.angle);
               currentBall().terrain = so.newTerrain;
             }
@@ -68,9 +68,8 @@ class HoleControl {
         }
         boolean last = true;
         for (Ball b : activeBalls) if (!b.sunk) last = false;
-        lastEvent = new EventStrokeOutcome(playState, so, last);
+        lastEvent = new EventStrokeOutcome(playState, so, currentBall().distance, last);
         playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
-        holeVisualizer.setPlayState(playState);
         return lastEvent;
         
       default:
@@ -92,6 +91,10 @@ class HoleControl {
   }
   
   Ball currentBall() { return activeBalls.get(currentBall); }
+  Ball ballOf(Player player) {
+    for (Ball b : balls) if (b.player == player) return b;
+    return balls.get(0);
+  }
   Player currentPlayer() { return activeBalls.get(currentBall).player; }
 
   int currentStrokeOf(Player player) {
