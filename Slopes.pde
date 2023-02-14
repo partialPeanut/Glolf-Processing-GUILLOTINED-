@@ -8,7 +8,7 @@ static class Slope {
   }
   
   static float gaussy(float x, float m, float sd) {
-    return exp(-sq(x-m)/(2*sq(sd)))/(sd*sqrt(TWO_PI));
+    return exp(-sq(x-m)/(2*sq(sd)))/sd;
   }
   
   static float expy(float x, float b, float z) {

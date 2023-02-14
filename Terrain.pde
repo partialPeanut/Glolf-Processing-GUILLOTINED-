@@ -3,7 +3,7 @@ static class Terrain {
   private static final float[] OOB_SMOOTH = { 0,0,0,0,0 };
   private static final float[] WHZ_SMOOTH = { 0,0,0,0,0 };
   private static final float[] HLE_SMOOTH = { 0,0,0,0,0 };
-  private static final float[] TEE_SMOOTH = { 1.1, 1.0, 0.8, 0.6, 0.1 };
+  private static final float[] TEE_SMOOTH = { 1.2, 1.0, 0.8, 0.6, 0.1 };
   private static final float[] RGH_SMOOTH = { 0.0, 0.9, 0.9, 0.8, 0.6 };
   private static final float[] GRN_SMOOTH = { 0.0, 1.0, 1.0, 1.0, 1.0 };
   private static final float[] BNK_SMOOTH = { 0.0, 0.2, 0.2, 0.6, 0.1 };

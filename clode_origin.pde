@@ -9,7 +9,7 @@
 
 // Potential future mechanics
 // Select player
-// Play, pause, and step headButtons
+// Play, pause, and step buttons
 // Every player has a net worth
 // Prize money + guillotine
 // Terrain
@@ -87,11 +87,10 @@ void setup() {
 void draw() {
   background(200);
   
+  homeButton.display();
   for (Button button : headButtons) {
     button.display();
   }
-
-  homeButton.display();
   for (Button button : timeButtons) {
     button.display();
   }

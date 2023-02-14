@@ -2,14 +2,18 @@
 //          obedience (green tameness), quench (water hazards), thirst (sand bunkers)
 
 class Hole {
-  int par;
   float realLength, realWidth, greenLength;
+  int par;
   float roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
   ArrayList<Effect> mods = new ArrayList<Effect>();
 
   // Generates random course
   Hole() {
-    par = generateRandomPar();
+    realLength = generateRealLength();
+    realWidth = generateRealWidth();
+    greenLength = generateGreenLength();
+    
+    par = lengthToPar(realLength);
     roughness = generateRandomQuality();
     heterosexuality = generateRandomQuality();
     thicc = generateRandomQuality();
@@ -17,10 +21,6 @@ class Hole {
     obedience = generateRandomQuality();
     quench = generateHazardousQuality();
     thirst = generateHazardousQuality();
-    
-    realLength = generateRealLength();
-    realWidth = generateRealWidth();
-    greenLength = generateGreenLength();
   }
 
   Hole(JSONObject json) {
@@ -59,30 +59,16 @@ class Hole {
   }
 
   // Generates a random par
-  int generateRandomPar() {
-    return int(random(3,7));
+  int lengthToPar(float len) {
+    if (len < 150) return int(4.1);
+    else if (len < 250) return int(-0.009*len + 5.45);
+    else return int(len/150 + 23/15);
   }
 
-  // Determines the length in gallons
-  float generateRealLength() {
-    switch(par) {
-      case 3: return random(100, 300);
-      case 4: return random(300, 500);
-      case 5: return random(500, 750);
-      case 6: return random(750, 1000);
-      default: return random(0, 10000);
-    }
-  }
-  
-  // Determines the width in gallons
-  float generateRealWidth() {
-    return Calculation.generateRealWidth(this);
-  }
-  
-  // Determines the length of green in gallons
-  float generateGreenLength() {
-    return Calculation.generateGreenLength(this);
-  }
+  // Determines the real dimensions of the hole in gallons
+  float generateRealLength() { return random(0, 1000); }
+  float generateRealWidth() { return Calculation.generateRealWidth(this); }
+  float generateGreenLength() { return Calculation.generateGreenLength(this); }
 
   // Generates a random quality
   float generateRandomQuality() {

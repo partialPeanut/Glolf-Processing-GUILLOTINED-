@@ -24,6 +24,7 @@ class TourneyManager {
   }
 
   GlolfEvent nextEvent() {
+    if (feed.lastEvent() instanceof EventTourneyFinish) exit();
     switch (feed.lastEvent().nextPhase()) {
       case VOID:
         lastEvent = new EventVoid();
@@ -39,8 +40,7 @@ class TourneyManager {
         for (Ball b : holeControl.balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);
         }
-        boolean last = false;
-        if (currentHole == tourney.holes.size()-1) last = true;
+        boolean last = (currentHole == tourney.holes.size()-1);
         lastEvent = new EventHoleFinish(currentHole, tourney.holes.get(currentHole), last);
         currentHole++;
         break;

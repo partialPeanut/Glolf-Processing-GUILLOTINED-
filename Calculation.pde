@@ -54,7 +54,7 @@ static class Calculation {
     float[] dists = new float[5];
     float[] terrainFactor = new float[5];
     for (int i = 0; i < 5; i++) {
-      terrainFactor[i] = Slope.scrappy(1.2, ps.ball.terrain.smoothness[i]/ps.hole.roughness, ps.ball.player.scrappiness);
+      terrainFactor[i] = constrain(Slope.scrappy(1.2, ps.ball.terrain.smoothness[i]/ps.hole.roughness, ps.ball.player.scrappiness), 0.05, 1);
     }
     
     dists[0] = Slope.loggy(190,250,ps.ball.player.yeetness) * terrainFactor[0] * ps.totalMod(FactorType.TEE_DISTANCE);
@@ -220,6 +220,7 @@ static class Calculation {
         return Terrain.HOLE;
       case WHIFF:
         if (abs(distFromHole) <= ps.hole.greenLength) return Terrain.GREEN;
+        else if (ps.ball.terrain == Terrain.TEE) return Terrain.ROUGH;
         else return ps.ball.terrain;
       case NOTHING:
         return ps.ball.terrain;

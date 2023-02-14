@@ -12,6 +12,7 @@
 
 class HoleControl {
   int currentBall;
+  boolean firstUp = true;
   ArrayList<Ball> balls;
   ArrayList<Ball> activeBalls;
   Hole hole;
@@ -32,22 +33,17 @@ class HoleControl {
     GlolfEvent lastEvent = feed.lastEvent();
     switch(lastEvent.nextPhase()) {
       case FIRST_PLAYER:
-        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
-        holeVisualizer.setPlayState(playState);
-        lastEvent = new EventPlayerUp(currentPlayer());
-        return lastEvent;
-        
-      case NEXT_PLAYER:
-        currentBall = (currentBall+1) % activeBalls.size();
-        if (currentBall == 0) {
-          startRound();
-        }
-        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
-        holeVisualizer.setPlayState(playState);
-        lastEvent = new EventPlayerUp(currentPlayer());
+        firstUp = true;
         return lastEvent;
         
       case STROKE_TYPE:
+        if (!firstUp) currentBall = (currentBall+1) % activeBalls.size();
+        firstUp = false;
+        if (currentBall == 0) startRound();
+        
+        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
+        holeVisualizer.setPlayState(playState);
+        
         nextStrokeType = Calculation.calculateStrokeType(playState);
         if (nextStrokeType != StrokeType.NOTHING) currentBall().stroke++;
         lastEvent = new EventStrokeType(currentPlayer(), nextStrokeType);
