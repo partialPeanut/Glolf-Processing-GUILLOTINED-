@@ -1,6 +1,8 @@
 class Button {
   int x, y, w, h;
   color bgCol = 225;
+  color pressedCol = 150;
+  color unpressedCol = 225;
   color strokeCol = 0;
   color strokeSelected = #FF0000;
   color strokeDeselected = #000000;
@@ -29,7 +31,7 @@ class Button {
     fill(textCol);
     textAlign(CENTER, CENTER);
     textSize(0.8*h);
-    text(text, x+w/2, y+h/2);
+    text(text, x+w/2, y+h/2);    
   }
 
   boolean isOver() {

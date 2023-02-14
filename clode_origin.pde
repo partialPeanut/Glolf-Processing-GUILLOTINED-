@@ -36,6 +36,7 @@ int varDisplayWidth = 600;
 int eventDisplayHeight = 120;
 int timeButtonWidth;
 int headButtonWidth;
+boolean playActive = false;
 
 Button homeButton;
 Button[] timeButtons = new Button[5];
@@ -111,14 +112,24 @@ String generateRandomFromList(String filename) {
 
 // When mouse is pressed
 void mousePressed() {
+  if (homeButton.isOver()) {
+    homeButton.bgCol = homeButton.pressedCol;
+  }
   for (Button button : timeButtons) {
     if (button.isOver()) {
+      button.bgCol = button.pressedCol;
       switch(button.onClick) {
-        case "pause": break;
-        case "play": break;
-        case "back": break;
+        case "pause": 
+          playActive = false;
+          break;
+        case "play": 
+          playActive = true;
+          break;
+        case "back":
+          if (feed.everyEvent.size() > 1 && !playActive) feed.removeLastEvent();
+          break;
         case "next":
-          tourneyManager.nextEvent();
+          if (!playActive) tourneyManager.nextEvent();
           break;
         case "speed": break;
         default: break;
@@ -127,6 +138,7 @@ void mousePressed() {
   }
   for (Button button : headButtons) {
     if (button.isOver()) {
+      button.bgCol = button.pressedCol;
       switch(button.onClick) {
         case "next_event":
           tourneyManager.nextEvent();
@@ -156,8 +168,36 @@ void mousePressed() {
   if (variableDisplayer.isOverInfo()) variableDisplayer.selectPlayer();
 }
 
+// When mouse is released
+void mouseReleased() {
+  homeButton.bgCol = homeButton.unpressedCol;
+  for (Button button : timeButtons) {
+    if (button.onClick != "pause" && button.onClick != "play") button.bgCol = button.unpressedCol;
+    else if (button.onClick == "pause" && playActive) button.bgCol = button.unpressedCol;
+    else if (button.onClick == "play" && !playActive) button.bgCol = button.unpressedCol;
+  }
+  for (Button button : headButtons) button.bgCol = button.unpressedCol; 
+}
+
 // When mouse is moved
 void mouseMoved() {
+  if (homeButton.isOver()) homeButton.select();
+  else homeButton.deselect();
+  
+  for (Button button : timeButtons) {
+    if (button.isOver()) button.select();
+    else button.deselect(); 
+  }
+  for (Button button : headButtons) {
+    if (button.isOver()) button.select();
+    else button.deselect(); 
+  }
+  
+  if (!variableDisplayer.isOverInfo()) variableDisplayer.dehover();
+}
+
+// When mouse is dragged
+void mouseDragged() {
   if (homeButton.isOver()) homeButton.select();
   else homeButton.deselect();
   
