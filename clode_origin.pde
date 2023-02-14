@@ -37,6 +37,7 @@ int eventDisplayHeight = 120;
 int timeButtonWidth;
 int headButtonWidth;
 int timePassed = 0;
+int speedValue = 1000;
 boolean playActive = false;
 
 Button homeButton;
@@ -104,8 +105,8 @@ void draw() {
   holeVisualizer.display();
   
   if (playActive) {
-    if (timePassed > 1000) {
-      tourneyManager.playNextEvent();
+    if (millis() > timePassed + speedValue) {
+      tourneyManager.nextEvent();
       timePassed = millis();
     }
   }
@@ -140,7 +141,11 @@ void mousePressed() {
         case "next":
           if (!playActive) tourneyManager.nextEvent();
           break;
-        case "speed": break;
+        case "speed": 
+          if (speedValue == 1000) speedValue = 500;
+          else if (speedValue == 500) speedValue = 1;
+          else if (speedValue == 1) speedValue = 1000;
+          break;
         default: break;
       }
     }
