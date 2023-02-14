@@ -75,7 +75,7 @@ void setup() {
   //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
   playerManager.addNewPlayers(16);
-  tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, 18));
+  tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, 4));
     
   // Initialize Displays
   eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
@@ -161,7 +161,7 @@ void mousePressed() {
         case "show_feed": break;
         case "debug_menu": break;
         case "girl":
-          println("Mauuuuu <- that's 'I love my geef' in kitty cat <333");
+          println("Happy Valentine's Day!!!");
           break;
         case "save_players":
           playerManager.savePlayersToJSON();

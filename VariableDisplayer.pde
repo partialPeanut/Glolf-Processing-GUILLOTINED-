@@ -226,7 +226,7 @@ class VariableDisplayer {
       tourney.tourneyName +
       "\nPrize: " + nfc(tourney.prizeMoney) + " $ins" +
       "\n" +
-      "\nCurrent Hole" +
+      "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
       "\nPar: " + hole.par +
       "\nRoughness: " + hole.roughness +
       "\nHeterosexuality: " + hole.heterosexuality +

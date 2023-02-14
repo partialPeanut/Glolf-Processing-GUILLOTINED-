@@ -27,7 +27,7 @@ class EventHoleSetup implements GlolfEvent {
   Hole hole;
 
   EventHoleSetup(int hn, Hole h) {
-    holeNumber = hn;
+    holeNumber = hn+1;
     hole = h;
   }
 
@@ -123,7 +123,7 @@ class EventHoleFinish implements GlolfEvent {
   boolean last;
 
   EventHoleFinish(int hn, Hole h) {
-    holeNumber = hn;
+    holeNumber = hn+1;
     hole = h;
     last = false;
   }
