@@ -68,7 +68,7 @@ class HoleControl {
         }
         boolean last = true;
         for (Ball b : activeBalls) if (!b.sunk) last = false;
-        lastEvent = new EventStrokeOutcome(playState, so, currentBall().distance, last);
+        lastEvent = new EventStrokeOutcome(playState, so, ((EventStrokeType)lastEvent).type, currentBall().distance, last);
         playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
         return lastEvent;
         

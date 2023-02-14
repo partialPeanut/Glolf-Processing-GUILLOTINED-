@@ -10,18 +10,22 @@ class HoleVisualizer {
   int x, y, w, h;
   int margin = 10;
   
-  int terrainY;
-  int greenSlope = 10;
-  float noiseScale = 0.01;
-  float noiseBase = 30;
+  int scaleY; // Y position of the scale
+  int scaleDist = 100; // Amount of gallons per tick
+  int scaleHeight = 30; // Height of scale ticks
+  int terrainY; // Y position of the middle of the terrain
+  int greenSlope = 20; // "Run-up" for terrain-green transition
+  float noiseScale = 0.01; // Roughness of rough
+  float noiseBase = 30; // Height of roughness
+  float gravity = 0.004; // Height of stroke arc (lower = smaller)
   
-  float teeHeight = 10;
-  float teeWidth = 10;
-  float flagpoleHeight = 90;
-  float flagHeight = 30;
-  float flagWidth = 30;
-  float ballMarkHeight = 40;
-  float ballArcHeight = 90;
+  float teeHeight = 10; // Height of the tee icon
+  float teeWidth = 10; // Width of the tee icon
+  float flagpoleHeight = 90; // Height of the flagpole
+  float flagHeight = 30; // Height of the flag
+  float flagWidth = 30; // Width of the flag
+  float ballMarkHeight; // Height of the ball markers
+  float crossSize = 30; // Width and height of the out-of-bounds X
   
   int bgCol = 50;
   int strokeCol = 0;
@@ -29,10 +33,11 @@ class HoleVisualizer {
   int textSize = 48;
   int textLeading = 40;
   
-  color staticColor = color(255,0,0);
-  color flagFill = color(220, 0, 0);
-  color flagStroke = color(255, 0, 0);
-  color defaultBallMarkColor = color(120, 120);
+  color staticColor = color(255,0,0); // Color of the currently glolfing player
+  color flagFill = color(220, 0, 0); // Flag fill
+  color flagStroke = color(255, 0, 0); // Flag stroke
+  color defaultBallMarkColor = color(120, 120); // Default ball mark
+  color arcColor = color(255,0,0,120); // Color of the stroke arc
 
   HoleVisualizer(int _x, int _y, int _w, int _h) {
     x = _x;
@@ -41,6 +46,8 @@ class HoleVisualizer {
     h = _h;
     
     terrainY = int(0.6*h);
+    scaleY = int(terrainY+noiseBase+scaleHeight);
+    ballMarkHeight = noiseBase + 10;
   }
   
   void setHole(Hole h) {
@@ -99,33 +106,124 @@ class HoleVisualizer {
     }
     
     strokeWeight(4);
+    clip(x,y,w,h);
     
     GlolfEvent lastEvent = feed.lastEvent();
     Ball currentBall = tourneyManager.holeControl.currentBall();
     ArrayList<Ball> activeBalls = tourneyManager.holeControl.activeBalls;
     
-    // Draw arc
+    // Draw scale
+    stroke(255);
+    line(x+margin, y+scaleY, x+w-2*margin, y+scaleY);
+    int currDist = 0;
+    int currPoint = teePoint;
+    while (currPoint < w-2*margin) {
+      line(x+margin+currPoint, y+scaleY, x+margin+currPoint, y+scaleY-scaleHeight);
+      currDist += 100;
+      currPoint = teePoint + int((w-2*margin)*currDist/totalLength);
+    }
+    
+    // Draw the terrain
+    int iT = 0;
+    noFill();
+    
+    stroke(Terrain.ROUGH.tColor);
+    beginShape();
+    for (float f : roughHeights) {
+      curveVertex(x+margin+iT, y+terrainY+f);
+      iT++;
+    }
+    endShape();
+    
+    stroke(Terrain.GREEN.tColor);
+    beginShape();
+    for (float f : greenHeights) {
+      curveVertex(x+margin+iT, y+terrainY+f);
+      iT++;
+    }
+    endShape();
+    
+    stroke(Terrain.ROUGH.tColor);
+    beginShape();
+    for (float f : pastHeights) {
+      curveVertex(x+margin+iT, y+terrainY+f);
+      iT++;
+    }
+    endShape();
+    
+    // Draw the ball markers
+    for (Ball b : activeBalls) {
+      int pixDist = int((w-2*margin)*b.distance/totalLength);
+      int ballPoint = b.past ? holePoint + pixDist : holePoint - pixDist;
+      
+      color ballMarkColor = defaultBallMarkColor;
+      if (b.player == variableDisplayer.selectedPlayer) ballMarkColor = variableDisplayer.selectedTextCol;
+      else if (b.player == variableDisplayer.hoveredPlayer) ballMarkColor = variableDisplayer.hoveredTextCol;
+      stroke(ballMarkColor);
+      if (!b.sunk && b.terrain != Terrain.TEE) line(x+margin+ballPoint, y+terrainY-ballMarkHeight/2, x+margin+ballPoint, y+terrainY+ballMarkHeight/2);
+    }
+    
+    // Draws arc
     if (lastEvent instanceof EventStrokeOutcome) {
       EventStrokeOutcome eso = (EventStrokeOutcome)lastEvent;
       
+      float angle = PI/18;
+      switch(eso.strokeType) {
+        case TEE:
+          angle = PI/4;
+          break;
+        case DRIVE:
+          angle = PI/5;
+          break;
+        case APPROACH:
+          angle = PI/6;
+          break;
+        case CHIP:
+          angle = PI/3;
+          break;
+        case PUTT:
+          angle = PI/8;
+          break;
+        case NOTHING:
+        default:
+          break;
+      }
+      
       int flip = eso.distance > eso.fromDistance ? -1 : 1;
       int startDist = flip * int((w-2*margin)*eso.fromDistance/totalLength);
-      int startPoint = tourneyManager.holeControl.ballOf(eso.player).past ? holePoint + startDist : holePoint - startDist;
+      int startPoint = ballOf(eso.player).past ? holePoint + startDist : holePoint - startDist;
       
-      float sentDistance = eso.toTerrain.outOfBounds ? eso.fromDistance - eso.distance : eso.toDistance;
+      int flipOob = ballOf(eso.player).past ? 1 : -1;
+      float sentDistance = eso.toTerrain.outOfBounds ? eso.fromDistance + flipOob * eso.distance : eso.toDistance;
       int endDist = int((w-2*margin)*sentDistance/totalLength);
-      int endPoint = tourneyManager.holeControl.ballOf(eso.player).past ? holePoint + endDist : holePoint - endDist;
+      int endPoint = ballOf(eso.player).past ? holePoint + endDist : holePoint - endDist;
       
       float startY = getHeight(startPoint);
       if (eso.fromTerrain == Terrain.TEE) startY -= teeHeight;
-    
-      noFill();
-      ellipseMode(CORNER);
-      stroke(255,120);
-      arc(x+margin+min(startPoint,endPoint), y+terrainY+startY-ballArcHeight, abs(startPoint-endPoint), 2*ballArcHeight, -PI, 0);
+      float endY = getHeight(endPoint);
       
-      if (eso.toTerrain.outOfBounds);
+      stroke(arcColor);
+      noFill();
+      beginShape();
+      vertex(x+margin+startPoint, y+terrainY+startY);
+      quadraticVertex(x+margin+(startPoint+endPoint)/2, y+terrainY+startY-gravity*sq(endPoint-startPoint)*(2-sin(angle))/(8*sin(angle)),
+                      x+margin+endPoint, y+terrainY+endY);
+      endShape();
+      
+      // Draws cross
+      if (eso.toTerrain.outOfBounds) {
+        stroke(eso.toTerrain.tColor);
+        line(x+margin+endPoint-crossSize/2, y+terrainY+endY-crossSize/2, x+margin+endPoint+crossSize/2, y+terrainY+endY+crossSize/2);
+        line(x+margin+endPoint-crossSize/2, y+terrainY+endY+crossSize/2, x+margin+endPoint+crossSize/2, y+terrainY+endY-crossSize/2);
+      }
     }
+    
+    // Draws active ball marker
+    int activePixDist = int((w-2*margin)*currentBall.distance/totalLength);
+    int activeBallPoint = currentBall.past ? holePoint + activePixDist : holePoint - activePixDist;
+    stroke(staticColor);
+    if (!currentBall.sunk && currentBall.terrain != Terrain.TEE)
+      line(x+margin+activeBallPoint, y+terrainY-ballMarkHeight/2, x+margin+activeBallPoint, y+terrainY+ballMarkHeight/2);
     
     // Choose the color of the tee
     color teeStroke = Terrain.TEE.tColor;
@@ -151,8 +249,8 @@ class HoleVisualizer {
     // Select flagpole color
     color flagpoleColor = Terrain.HOLE.tColor;
     if (currentBall.sunk) flagpoleColor = staticColor;
-    else if (tourneyManager.holeControl.ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
-    else if (tourneyManager.holeControl.ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
+    else if (ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
+    else if (ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
     
     // Draw the flagpole
     stroke(flagpoleColor);
@@ -163,43 +261,17 @@ class HoleVisualizer {
              x+margin+holePoint, y+terrainY-flagpoleHeight+flagHeight,
              x+margin+holePoint-flagWidth, y+terrainY-flagpoleHeight+flagHeight/2);
     
-    // Draw the terrain
-    int i = 0;
-    stroke(Terrain.ROUGH.tColor);
-    for (float f : roughHeights) {
-      point(x+margin+i, y+terrainY+f);
-      i++;
-    }
-    stroke(Terrain.GREEN.tColor);
-    for (float f : greenHeights) {
-      point(x+margin+i, y+terrainY+f);
-      i++;
-    }
-    stroke(Terrain.ROUGH.tColor);
-    for (float f : pastHeights) {
-      point(x+margin+i, y+terrainY+f);
-      i++;
-    }
-    
-    // Draw the ball markers
-    for (Ball b : activeBalls) {
-      int pixDist = int((w-2*margin)*b.distance/totalLength);
-      int ballPoint = b.past ? holePoint + pixDist : holePoint - pixDist;
-      
-      color ballMarkColor = defaultBallMarkColor;
-      if (b.player == variableDisplayer.selectedPlayer) ballMarkColor = variableDisplayer.selectedTextCol;
-      else if (b.player == variableDisplayer.hoveredPlayer) ballMarkColor = variableDisplayer.hoveredTextCol;
-      else if (b == currentBall) ballMarkColor = staticColor;
-      stroke(ballMarkColor);
-      if (!b.sunk && b.terrain != Terrain.TEE) line(x+margin+ballPoint, y+terrainY-ballMarkHeight/2, x+margin+ballPoint, y+terrainY+ballMarkHeight/2);
-    }
-    
     strokeWeight(2);
+    noClip();
   }
   
   float getHeight(int x) {
     if (x < roughHeights.size()) return roughHeights.get(x);
     else if (x < roughHeights.size() + greenHeights.size()) return greenHeights.get(x-roughHeights.size());
     else return pastHeights.get(x-roughHeights.size()-greenHeights.size());
+  }
+  
+  Ball ballOf(Player p) {
+    return tourneyManager.holeControl.ballOf(p);
   }
 }

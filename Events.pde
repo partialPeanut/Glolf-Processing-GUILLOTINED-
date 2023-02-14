@@ -75,6 +75,7 @@ class EventStrokeType implements GlolfEvent {
 
 class EventStrokeOutcome implements GlolfEvent {
   Player player;
+  StrokeType strokeType;
   StrokeOutcome outcome;
   Terrain fromTerrain;
   Terrain toTerrain;
@@ -84,8 +85,9 @@ class EventStrokeOutcome implements GlolfEvent {
   int strokesOverPar;
   boolean last;
 
-  EventStrokeOutcome(PlayState in, StrokeOutcome out, float td, boolean end) {
+  EventStrokeOutcome(PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end) {
     player = in.ball.player;
+    strokeType = st;
     outcome = out;
     fromTerrain = in.ball.terrain;
     toTerrain = out.newTerrain;

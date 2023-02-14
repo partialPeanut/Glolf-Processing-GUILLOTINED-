@@ -18,12 +18,13 @@
 // Shadow games
 // Weather: type, wind speed, direction
 // Balls
-// Clubs
+// Clubs (both the sticks and the bougie places)
 // Course/hole names
 // Tourny of the Damned (Revive player?)
 // Charity Match: Atone
 // Resdistribute Wealth: "The League has been weighed down by their sins."
 // Sainthood -100000 $ins
+// Parabola
 
 PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;

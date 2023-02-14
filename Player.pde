@@ -71,12 +71,15 @@ class Player {
     
   // Generates a random net worth
   int generateNetWorth() {
-    float r = random(1,10);
-    if (r < 9) {
+    float r = random(0,100);
+    if (r < 70) {
       return int(random(-20000,60000));
     }
+    else if (r < 99) {
+      return int(random(40000,100000));
+    }
     else {
-      return int(random(60000,120000));
+      return int(random(100000,200000));
     }
   }
 }
