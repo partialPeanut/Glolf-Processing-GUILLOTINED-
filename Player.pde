@@ -64,13 +64,6 @@ class Player {
     return json;
   }
 
-  // Picks a random item from .txt file
-  String generateRandomFromList(String filename) {
-    String[] list = loadStrings(filename);
-    int idx = int(random(list.length));
-    return list[idx];
-  }
-
   // Generates a random float via normal distribution w mean 6 and s.d. 2
   float generateRandomStat() {
     return 6 + randomGaussian() * 2;

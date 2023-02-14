@@ -48,9 +48,9 @@ class VariableDisplayer {
     varDisButtonY = y+h - varDisButtonH;
 
     displayChangeButtons[0] = new ButtonChangeVarDisplay("Player", DisplayType.PLAYER_STATS, x, varDisButtonY, w/4, varDisButtonH);
-    displayChangeButtons[1] = new ButtonChangeVarDisplay("Hole", DisplayType.COURSE_STATS, x+w/4, varDisButtonY, w/4, varDisButtonH);
+    displayChangeButtons[1] = new ButtonChangeVarDisplay("Course", DisplayType.COURSE_STATS, x+w/4, varDisButtonY, w/4, varDisButtonH);
     displayChangeButtons[2] = new ButtonChangeVarDisplay("Strokes", DisplayType.HOLE_SCORES, x+2*w/4, varDisButtonY, w/4, varDisButtonH);
-    displayChangeButtons[3] = new ButtonChangeVarDisplay("Tourney", DisplayType.TOURNEY_SCORES, x+3*w/4, varDisButtonY, w/4, varDisButtonH);
+    displayChangeButtons[3] = new ButtonChangeVarDisplay("Standings", DisplayType.TOURNEY_SCORES, x+3*w/4, varDisButtonY, w/4, varDisButtonH);
 
     displayChangeButtons[0].activate();
   }
@@ -107,7 +107,11 @@ class VariableDisplayer {
   void displayStats() {
     String text = statsPlaceholder;
     if (type == DisplayType.PLAYER_STATS) text = playerToText(getCurrentPlayer());
-    if (type == DisplayType.COURSE_STATS) text = courseToText(getHoleControl().hole);
+    if (type == DisplayType.COURSE_STATS) {
+      text = courseToText(tourneyManager.tourney,getHoleControl().hole);
+      stroke(255);
+      line(x+margin*2, varDisplayY+104, x+w-margin*2, varDisplayY+104);
+    }
 
     fill(textCol);
     textAlign(LEFT);
@@ -189,9 +193,10 @@ class VariableDisplayer {
 
   String playerToText(Player player) {
     if (player == null) return statsPlaceholder;
-    else return "Name: " + player.firstName + " " + player.lastName +
+    else return 
+      "Name: " + player.firstName + " " + player.lastName +
       "\nGender: " + player.gender +
-      "\nNet Worth " + player.networth + " Sins" +
+      "\nNet Worth: " + nfc(player.networth) + " $ins" +
       "\nCringe: " + player.cringe +
       "\nDumbassery: " + player.dumbassery +
       "\nYeetness: " + player.yeetness +
@@ -203,9 +208,13 @@ class VariableDisplayer {
       "\nAutism: " + player.autism;
   }
 
-  String courseToText(Hole hole) {
-    if (hole == null) return statsPlaceholder;
-    else return "Current Hole" +
+  String courseToText(Tourney tourney,Hole hole) {
+    if (tourney == null || hole == null) return statsPlaceholder;
+    else return
+      tourney.tourneyName +
+      "\nPrize: " + nfc(tourney.prizeMoney) + " $ins" +
+      "\n" +
+      "\nCurrent Hole" +
       "\nPar: " + hole.par +
       "\nRoughness: " + hole.roughness +
       "\nHeterosexuality: " + hole.heterosexuality +

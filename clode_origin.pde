@@ -9,7 +9,7 @@
 
 // Potential future mechanics
 // Select player
-// Play, pause, and step buttons
+// Play, pause, and step headButtons
 // Every player has a net worth
 // Prize money + guillotine
 // Terrain
@@ -23,6 +23,11 @@
 // Balls
 // Clubs
 // Course/hole names
+// Tourny of the Damned (Revive player?)
+// Charity Match: Atone
+// Resdistribute Wealth: "The League has been weighed down by their sins."
+// Sainthood -100000 $ins
+
 
 PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;
@@ -32,9 +37,12 @@ int margin = 10;
 int buttonSetHeight = 80;
 int varDisplayWidth = 600;
 int eventDisplayHeight = 120;
-int buttonWidth;
+int timeButtonWidth;
+int headButtonWidth;
 
-Button[] buttons = new Button[6];
+Button homeButton;
+Button[] timeButtons = new Button[5];
+Button[] headButtons = new Button[4];
 VariableDisplayer variableDisplayer;
 EventDisplayer eventDisplayer;
 HoleVisualizer holeVisualizer;
@@ -46,32 +54,48 @@ void setup() {
 
   PFont font = loadFont("data/Calibri-Light-48.vlw");
   textFont(font);
-
-  buttonWidth = int((width - (buttons.length+1) * margin)/buttons.length);
-  buttons[0] = new Button("Next Event", "next_event", margin, margin, buttonWidth, buttonSetHeight-2*margin);
-  buttons[1] = new Button("Next Hole", "next_hole", 2*margin + buttonWidth, margin, buttonWidth, buttonSetHeight-2*margin);
-  buttons[2] = new Button("Show Feed", "show_feed", 3*margin + 2*buttonWidth, margin, buttonWidth, buttonSetHeight-2*margin);
-  buttons[3] = new Button("Debugging", "debug_menu", 4*margin + 3*buttonWidth, margin, buttonWidth, buttonSetHeight-2*margin);
-  buttons[4] = new Button("Girl Button", "girl", 5*margin + 4*buttonWidth, margin, buttonWidth, buttonSetHeight-2*margin);
-  buttons[5] = new Button("Save Players", "save_players", 6*margin + 5*buttonWidth, margin, buttonWidth, buttonSetHeight-2*margin);
-
-  eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
-  holeVisualizer = new HoleVisualizer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
   
+  // Initialize Buttons
+  timeButtonWidth = buttonSetHeight-2*margin;
+  headButtonWidth = int(((width - margin - varDisplayWidth) - (headButtons.length+1) * margin)/headButtons.length);
+  
+  homeButton = new Button("Home", "home", margin, margin, varDisplayWidth-5*(timeButtonWidth+margin), buttonSetHeight-2*margin);
+ 
+  timeButtons[0] = new Button("1", "pause", 2*margin+varDisplayWidth-5*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[1] = new Button("2", "play", 2*margin+varDisplayWidth-4*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[2] = new Button("3", "back", 2*margin+varDisplayWidth-3*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[3] = new Button("4", "next", 2*margin+varDisplayWidth-2*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  timeButtons[4] = new Button("5", "speed", 2*margin+varDisplayWidth-(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+
+  headButtons[0] = new Button("Show Feed", "show_feed", 2*margin + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+  headButtons[1] = new Button("Debugging", "debug_menu", 3*margin + headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+  headButtons[2] = new Button("Girl Button", "girl", 4*margin + 2*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+  headButtons[3] = new Button("Save Players", "save_players", 5*margin + 3*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+   
+  //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
   playerManager.addNewPlayers(16);
   tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, 18));
-  
+    
+  // Initialize Displays
+  eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
+  holeVisualizer = new HoleVisualizer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
   variableDisplayer = new VariableDisplayer(tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);
 }
 
 // Draw
 void draw() {
   background(200);
-
-  for (Button button : buttons) {
+  
+  for (Button button : headButtons) {
     button.display();
   }
+
+  homeButton.display();
+  for (Button button : timeButtons) {
+    button.display();
+  }
+  
 
   strokeWeight(2);
   stroke(0);
@@ -82,9 +106,16 @@ void draw() {
   holeVisualizer.display();
 }
 
+// Picks a random item from .txt file
+String generateRandomFromList(String filename) {
+  String[] list = loadStrings(filename);
+  int idx = int(random(list.length));
+  return list[idx];
+}
+
 // When mouse is pressed
 void mousePressed() {
-  for (Button button : buttons) {
+  for (Button button : headButtons) {
     if (button.isOver()) {
       switch(button.onClick) {
         case "next_event":
@@ -118,7 +149,7 @@ void mousePressed() {
 
 // When mouse is moved
 void mouseMoved() {
-  for (Button button : buttons) {
+  for (Button button : headButtons) {
     if (button.isOver()) {
       button.select();
     }
