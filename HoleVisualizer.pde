@@ -268,7 +268,8 @@ class HoleVisualizer {
   float getHeight(int x) {
     if (x < roughHeights.size()) return roughHeights.get(x);
     else if (x < roughHeights.size() + greenHeights.size()) return greenHeights.get(x-roughHeights.size());
-    else return pastHeights.get(x-roughHeights.size()-greenHeights.size());
+    else if (x < roughHeights.size() + greenHeights.size() + pastHeights.size()) return pastHeights.get(x-roughHeights.size()-greenHeights.size());
+    else return 0;
   }
   
   Ball ballOf(Player p) {
