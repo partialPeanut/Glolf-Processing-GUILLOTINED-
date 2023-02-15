@@ -1,5 +1,8 @@
 static class Format {
-  static String playerToName(Player p) { return p.firstName + " " + p.lastName; }
+  static String playerToName(Player p) {
+    if (p == null) return "---";
+    else return p.firstName + " " + p.lastName;
+  }
 
   static String intToStrokes(int strokes) { return "" + strokes; }
   static String intToScore(int score) { return "" + score; }

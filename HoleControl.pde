@@ -11,65 +11,59 @@
 // 4. Repeat rounds until everyone has came
 
 class HoleControl {
-  int currentBall;
-  boolean firstUp = true;
-  ArrayList<Ball> balls;
-  ArrayList<Ball> activeBalls;
   Hole hole;
-  PlayState playState;
+  boolean justSunk = true;
+  int currentBall = 0;
   StrokeType nextStrokeType;
 
-  HoleControl(ArrayList<Player> ps, Hole h, GlolfEvent le) {
-    balls = new ArrayList<Ball>();
-    for (Player p : ps) {
-      balls.add(new Ball(p, h.realLength));
-    }
-    activeBalls = new ArrayList<Ball>(balls);
-    hole = h;
-    currentBall = 0;
-  }
+  HoleControl(Hole h) { hole = h; }
   
   GlolfEvent nextEvent() {
     GlolfEvent lastEvent = feed.lastEvent();
+    PlayState playState = lastEvent.playState();
+    PlayState newPlayState;
     switch(lastEvent.nextPhase()) {
       case FIRST_PLAYER:
-        firstUp = true;
-        lastEvent = new EventPlayerUp(currentPlayer());
+        justSunk = true;
+        lastEvent = new EventPlayerUp(playState, playState.currentPlayer());
         return lastEvent;
         
       case STROKE_TYPE:
-        if (!firstUp) currentBall = (currentBall+1) % activeBalls.size();
-        firstUp = false;
-        if (currentBall == 0) startRound();
+        if (!justSunk) currentBall++;
+        if (currentBall >= playState.balls.size() || playState.balls.get(currentBall).sunk) currentBall = 0;
+        justSunk = false;
         
-        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
+        newPlayState = new PlayState(playState, currentBall);
         
-        nextStrokeType = Calculation.calculateStrokeType(playState);
-        if (nextStrokeType != StrokeType.NOTHING) currentBall().stroke++;
-        lastEvent = new EventStrokeType(currentPlayer(), nextStrokeType);
+        nextStrokeType = Calculation.calculateStrokeType(newPlayState);
+        if (nextStrokeType != StrokeType.NOTHING) newPlayState.currentBall.stroke++;
+        lastEvent = new EventStrokeType(newPlayState, newPlayState.currentPlayer(), nextStrokeType);
         return lastEvent;
         
       case STROKE_OUTCOME:
         StrokeOutcome so = Calculation.calculateStrokeOutcome(playState, nextStrokeType);
+        
+        newPlayState = new PlayState(playState);
+        Ball ball = newPlayState.currentBall;
+        
         switch(so.type) {
           case ACE:
           case SINK:
-            orgasm(currentBall());
+            orgasm(newPlayState, ball);
             break;
           case FLY:
           case WHIFF:
             if (!so.newTerrain.outOfBounds) {
-              if (so.distance > currentBall().distance) currentBall().past = !currentBall().past;
-              currentBall().distance = Calculation.newDistToHole(currentBall().distance, so.distance, so.angle);
-              currentBall().terrain = so.newTerrain;
+              if (so.distance > ball.distance) ball.past = !ball.past;
+              ball.distance = Calculation.newDistToHole(ball.distance, so.distance, so.angle);
+              ball.terrain = so.newTerrain;
             }
             break;
           case NOTHING: break;
         }
         boolean last = true;
-        for (Ball b : activeBalls) if (!b.sunk) last = false;
-        lastEvent = new EventStrokeOutcome(playState, so, ((EventStrokeType)lastEvent).type, currentBall().distance, last);
-        playState = new PlayState(currentBall(), hole, tourneyManager.tourney);
+        for (Ball b : newPlayState.balls) if (!b.sunk) last = false;
+        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, ((EventStrokeType)lastEvent).type, ball.distance, last);
         return lastEvent;
         
       default:
@@ -78,38 +72,12 @@ class HoleControl {
     }
   }
   
-  void startRound() {
-    activeBalls.removeIf(b -> (b.sunk));
-  }
-  
-  void orgasm(Ball b) {
+  void orgasm(PlayState ps, Ball b) {
     b.sunk();
     b.distance = 0;
     b.terrain = Terrain.HOLE;
-    balls.remove(b);
-    balls.add(b);
-  }
-  
-  Ball currentBall() { return activeBalls.get(currentBall); }
-  Ball ballOf(Player player) {
-    for (Ball b : balls) if (b.player == player) return b;
-    return balls.get(0);
-  }
-  Player currentPlayer() { return activeBalls.get(currentBall).player; }
-
-  int currentStrokeOf(Player player) {
-    for (Ball b : balls) {
-      if (b.player == player) return b.stroke;
-    }
-    return -1;
-  }
-
-  IntDict playersAndStrokes() {
-    IntDict pas = new IntDict();
-    for (Ball b : balls) {
-      if (b.sunk) pas.set(b.player.id, -b.stroke);
-      else pas.set(b.player.id, b.stroke);
-    }
-    return pas;
+    ps.balls.remove(b);
+    ps.balls.add(b);
+    justSunk = true;
   }
 }

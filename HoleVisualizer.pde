@@ -58,6 +58,11 @@ class HoleVisualizer {
   }
   
   void setHole(Hole h) {
+    if (h == null) {
+      hole = null;
+      return;
+    }
+    
     roughHeights.clear();
     greenHeights.clear();
     pastHeights.clear();
@@ -104,7 +109,11 @@ class HoleVisualizer {
     stroke(strokeCol);
     rect(x, y, w, h);
     
-    if (hole == null) {
+    if (feed.lastEvent() instanceof EventTourneyFinish) {
+      displayTourneyContinue();
+      return;
+    }
+    else if (hole == null) {
       fill(textCol);
       textAlign(CENTER,CENTER);
       textSize(textSize);
@@ -112,11 +121,8 @@ class HoleVisualizer {
       return;
     }
     
-    if (feed.lastEvent() instanceof EventTourneyFinish) displayTourneyContinue();
-    else {
-      for (Button b : butts) b.disable();
-      displayHoleVisualizerReal();
-    }
+    for (Button b : butts) b.disable();
+    displayHoleVisualizerReal();
   }
   
   void displayTourneyContinue() {
@@ -131,8 +137,8 @@ class HoleVisualizer {
     clip(x,y,w,h);
     
     GlolfEvent lastEvent = feed.lastEvent();
-    Ball currentBall = tourneyManager.holeControl.currentBall();
-    ArrayList<Ball> activeBalls = tourneyManager.holeControl.activeBalls;
+    Ball currentBall = lastEvent.playState().currentBall;
+    ArrayList<Ball> balls = lastEvent.playState().balls;
     
     // Draw scale
     stroke(255);
@@ -174,7 +180,7 @@ class HoleVisualizer {
     endShape();
     
     // Draw the ball markers
-    for (Ball b : activeBalls) {
+    for (Ball b : balls) {
       int pixDist = int((w-2*margin)*b.distance/totalLength);
       int ballPoint = b.past ? holePoint + pixDist : holePoint - pixDist;
       
@@ -249,7 +255,7 @@ class HoleVisualizer {
     
     // Choose the color of the tee
     color teeStroke = Terrain.TEE.tColor;
-    for (Ball b : activeBalls) {
+    for (Ball b : balls) {
       if (b.terrain == Terrain.TEE) {
         if (b.player == variableDisplayer.selectedPlayer) {
           teeStroke = variableDisplayer.selectedTextCol;
@@ -288,13 +294,12 @@ class HoleVisualizer {
   }
   
   float getHeight(int x) {
-    if (x < roughHeights.size()) return roughHeights.get(x);
+    if (x < 0) return 0;
+    else if (x < roughHeights.size()) return roughHeights.get(x);
     else if (x < roughHeights.size() + greenHeights.size()) return greenHeights.get(x-roughHeights.size());
     else if (x < roughHeights.size() + greenHeights.size() + pastHeights.size()) return pastHeights.get(x-roughHeights.size()-greenHeights.size());
     else return 0;
   }
   
-  Ball ballOf(Player p) {
-    return tourneyManager.holeControl.ballOf(p);
-  }
+  Ball ballOf(Player p) { return feed.lastEvent().playState().ballOf(p); }
 }

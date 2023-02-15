@@ -61,7 +61,7 @@ class VariableDisplayer {
   }
 
   void changeType(DisplayType dt) { type = dt; }
-  int getPlayerListHeight() { return getHoleControl().balls.size() * playerListUnitHeight - varDisplayH; }
+  int getPlayerListHeight() { return tourneyManager.tourney.players.size() * playerListUnitHeight - varDisplayH; }
   
   HoleControl getHoleControl() { return tourneyManager.holeControl; }
   Player getCurrentPlayer() { return tourneyManager.currentPlayer(); }
@@ -131,7 +131,7 @@ class VariableDisplayer {
     IntDict scores;
     switch(type) {
       case HOLE_SCORES:
-        scores = getHoleControl().playersAndStrokes();
+        scores = feed.lastEvent().playState().playersAndStrokes();
         break;
       case TOURNEY_SCORES:
         scores = tourneyManager.playersByScores();
@@ -139,6 +139,8 @@ class VariableDisplayer {
       default:
         scores = null;
     }
+    
+    if (scores == null) return;
 
     int i = 1;
     for (String id : scores.keys()) {
@@ -153,7 +155,7 @@ class VariableDisplayer {
       }
       else if (selectedPlayer != null && id == selectedPlayer.id) fill(selectedTextCol);
       else if (hoveredPlayer != null && id == hoveredPlayer.id) fill(hoveredTextCol);
-      else if (id == getCurrentPlayer().id) fill(staticTextCol);
+      else if (getCurrentPlayer() != null && id == getCurrentPlayer().id) fill(staticTextCol);
       else fill(textCol);
       
       String score = null;
@@ -199,7 +201,7 @@ class VariableDisplayer {
   String nameOf(String id) { return nameOf(playerManager.getPlayer(id)); }
 
   String strokeOf(int strokes) { return Format.intToStrokes(strokes); }
-  String strokeOf(Player player) { return strokeOf(getHoleControl().currentStrokeOf(player)); }
+  String strokeOf(Player player) { return strokeOf(feed.lastEvent().playState().currentStrokeOf(player)); }
 
   String scoreOf(int score) { return Format.intToScore(score); }
 

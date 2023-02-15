@@ -23,35 +23,39 @@ class TourneyManager {
     generateNewHole();
     
     feed.addEvent(new EventVoid());
-    playActive = true;
+    resumeTime();
   }
   void restartTourney() { newTourney(tourney); }
   void newRandomTourney(ArrayList<Player> ps, int holes) { newTourney(new Tourney(ps,holes)); }
   
   // Create control for next hole
   void generateNewHole() {
-    holeControl = new HoleControl(tourney.players, tourney.holes.get(currentHole), lastEvent);
+    holeControl = new HoleControl(currentHole());
   }
 
   GlolfEvent nextEvent() {
-    switch (feed.lastEvent().nextPhase()) {
+    GlolfEvent le = feed.lastEvent();
+    switch (le.nextPhase()) {
       case VOID:
         lastEvent = new EventVoid();
         break;
       case TOURNEY_START:
-        lastEvent = new EventTourneyStart();
+        lastEvent = new EventTourneyStart(tourney);
         break;
       case HOLE_SETUP:
-        lastEvent = new EventHoleSetup(currentHole, tourney.holes.get(currentHole));
+        ArrayList<Ball> balls = new ArrayList<Ball>();
+        for (Player p : tourney.players) { balls.add(new Ball(p, currentHole().realLength)); }
+        
+        lastEvent = new EventHoleSetup(new PlayState(balls, 0, currentHole(), tourneyManager.tourney), currentHole);
         holeVisualizer.setHole(tourney.holes.get(currentHole));
         generateNewHole();
         break;
       case HOLE_FINISH:
-        for (Ball b : holeControl.balls) {
+        for (Ball b : le.playState().balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);
         }
         boolean last = (currentHole == tourney.holes.size()-1);
-        lastEvent = new EventHoleFinish(currentHole, tourney.holes.get(currentHole), last);
+        lastEvent = new EventHoleFinish(le.playState(), currentHole, last);
         currentHole++;
         break;
       case TOURNEY_FINISH:
@@ -68,8 +72,9 @@ class TourneyManager {
           if (currentScores.get(id) != bestScore) break;
           else winners.add(playerManager.getPlayer(id));
         }
-        lastEvent = new EventTourneyFinish(winners);
-        playActive = false;
+        lastEvent = new EventTourneyFinish(le.playState(), winners);
+        holeVisualizer.setHole(null);
+        stopTime();
         break;
       default:
         lastEvent = holeControl.nextEvent();
@@ -79,10 +84,22 @@ class TourneyManager {
     println(lastEvent.toText());
     return lastEvent;
   }
-
-  Player currentPlayer() { return holeControl.currentPlayer(); }
+  
+  void undoEvent(GlolfEvent e) {
+    if (e instanceof EventTourneyStart) {}
+    else if (e instanceof EventHoleSetup) {
+      currentHole = max(currentHole-1, 0);
+      holeVisualizer.setHole(feed.lastLastEvent().playState().hole);
+      holeControl = new HoleControl(feed.lastLastEvent().playState().hole);
+    }
+    else if (e instanceof EventHoleFinish) {}
+  }
+  
+  Hole currentHole() { return tourney.holes.get(currentHole); }
+  
+  Player currentPlayer() { return feed.lastEvent().playState().currentPlayer(); }
   int currentScoreOf(Player player) { return currentScores.get(player.id); }
-  int currentStrokeOf(Player player) { return holeControl.currentStrokeOf(player); }
+  int currentStrokeOf(Player player) { return feed.lastEvent().playState().currentStrokeOf(player); }
 
   IntDict playersByScores() {
     currentScores.sortValues();

@@ -1,7 +1,8 @@
 // Events always describe things that have *just been done*. For example, the next player event being shown means that the next player has just been called up.
 interface GlolfEvent {
   static final String defaultEventText = "---";
-
+  
+  PlayState playState();
   EventPhase nextPhase();
   String toText();
 }
@@ -9,6 +10,7 @@ interface GlolfEvent {
 
 
 class EventVoid implements GlolfEvent {
+  PlayState playState() { return new PlayState(); }
   EventPhase nextPhase() { return EventPhase.TOURNEY_START; }
   String toText() { return defaultEventText; }
 }
@@ -16,6 +18,11 @@ class EventVoid implements GlolfEvent {
 
 
 class EventTourneyStart implements GlolfEvent {
+  PlayState playState = new PlayState();
+  
+  EventTourneyStart(Tourney t) { playState.tourney = t; }
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.HOLE_SETUP; }
   String toText() { return "GLOLF!! BY ANY MEANS NECESSARY."; }
 }
@@ -23,14 +30,15 @@ class EventTourneyStart implements GlolfEvent {
 
 
 class EventHoleSetup implements GlolfEvent {
+  PlayState playState = new PlayState();
   int holeNumber;
-  Hole hole;
 
-  EventHoleSetup(int hn, Hole h) {
+  EventHoleSetup(PlayState ps, int hn) {
+    playState = ps;
     holeNumber = hn+1;
-    hole = h;
   }
-
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.FIRST_PLAYER; }
   String toText() { return "Next up: Hole Number " + holeNumber + "."; }
 }
@@ -38,10 +46,15 @@ class EventHoleSetup implements GlolfEvent {
 
 
 class EventPlayerUp implements GlolfEvent {
+  PlayState playState = new PlayState();
   Player player;
 
-  EventPlayerUp(Player p) { player = p; }
-
+  EventPlayerUp(PlayState ps, Player p) {
+    playState = ps;
+    player = p;
+  }
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.STROKE_TYPE; }
   String toText() { return "First to glolf: " + Format.playerToName(player); }
 }
@@ -49,14 +62,17 @@ class EventPlayerUp implements GlolfEvent {
 
 
 class EventStrokeType implements GlolfEvent {
+  PlayState playState = new PlayState();
   Player player;
   StrokeType type;
 
-  EventStrokeType(Player p, StrokeType st) {
+  EventStrokeType(PlayState ps, Player p, StrokeType st) {
+    playState = ps;
     player = p;
     type = st;
   }
-
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.STROKE_OUTCOME; }
   String toText() {
     switch(type) {
@@ -74,7 +90,9 @@ class EventStrokeType implements GlolfEvent {
 
 
 class EventStrokeOutcome implements GlolfEvent {
+  PlayState playState = new PlayState();
   Player player;
+  Ball lastBall;
   StrokeType strokeType;
   StrokeOutcome outcome;
   Terrain fromTerrain;
@@ -85,19 +103,22 @@ class EventStrokeOutcome implements GlolfEvent {
   int strokesOverPar;
   boolean last;
 
-  EventStrokeOutcome(PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end) {
-    player = in.ball.player;
+  EventStrokeOutcome(PlayState ps, PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end) {
+    playState = ps;
+    player = in.currentBall.player;
+    lastBall = in.currentBall;
     strokeType = st;
     outcome = out;
-    fromTerrain = in.ball.terrain;
+    fromTerrain = in.currentBall.terrain;
     toTerrain = out.newTerrain;
     distance = out.distance;
-    fromDistance = in.ball.distance;
+    fromDistance = in.currentBall.distance;
     toDistance = td;
-    strokesOverPar = in.ball.stroke+1 - in.hole.par;
+    strokesOverPar = in.currentBall.stroke+1 - in.hole.par;
     last = end;
   }
-
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() {
     if (!last) return EventPhase.STROKE_TYPE;
     else return EventPhase.HOLE_FINISH;
@@ -118,20 +139,18 @@ class EventStrokeOutcome implements GlolfEvent {
 
 
 class EventHoleFinish implements GlolfEvent {
+  PlayState playState = new PlayState();
   int holeNumber;
   Hole hole;
   boolean last;
 
-  EventHoleFinish(int hn, Hole h) {
+  EventHoleFinish(PlayState ps, int hn, boolean end) {
+    playState = ps;
     holeNumber = hn+1;
-    hole = h;
-    last = false;
-  }
-  EventHoleFinish(int hn, Hole h, boolean end) {
-    this(hn, h);
     last = end;
   }
-
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() {
     if (!last) return EventPhase.HOLE_SETUP;
     else return EventPhase.TOURNEY_FINISH;
@@ -142,12 +161,14 @@ class EventHoleFinish implements GlolfEvent {
 
 
 class EventTourneyFinish implements GlolfEvent {
+  PlayState playState = new PlayState();
   ArrayList<Player> winners;
 
-  EventTourneyFinish(ArrayList<Player> w) {
+  EventTourneyFinish(PlayState ps, ArrayList<Player> w) {
     winners = w;
   }
-
+  
+  PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.VOID; }
   String toText() {
     String text = "The tournament is over!! Congratulations to the winner" + (winners.size() > 1 ? "s" : "") + ": ";

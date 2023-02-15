@@ -42,6 +42,7 @@ int headButtonWidth;
 int timePassed = 0;
 int speedValue = 1000;
 boolean playActive = false;
+boolean timeStopped = false;
 
 Button homeButton;
 Button[] timeButtons = new Button[5];
@@ -102,17 +103,31 @@ void draw() {
   eventDisplayer.display();
   holeVisualizer.display();
   
-  if (playActive) {
+  if (playActive && !timeStopped) {
     timeButtons[0].unpress();
     timeButtons[1].press();
+    timeButtons[2].disable();
+    timeButtons[3].disable();
+  
     if (millis() > timePassed + speedValue) {
       tourneyManager.nextEvent();
       timePassed = millis();
     }
-  } else {
+  } else if (!timeStopped) {
     timeButtons[0].press();
     timeButtons[1].unpress();
+    timeButtons[2].enable();
+    timeButtons[3].enable();
   }
+}
+
+void stopTime() {
+  timeStopped = true;
+  for (Button b : timeButtons) b.disable();
+}
+void resumeTime() {
+  timeStopped = false;
+  for (Button b : timeButtons) b.enable();
 }
 
 // Picks a random item from .txt file
@@ -138,10 +153,13 @@ void mousePressed() {
           playActive = true;
           break;
         case "back":
-          if (feed.everyEvent.size() > 1 && !playActive) feed.removeLastEvent();
+          if (feed.everyEvent.size() > 1) {
+            tourneyManager.undoEvent(feed.lastEvent());
+            feed.removeLastEvent();
+          }
           break;
         case "next":
-          if (!playActive) tourneyManager.nextEvent();
+          tourneyManager.nextEvent();
           break;
         case "speed": 
           if (speedValue == 1000) speedValue = 500;

@@ -9,6 +9,7 @@ class Button {
   color bgCol = 225;
   color pressedCol = 150;
   color unpressedCol = 225;
+  color disabledCol = 80;
   color strokeCol = 0;
   color strokeSelected = #FF0000;
   color strokeDeselected = #000000;
@@ -25,6 +26,7 @@ class Button {
 
   void display() {
     fill(bgCol);
+    if (!enabled) fill(disabledCol);
     stroke(strokeCol);
     strokeWeight(2);
     rectMode(CORNER);

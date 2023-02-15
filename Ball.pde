@@ -15,10 +15,12 @@ class Ball {
     terrain = Terrain.TEE;
   }
   
-  Ball(Ball b) {
+  Ball(Ball b) { set(b); }
+  void set(Ball b) {
     player = b.player;
     stroke = b.stroke;
     sunk = b.sunk;
+    past = b.past;
     distance = b.distance;
     terrain = b.terrain;
   }
