@@ -1,10 +1,15 @@
 static class Format {
+  static final String DEFAULT = "---";
+  
   static String playerToName(Player p) {
-    if (p == null) return "---";
+    if (p == null) return DEFAULT;
     else return p.firstName + " " + p.lastName;
   }
 
-  static String intToStrokes(int strokes) { return "" + strokes; }
+  static String intToStrokes(int strokes) {
+    if (strokes < 0) return DEFAULT;
+    else return "" + strokes;
+  }
   static String intToScore(int score) { return "" + score; }
 
   static String strokeType(StrokeType st) {
