@@ -30,12 +30,15 @@ PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;
 Feed feed = new Feed();
 
+int holes = 4;
+
 int margin = 10;
 int buttonSetHeight = 80;
 int varDisplayWidth = 600;
 int eventDisplayHeight = 120;
 int timeButtonWidth;
 int headButtonWidth;
+
 int timePassed = 0;
 int speedValue = 1000;
 boolean playActive = false;
@@ -75,7 +78,7 @@ void setup() {
   //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
   playerManager.addNewPlayers(16);
-  tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, 4));
+  tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, holes));
     
   // Initialize Displays
   eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
@@ -88,13 +91,8 @@ void draw() {
   background(200);
   
   homeButton.display();
-  for (Button button : headButtons) {
-    button.display();
-  }
-  for (Button button : timeButtons) {
-    button.display();
-  }
-  
+  for (Button button : headButtons) button.display();
+  for (Button button : timeButtons) button.display();
 
   strokeWeight(2);
   stroke(0);
@@ -105,10 +103,15 @@ void draw() {
   holeVisualizer.display();
   
   if (playActive) {
+    timeButtons[0].unpress();
+    timeButtons[1].press();
     if (millis() > timePassed + speedValue) {
       tourneyManager.nextEvent();
       timePassed = millis();
     }
+  } else {
+    timeButtons[0].press();
+    timeButtons[1].unpress();
   }
 }
 
@@ -121,19 +124,18 @@ String generateRandomFromList(String filename) {
 
 // When mouse is pressed
 void mousePressed() {
-  if (homeButton.isOver()) {
-    homeButton.bgCol = homeButton.pressedCol;
-  }
-  for (Button button : timeButtons) {
-    if (button.isOver()) {
-      button.bgCol = button.pressedCol;
+  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeVisualizer.butts, homeButton));
+  
+  for (Button button : allButtons) {
+    if (button.isOver() && button.enabled) {
+      button.press();
       switch(button.onClick) {
-        case "pause": 
+        case "pause":
           playActive = false;
           break;
         case "play": 
           if (!playActive) timePassed = millis();
-          playActive = true;          
+          playActive = true;
           break;
         case "back":
           if (feed.everyEvent.size() > 1 && !playActive) feed.removeLastEvent();
@@ -146,18 +148,6 @@ void mousePressed() {
           else if (speedValue == 500) speedValue = 1;
           else if (speedValue == 1) speedValue = 1000;
           break;
-        default: break;
-      }
-    }
-  }
-  for (Button button : headButtons) {
-    if (button.isOver()) {
-      button.bgCol = button.pressedCol;
-      switch(button.onClick) {
-        case "next_event":
-          tourneyManager.nextEvent();
-          break;
-        case "next_hole": break;
         case "show_feed": break;
         case "debug_menu": break;
         case "girl":
@@ -166,10 +156,20 @@ void mousePressed() {
         case "save_players":
           playerManager.savePlayersToJSON();
           break;
+        case "restart":
+          tourneyManager.restartTourney();
+          break;
+        case "continue":
+          tourneyManager.newRandomTourney(playerManager.allPlayers, holes);
+          break;
+        case "exit":
+          exit();
+          break;
         default: break;
       }
     }
   }
+  
   for (ButtonChangeVarDisplay button : variableDisplayer.displayChangeButtons) {
     if (button.isOver()) {
       button.onClick();
@@ -184,27 +184,20 @@ void mousePressed() {
 
 // When mouse is released
 void mouseReleased() {
-  homeButton.bgCol = homeButton.unpressedCol;
+  homeButton.unpress();
   for (Button button : timeButtons) {
-    if (button.onClick != "pause" && button.onClick != "play") button.bgCol = button.unpressedCol;
-    else if (button.onClick == "pause" && playActive) button.bgCol = button.unpressedCol;
-    else if (button.onClick == "play" && !playActive) button.bgCol = button.unpressedCol;
+    if (button.onClick != "play" && button.onClick != "pause") button.unpress();
   }
-  for (Button button : headButtons) button.bgCol = button.unpressedCol; 
+  for (Button button : headButtons) button.unpress();
+  for (Button button : holeVisualizer.butts) button.unpress();
 }
 
 // When mouse is moved
 void mouseMoved() {
-  if (homeButton.isOver()) homeButton.select();
-  else homeButton.deselect();
-  
-  for (Button button : timeButtons) {
+  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeVisualizer.butts, homeButton));
+  for (Button button : allButtons) {
     if (button.isOver()) button.select();
-    else button.deselect(); 
-  }
-  for (Button button : headButtons) {
-    if (button.isOver()) button.select();
-    else button.deselect(); 
+    else button.deselect();
   }
   
   if (!variableDisplayer.isOverInfo()) variableDisplayer.dehover();
@@ -212,16 +205,10 @@ void mouseMoved() {
 
 // When mouse is dragged
 void mouseDragged() {
-  if (homeButton.isOver()) homeButton.select();
-  else homeButton.deselect();
-  
-  for (Button button : timeButtons) {
+  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeVisualizer.butts, homeButton));
+  for (Button button : allButtons) {
     if (button.isOver()) button.select();
-    else button.deselect(); 
-  }
-  for (Button button : headButtons) {
-    if (button.isOver()) button.select();
-    else button.deselect(); 
+    else button.deselect();
   }
   
   if (!variableDisplayer.isOverInfo()) variableDisplayer.dehover();

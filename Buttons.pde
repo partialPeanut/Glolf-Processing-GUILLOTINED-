@@ -1,5 +1,11 @@
 class Button {
-  int x, y, w, h;
+  float x, y, w, h;
+  String text;
+  String onClick;
+  
+  boolean selected = false;
+  boolean enabled = true;
+  
   color bgCol = 225;
   color pressedCol = 150;
   color unpressedCol = 225;
@@ -7,18 +13,14 @@ class Button {
   color strokeSelected = #FF0000;
   color strokeDeselected = #000000;
   color textCol = 0;
-  String text;
-  String onClick;
-  boolean selected = false;
 
-  Button(String t, String oc, int _x, int _y, int _w, int _h) {
+  Button(String t, String oc, float _x, float _y, float _w, float _h) {
     text = t;
     x = _x;
     y = _y;
     w = _w;
     h = _h;
     onClick = oc;
-    selected = false;
   }
 
   void display() {
@@ -38,12 +40,14 @@ class Button {
     return mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h;
   }
   
-  void select() {
-    strokeCol = strokeSelected;
-  }
-  void deselect() {
-    strokeCol = strokeDeselected;
-  }
+  void select() { strokeCol = strokeSelected; }
+  void deselect() { strokeCol = strokeDeselected; }
+  
+  void press() { bgCol = pressedCol; }
+  void unpress() { bgCol = unpressedCol; }
+  
+  void enable() { enabled = true; }
+  void disable() { enabled = false; }
 }
 
 

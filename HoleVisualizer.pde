@@ -10,6 +10,9 @@ class HoleVisualizer {
   int x, y, w, h;
   int margin = 10;
   
+  Button[] butts = new Button[3];
+  float buttonSize = 240;
+  
   int scaleY; // Y position of the scale
   int scaleDist = 100; // Amount of gallons per tick
   int scaleHeight = 30; // Height of scale ticks
@@ -44,6 +47,10 @@ class HoleVisualizer {
     y = _y;
     w = _w;
     h = _h;
+    
+    butts[0] = new Button("R", "restart", x+w/2-margin-3*buttonSize/2, y+h/2-buttonSize/2, buttonSize, buttonSize);
+    butts[1] = new Button("C", "continue", x+w/2-buttonSize/2, y+h/2-buttonSize/2, buttonSize, buttonSize);
+    butts[2] = new Button("X", "exit", x+w/2+margin+buttonSize/2, y+h/2-buttonSize/2, buttonSize, buttonSize);
     
     terrainY = int(0.6*h);
     scaleY = int(terrainY+noiseBase+scaleHeight);
@@ -105,6 +112,21 @@ class HoleVisualizer {
       return;
     }
     
+    if (feed.lastEvent() instanceof EventTourneyFinish) displayTourneyContinue();
+    else {
+      for (Button b : butts) b.disable();
+      displayHoleVisualizerReal();
+    }
+  }
+  
+  void displayTourneyContinue() {
+    for (Button b : butts) {
+      b.enable();
+      b.display();
+    }
+  }
+   
+  void displayHoleVisualizerReal() {
     strokeWeight(4);
     clip(x,y,w,h);
     

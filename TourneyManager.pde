@@ -13,18 +13,27 @@ class TourneyManager {
 
   // Generate a new tourney
   TourneyManager(Tourney t) {
+    newTourney(t);
+  }
+  
+  void newTourney(Tourney t) {
     tourney = t;
-
-    for (Player p : t.players) {
-      currentScores.set(p.id, 0);
-    }
-
+    for (Player p : t.players) currentScores.set(p.id, 0);
     currentHole = 0;
     generateNewHole();
+    
+    feed.addEvent(new EventVoid());
+    playActive = true;
+  }
+  void restartTourney() { newTourney(tourney); }
+  void newRandomTourney(ArrayList<Player> ps, int holes) { newTourney(new Tourney(ps,holes)); }
+  
+  // Create control for next hole
+  void generateNewHole() {
+    holeControl = new HoleControl(tourney.players, tourney.holes.get(currentHole), lastEvent);
   }
 
   GlolfEvent nextEvent() {
-    if (feed.lastEvent() instanceof EventTourneyFinish) exit();
     switch (feed.lastEvent().nextPhase()) {
       case VOID:
         lastEvent = new EventVoid();
@@ -60,6 +69,7 @@ class TourneyManager {
           else winners.add(playerManager.getPlayer(id));
         }
         lastEvent = new EventTourneyFinish(winners);
+        playActive = false;
         break;
       default:
         lastEvent = holeControl.nextEvent();
@@ -68,11 +78,6 @@ class TourneyManager {
     feed.addEvent(lastEvent);
     println(lastEvent.toText());
     return lastEvent;
-  }
-
-  // Create control for next hole
-  void generateNewHole() {
-    holeControl = new HoleControl(tourney.players, tourney.holes.get(currentHole), lastEvent);
   }
 
   Player currentPlayer() { return holeControl.currentPlayer(); }
