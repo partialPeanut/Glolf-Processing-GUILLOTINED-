@@ -13,7 +13,8 @@ enum EventPhase {
   STROKE_TYPE,
   STROKE_OUTCOME,
   HOLE_FINISH,
-  TOURNEY_FINISH
+  TOURNEY_FINISH,
+  TOURNEY_REWARD
 }
 
 enum FactorType {

@@ -76,6 +76,8 @@ class TourneyManager {
         holeVisualizer.setHole(null);
         stopTime();
         break;
+      case TOURNEY_REWARD:
+        break;
       default:
         lastEvent = holeControl.nextEvent();
         break;
