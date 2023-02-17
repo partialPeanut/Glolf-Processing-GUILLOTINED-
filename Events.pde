@@ -17,6 +17,27 @@ class EventVoid implements GlolfEvent {
 
 
 
+class EventPlayerReplace implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player playerA, playerB;
+  EventPhase nextPhase;
+
+  EventPlayerReplace(PlayState ps, Player a, Player b, EventPhase np) {
+    playState = ps;
+    playerA = a;
+    playerB = b;
+    nextPhase = np;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return Format.playerToName(playerA) + " did not have the means necessary. " + Format.playerToName(playerB) + " emerges from the ground to take their place.";
+  }
+}
+
+
+
 class EventTourneyStart implements GlolfEvent {
   PlayState playState = new PlayState();
   

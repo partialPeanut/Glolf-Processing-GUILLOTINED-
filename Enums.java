@@ -7,6 +7,8 @@ enum DisplayType {
 
 enum EventPhase {
   VOID,
+  PLAYER_DEATH,
+  PLAYER_BIRTH,
   TOURNEY_START,
   HOLE_SETUP,
   FIRST_PLAYER,

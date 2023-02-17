@@ -25,5 +25,11 @@ class Ball {
     terrain = b.terrain;
   }
   
+  Ball(Ball b, Player p) {
+    set(b);
+    player = p;
+  }
+  
   void sunk() { sunk = true; }
+  void unsunk() { sunk = false; }
 }

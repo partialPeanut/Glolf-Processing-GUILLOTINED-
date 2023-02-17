@@ -63,12 +63,19 @@ class HoleControl {
         }
         boolean last = true;
         for (Ball b : newPlayState.balls) if (!b.sunk) last = false;
-        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, ((EventStrokeType)lastEvent).type, ball.distance, last);
+        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, last);
         return lastEvent;
         
       default:
         lastEvent = new EventVoid();
         return lastEvent;
+    }
+  }
+  
+  void undoEvent(GlolfEvent e) {
+    PlayState playState = e.playState();
+    if (e instanceof EventStrokeType) {
+      currentBall = (currentBall+playState.balls.size()-1) % playState.balls.size();
     }
   }
   

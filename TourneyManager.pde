@@ -8,6 +8,7 @@ class TourneyManager {
   int currentHole;
   HoleControl holeControl;
   GlolfEvent lastEvent;
+  GlolfEvent nextEvent = null;
 
   IntDict currentScores = new IntDict();
 
@@ -82,8 +83,6 @@ class TourneyManager {
         lastEvent = holeControl.nextEvent();
         break;
     }
-    feed.addEvent(lastEvent);
-    println(lastEvent.toText());
     return lastEvent;
   }
   
@@ -95,6 +94,15 @@ class TourneyManager {
       holeControl = new HoleControl(feed.lastLastEvent().playState().hole);
     }
     else if (e instanceof EventHoleFinish) {}
+    else holeControl.undoEvent(e);
+  }
+  
+  void replacePlayer(Player a, Player b) {
+    tourney.players.remove(a);
+    tourney.players.add(b);
+    
+    currentScores.set(b.id, currentScores.get(a.id));
+    currentScores.remove(a.id);
   }
   
   Hole currentHole() { return tourney.holes.get(currentHole); }

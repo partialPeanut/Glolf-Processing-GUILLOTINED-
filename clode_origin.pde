@@ -8,11 +8,8 @@
 // Tourney: 18 courses of stroke play, sudden death on tie
 
 // Potential future mechanics
-// Select player
-// Play, pause, and step buttons
 // Prize money + guillotine
 // Adding players or player death
-// Small chance of insta-guillotine
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
@@ -24,13 +21,18 @@
 // Charity Match: Atone
 // Resdistribute Wealth: "The League has been weighed down by their sins."
 // Sainthood -100000 $ins
-// Parabola
 
+// Bugs
+// None!! Glolf is Perfect
+
+LeagueManager leagueManager = new LeagueManager();
 PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;
 Feed feed = new Feed();
 
-int holes = 4;
+int totalPlayers = 96;
+int playersPerTourney = 16;
+int holesPerTourney = 4;
 
 int margin = 10;
 int buttonSetHeight = 80;
@@ -71,15 +73,15 @@ void setup() {
   timeButtons[3] = new Button(">I", "next", 2*margin+varDisplayWidth-2*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
   timeButtons[4] = new Button(">>", "speed", 2*margin+varDisplayWidth-(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
 
-  headButtons[0] = new Button("Show Feed", "show_feed", 2*margin + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+  headButtons[0] = new Button("Murder", "kill_player", 2*margin + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
   headButtons[1] = new Button("Debugging", "debug_menu", 3*margin + headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
   headButtons[2] = new Button("Girl Button", "girl", 4*margin + 2*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
   headButtons[3] = new Button("Save Players", "save_players", 5*margin + 3*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
    
   //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
-  playerManager.addNewPlayers(16);
-  tourneyManager = new TourneyManager(new Tourney(playerManager.allPlayers, holes));
+  playerManager.addNewPlayers(totalPlayers);
+  tourneyManager = new TourneyManager(new Tourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney));
     
   // Initialize Displays
   eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
@@ -109,11 +111,9 @@ void draw() {
     timeButtons[2].disable();
     timeButtons[3].disable();
   
-    if (millis() > timePassed + speedValue) {
-      tourneyManager.nextEvent();
-      timePassed = millis();
-    }
-  } else if (!timeStopped) {
+    if (millis() >= timePassed + speedValue) nextEvent();
+  }
+  else if (!timeStopped) {
     timeButtons[0].press();
     timeButtons[1].unpress();
     timeButtons[2].enable();
@@ -128,6 +128,15 @@ void stopTime() {
 void resumeTime() {
   timeStopped = false;
   for (Button b : timeButtons) b.enable();
+}
+
+GlolfEvent nextEvent() {
+  GlolfEvent lastEvent = leagueManager.nextEvent();
+  timePassed += speedValue;
+  
+  feed.addEvent(lastEvent);
+  println(lastEvent.toText());
+  return lastEvent;
 }
 
 // Picks a random item from .txt file
@@ -159,7 +168,7 @@ void mousePressed() {
           }
           break;
         case "next":
-          tourneyManager.nextEvent();
+          nextEvent();
           break;
         case "speed": 
           if (speedValue == 1000) speedValue = 500;
@@ -169,16 +178,22 @@ void mousePressed() {
         case "show_feed": break;
         case "debug_menu": break;
         case "girl":
-          println("Happy Valentine's Day!!!");
+          println("Happy Belated Valentine's Day!!!");
           break;
         case "save_players":
           playerManager.savePlayersToJSON();
+          break;
+        case "kill_player":
+          if (feed.lastEvent().playState().tourney != null && !timeStopped) {
+            leagueManager.killPlayerDuringTourney();
+            nextEvent();
+          }
           break;
         case "restart":
           tourneyManager.restartTourney();
           break;
         case "continue":
-          tourneyManager.newRandomTourney(playerManager.allPlayers, holes);
+          tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney);
           break;
         case "exit":
           exit();
