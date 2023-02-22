@@ -75,9 +75,33 @@ class TourneyManager {
         }
         lastEvent = new EventTourneyFinish(le.playState(), winners);
         holeVisualizer.setHole(null);
-        stopTime();
         break;
       case TOURNEY_REWARD:
+        currentScores.sortValues();
+        
+        int end = 1;
+        int numPlaces = 3;
+        int firstScore = -100;
+        int secondScore = -100;
+        int thirdScore = -100;
+        for (int s : currentScores.values()) {
+          if (firstScore == -100) firstScore = s;
+          else if (secondScore == -100 && s > firstScore) secondScore = s;
+          else if (thirdScore == -100 && s > firstScore && s > secondScore) thirdScore = s;
+        }
+        ArrayList<Player> firstWinners = new ArrayList<Player>();
+        ArrayList<Player> secondWinners = new ArrayList<Player>();
+        ArrayList<Player> thirdWinners = new ArrayList<Player>();
+        for (String id : currentScores.keys()) {
+          if (currentScores.get(id) == firstScore) firstWinners.add(playerManager.getPlayer(id));
+          else if (currentScores.get(id) == secondScore) secondWinners.add(playerManager.getPlayer(id));
+          else if (currentScores.get(id) == thirdScore) thirdWinners.add(playerManager.getPlayer(id));
+          else break;
+        }
+        if (secondWinners.size() == 0) numPlaces = 1;
+        else if (thirdWinners.size() == 0) numPlaces = 2;
+        lastEvent = new EventTourneyReward(le.playState(), firstWinners, 1, (tourney.prizeMoney/firstWinners.size()), end);
+        stopTime();
         break;
       default:
         lastEvent = holeControl.nextEvent();

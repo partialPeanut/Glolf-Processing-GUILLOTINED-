@@ -7,9 +7,16 @@
 //          obedience (green tameness), quench (water hazards), thirst (sand bunkers)
 // Tourney: 18 courses of stroke play, sudden death on tie
 
-// Potential future mechanics
+// Main Features
+//
+// Main menu
+// Debug Menu
+// Different gamemodes
 // Prize money + guillotine
 // Adding players or player death
+
+// Potential future mechanics
+//
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
@@ -21,9 +28,11 @@
 // Charity Match: Atone
 // Resdistribute Wealth: "The League has been weighed down by their sins."
 // Sainthood -100000 $ins
+// Strikes
 
 // Bugs
-// None!! Glolf is Perfect
+//
+// Fix rewinding
 
 LeagueManager leagueManager = new LeagueManager();
 PlayerManager playerManager = new PlayerManager();
@@ -32,7 +41,7 @@ Feed feed = new Feed();
 
 int totalPlayers = 96;
 int playersPerTourney = 16;
-int holesPerTourney = 4;
+int holesPerTourney = 2;
 
 int margin = 10;
 int buttonSetHeight = 80;

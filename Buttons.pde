@@ -9,7 +9,7 @@ class Button {
   color bgCol = 225;
   color pressedCol = 150;
   color unpressedCol = 225;
-  color disabledCol = 80;
+  color disabledCol = 150;
   color strokeCol = 0;
   color strokeSelected = #FF0000;
   color strokeDeselected = #000000;

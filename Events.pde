@@ -32,7 +32,7 @@ class EventPlayerReplace implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return Format.playerToName(playerA) + " did not have the means necessary. " + Format.playerToName(playerB) + " emerges from the ground to take their place.";
+    return "Contract Terminated. " + Format.playerToName(playerA) + " rots. " + Format.playerToName(playerB) + " emerges from the ground to take their place.";
   }
 }
 
@@ -186,11 +186,12 @@ class EventTourneyFinish implements GlolfEvent {
   ArrayList<Player> winners;
 
   EventTourneyFinish(PlayState ps, ArrayList<Player> w) {
+    playState = ps; 
     winners = w;
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.VOID; }
+  EventPhase nextPhase() { return EventPhase.TOURNEY_REWARD; }
   String toText() {
     String text = "The tournament is over!! Congratulations to the winner" + (winners.size() > 1 ? "s" : "") + ": ";
     for (int i = 0; i < winners.size(); i++) {
@@ -201,5 +202,46 @@ class EventTourneyFinish implements GlolfEvent {
     }
     text += "!!";
     return text;
+  }
+}
+
+class EventTourneyReward implements GlolfEvent {
+  PlayState playState = new PlayState();
+  ArrayList<Player> winners;
+  int place;
+  int prize;
+  int end;
+
+  EventTourneyReward(PlayState ps, ArrayList<Player> w,int pl,int p,int i) {
+    playState = ps; 
+    winners = w;
+    place = pl;
+    prize = p;
+    end = i;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() {
+    if (end != 0) return EventPhase.TOURNEY_REWARD;
+    else return EventPhase.VOID;
+  }
+  String toText() {
+    String text = "The " + getPlace() + " place winner" + (winners.size() > 1 ? "s" : "") + ": ";
+    for (int i = 0; i < winners.size(); i++) {
+      if (i > 0) {
+        text += (winners.size() > 2 ? "," : "") + " " + (i == winners.size()-1 ? "and " : "");
+      }
+      text += Format.playerToName(winners.get(i));
+    }
+    text += ", receive " + nfc(prize) + " $ins.";
+    return text;
+  }
+  String getPlace() {
+      switch (place) {
+        case 1: return "1st";
+        case 2: return "2nd";
+        case 3: return "3rd";
+        default: return "Nth";
+      }
   }
 }
