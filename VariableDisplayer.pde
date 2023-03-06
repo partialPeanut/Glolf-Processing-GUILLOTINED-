@@ -230,6 +230,7 @@ class VariableDisplayer {
       "\n" +
       "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
       "\nPar: " + hole.par +
+      (hole.succblow < 0 ? "\nSucc: " : "\nBlow: ") + abs(hole.succblow) +
       "\nRoughness: " + hole.roughness +
       "\nHeterosexuality: " + hole.heterosexuality +
       "\nThicc: " + hole.thicc +

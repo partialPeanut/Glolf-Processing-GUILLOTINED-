@@ -57,11 +57,13 @@ static class Calculation {
       terrainFactor[i] = constrain(Slope.scrappy(1.2, ps.currentBall.terrain.smoothness[i]/ps.hole.roughness, ps.currentPlayer().scrappiness), 0.05, 1);
     }
     
-    dists[0] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[0] * ps.totalMod(FactorType.TEE_DISTANCE);
-    dists[1] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[1] * ps.totalMod(FactorType.DRIVE_DISTANCE);
-    dists[2] = Slope.loggy(145,190,ps.currentPlayer().yeetness) * terrainFactor[2] * ps.totalMod(FactorType.APPROACH_DISTANCE);
-    dists[3] = Slope.loggy(105,150,ps.currentPlayer().yeetness) * terrainFactor[3] * ps.totalMod(FactorType.CHIP_DISTANCE);
-    dists[4] = Slope.loggy(50, 95, ps.currentPlayer().yeetness) * terrainFactor[4] * ps.totalMod(FactorType.PUTT_DISTANCE);
+    float windFactor = 1 + (ps.currentBall.past ? -1 : 1) * ps.hole.succblow;
+    
+    dists[0] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[0] * windFactor * ps.totalMod(FactorType.TEE_DISTANCE);
+    dists[1] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[1] * windFactor * ps.totalMod(FactorType.DRIVE_DISTANCE);
+    dists[2] = Slope.loggy(145,190,ps.currentPlayer().yeetness) * terrainFactor[2] * windFactor * ps.totalMod(FactorType.APPROACH_DISTANCE);
+    dists[3] = Slope.loggy(105,150,ps.currentPlayer().yeetness) * terrainFactor[3] * windFactor * ps.totalMod(FactorType.CHIP_DISTANCE);
+    dists[4] = Slope.loggy(50, 95, ps.currentPlayer().yeetness) * terrainFactor[4] * windFactor * ps.totalMod(FactorType.PUTT_DISTANCE);
     
     return dists;
   }

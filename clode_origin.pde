@@ -20,7 +20,8 @@
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
-// Weather: type, wind speed, direction
+// Weather - applies to entire tourney
+// Giant turtle (the course is on a giant turtle)
 // Balls
 // Clubs (both the sticks and the bougie places)
 // Course/hole names
@@ -29,10 +30,16 @@
 // Resdistribute Wealth: "The League has been weighed down by their sins."
 // Sainthood -100000 $ins
 // Strikes
+// Wild animals - Wildlife report every hole
+// Birds carry balls away
+// Komodo dragons eat players
+// Sand worms - either knock the worm unconscious, counting as a hole, or the worm digests the ball and the player must start over
+// PvP
 
 // Bugs
 //
 // Fix rewinding
+// Hole scale sometimes breaks? No clue why lmao
 
 LeagueManager leagueManager = new LeagueManager();
 PlayerManager playerManager = new PlayerManager();
@@ -46,7 +53,7 @@ int holesPerTourney = 2;
 int margin = 10;
 int buttonSetHeight = 80;
 int varDisplayWidth = 600;
-int eventDisplayHeight = 120;
+int eventDisplayHeight = 160;
 int timeButtonWidth;
 int headButtonWidth;
 

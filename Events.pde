@@ -60,24 +60,30 @@ class EventHoleSetup implements GlolfEvent {
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.FIRST_PLAYER; }
+  EventPhase nextPhase() { return EventPhase.UP_TOP; }
   String toText() { return "Next up: Hole Number " + holeNumber + "."; }
 }
 
 
 
-class EventPlayerUp implements GlolfEvent {
+class EventUpTop implements GlolfEvent {
   PlayState playState = new PlayState();
-  Player player;
+  boolean holeOver;
 
-  EventPlayerUp(PlayState ps, Player p) {
+  EventUpTop(PlayState ps, boolean end) {
     playState = ps;
-    player = p;
+    holeOver = end;
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.STROKE_TYPE; }
-  String toText() { return "First to glolf: " + Format.playerToName(player); }
+  EventPhase nextPhase() {
+    if (!holeOver) return EventPhase.STROKE_TYPE;
+    else return EventPhase.HOLE_FINISH;
+  }
+  String toText() {
+    if (!holeOver) return "The cycle begins anew.";
+    else return "The cycle ends, for now.";
+  }
 }
 
 
@@ -142,7 +148,7 @@ class EventStrokeOutcome implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() {
     if (!last) return EventPhase.STROKE_TYPE;
-    else return EventPhase.HOLE_FINISH;
+    else return EventPhase.UP_TOP;
   }
   String toText() {
     switch(outcome.type) {

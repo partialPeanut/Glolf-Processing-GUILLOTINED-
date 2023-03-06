@@ -16,6 +16,11 @@ class HoleVisualizer {
   int scaleY; // Y position of the scale
   int scaleDist = 100; // Amount of gallons per tick
   int scaleHeight = 30; // Height of scale ticks
+  
+  int windArrowY; // Y position of the wind arrows
+  int windArrowLength = 40; // Length of one wind arrow
+  int windArrowHeight = 15; // Height of wind arrows
+  
   int terrainY; // Y position of the middle of the terrain
   int greenSlope = 20; // "Run-up" for terrain-green transition
   float noiseScale = 0.01; // Roughness of rough
@@ -54,6 +59,7 @@ class HoleVisualizer {
     
     terrainY = int(0.6*h);
     scaleY = int(terrainY+noiseBase+scaleHeight);
+    windArrowY = int(scaleY+windArrowHeight+60);
     ballMarkHeight = noiseBase + 10;
   }
   
@@ -149,6 +155,24 @@ class HoleVisualizer {
       line(x+margin+currPoint, y+scaleY, x+margin+currPoint, y+scaleY-scaleHeight);
       currDist += 100;
       currPoint = teePoint + int((w-2*margin)*currDist/totalLength);
+    }
+    
+    // Draw wind
+    int numArrows = int(hole.succblow * 100);
+    float lastEnd = x+w/2;
+    if (numArrows < 0) {
+      stroke(255,0,0);
+      for (int i = 0; i < -numArrows; i++) {
+        drawHorizArrow(lastEnd, lastEnd - windArrowLength, y+windArrowY, windArrowHeight);
+        lastEnd -= windArrowLength + margin;
+      }
+    }
+    else {
+      stroke(0,0,255);
+      for (int i = 0; i < numArrows; i++) {
+        drawHorizArrow(lastEnd, lastEnd + windArrowLength, y+windArrowY, windArrowHeight);
+        lastEnd += windArrowLength + margin;
+      }
     }
     
     // Draw the terrain
@@ -291,6 +315,13 @@ class HoleVisualizer {
     
     strokeWeight(2);
     noClip();
+  }
+  
+  void drawHorizArrow(float start, float end, float y, float arrowH) {
+    line(start, y, end, y);
+    float arrowX = start < end ? end - arrowH : end + arrowH;
+    line(end, y, arrowX, y+arrowH);
+    line(end, y, arrowX, y-arrowH);
   }
   
   float getHeight(int x) {

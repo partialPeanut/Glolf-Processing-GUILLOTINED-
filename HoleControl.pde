@@ -12,7 +12,6 @@
 
 class HoleControl {
   Hole hole;
-  boolean justSunk = true;
   int currentBall = 0;
   StrokeType nextStrokeType;
 
@@ -23,16 +22,19 @@ class HoleControl {
     PlayState playState = lastEvent.playState();
     PlayState newPlayState;
     switch(lastEvent.nextPhase()) {
-      case FIRST_PLAYER:
-        justSunk = true;
-        lastEvent = new EventPlayerUp(playState, playState.currentPlayer());
+      case UP_TOP:
+        currentBall = 0;
+        newPlayState = new PlayState(playState, currentBall);
+        
+        hole.randomizeWind();
+        newPlayState.hole = hole;
+        
+        boolean last = true;
+        for (Ball b : playState.balls) if (!b.sunk) last = false;
+        lastEvent = new EventUpTop(newPlayState, last);
         return lastEvent;
         
       case STROKE_TYPE:
-        if (!justSunk) currentBall++;
-        if (currentBall >= playState.balls.size() || playState.balls.get(currentBall).sunk) currentBall = 0;
-        justSunk = false;
-        
         newPlayState = new PlayState(playState, currentBall);
         
         nextStrokeType = Calculation.calculateStrokeType(newPlayState);
@@ -61,9 +63,11 @@ class HoleControl {
             break;
           case NOTHING: break;
         }
-        boolean last = true;
-        for (Ball b : newPlayState.balls) if (!b.sunk) last = false;
-        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, last);
+        
+        if (!ball.sunk) currentBall++;
+        boolean returnUpTop = currentBall >= newPlayState.balls.size() || newPlayState.balls.get(currentBall).sunk;
+        
+        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, returnUpTop);
         return lastEvent;
         
       default:
@@ -85,6 +89,5 @@ class HoleControl {
     b.terrain = Terrain.HOLE;
     ps.balls.remove(b);
     ps.balls.add(b);
-    justSunk = true;
   }
 }

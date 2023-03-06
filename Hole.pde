@@ -4,11 +4,13 @@
 class Hole {
   float realLength, realWidth, greenLength;
   int par;
-  float roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
+  float succblow, roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
   ArrayList<Effect> mods = new ArrayList<Effect>();
 
   // Generates random course
   Hole() {
+    succblow = generateRandomSuccblow();
+    
     roughness = generateRandomQuality();
     heterosexuality = generateRandomQuality();
     thicc = generateRandomQuality();
@@ -26,6 +28,8 @@ class Hole {
 
   Hole(JSONObject json) {
     par = json.getInt("par");
+    
+    succblow = json.getFloat("succblow");
     roughness = json.getFloat("roughness");
     heterosexuality = json.getFloat("heterosexuality");
     thicc = json.getFloat("thicc");
@@ -44,6 +48,8 @@ class Hole {
     JSONObject json = new JSONObject();
 
     json.setInt("par", par);
+    
+    json.setFloat("succblow", succblow);
     json.setFloat("roughness", roughness);
     json.setFloat("heterosexuality", heterosexuality);
     json.setFloat("thicc", thicc);
@@ -58,6 +64,9 @@ class Hole {
 
     return json;
   }
+  
+  // Randomizes wind
+  void randomizeWind() { succblow = generateRandomSuccblow(); }
 
   // Generates a random par
   int lengthToPar(float len) {
@@ -70,6 +79,11 @@ class Hole {
   float generateRealLength() { return random(0, 1000); }
   float generateRealWidth() { return Calculation.generateRealWidth(this); }
   float generateGreenLength() { return Calculation.generateGreenLength(this); }
+  
+  // Generates a random windy thing
+  float generateRandomSuccblow() {
+    return randomGaussian() * 0.06;
+  }
 
   // Generates a random quality
   float generateRandomQuality() {
