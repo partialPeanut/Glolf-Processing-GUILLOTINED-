@@ -115,7 +115,7 @@ class HoleVisualizer {
     stroke(strokeCol);
     rect(x, y, w, h);
     
-    if (feed.lastEvent() instanceof EventTourneyFinish) {
+    if (feed.lastEvent() instanceof EventTourneyConclude) {
       displayTourneyContinue();
       return;
     }

@@ -97,21 +97,23 @@ class VariableDisplayer {
     // Var display contents
     clip(x, varDisplayY, w, varDisplayH);
     switch(type) {
-    case PLAYER_STATS:
-    case COURSE_STATS:
-      displayStats();
-      break;
-    case HOLE_SCORES:
-    case TOURNEY_SCORES:
-      displayScores();
-      break;
+      case PLAYER_STATS:
+      case COURSE_STATS:
+        displayStats();
+        break;
+      case HOLE_SCORES:
+      case TOURNEY_SCORES:
+        displayScores();
+        break;
     }
     noClip();
   }
 
   void displayStats() {
     String text = statsPlaceholder;
-    if (type == DisplayType.PLAYER_STATS) text = playerToText(selectedPlayer == null ? getCurrentPlayer() : selectedPlayer);
+    if (type == DisplayType.PLAYER_STATS) {
+      text = playerToText(selectedPlayer == null ? getCurrentPlayer() : selectedPlayer);
+    }
     if (type == DisplayType.COURSE_STATS) {
       text = courseToText(tourneyManager.tourney,getHoleControl().hole);
       stroke(textCol);
@@ -193,6 +195,13 @@ class VariableDisplayer {
   void dehover() { hoveredPlayer = null; }
   
   void selectPlayer() {
+    switch(type) {
+      case PLAYER_STATS:
+      case COURSE_STATS:
+        return;
+      default: break;
+    }
+    
     if (selectedPlayer == hoveredPlayer) selectedPlayer = null;
     else selectedPlayer = hoveredPlayer;
   }

@@ -11,6 +11,8 @@ class TourneyManager {
   GlolfEvent nextEvent = null;
 
   IntDict currentScores = new IntDict();
+  
+  int end = 1;
 
   // Generate a new tourney
   TourneyManager(Tourney t) {
@@ -73,13 +75,15 @@ class TourneyManager {
           if (currentScores.get(id) != bestScore) break;
           else winners.add(playerManager.getPlayer(id));
         }
+        
+        end = 1;
+        
         lastEvent = new EventTourneyFinish(le.playState(), winners);
         holeVisualizer.setHole(null);
         break;
       case TOURNEY_REWARD:
         currentScores.sortValues();
         
-        int end = 1;
         int numPlaces = 3;
         int firstScore = -100;
         int secondScore = -100;
@@ -101,6 +105,10 @@ class TourneyManager {
         if (secondWinners.size() == 0) numPlaces = 1;
         else if (thirdWinners.size() == 0) numPlaces = 2;
         lastEvent = new EventTourneyReward(le.playState(), firstWinners, 1, (tourney.prizeMoney/firstWinners.size()), end);
+        end--;
+        break;
+      case TOURNEY_CONCLUDE:
+        lastEvent = new EventTourneyConclude(le.playState());
         stopTime();
         break;
       default:

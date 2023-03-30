@@ -229,7 +229,7 @@ class EventTourneyReward implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() {
     if (end != 0) return EventPhase.TOURNEY_REWARD;
-    else return EventPhase.VOID;
+    else return EventPhase.TOURNEY_CONCLUDE;
   }
   String toText() {
     String text = "The " + getPlace() + " place winner" + (winners.size() > 1 ? "s" : "") + ": ";
@@ -239,7 +239,7 @@ class EventTourneyReward implements GlolfEvent {
       }
       text += Format.playerToName(winners.get(i));
     }
-    text += ", receive " + nfc(prize) + " $ins.";
+    text += ", receive" + (winners.size() > 1 ? "s" : "") + " " + nfc(prize) + " $ins.";
     return text;
   }
   String getPlace() {
@@ -250,4 +250,14 @@ class EventTourneyReward implements GlolfEvent {
         default: return "Nth";
       }
   }
+}
+
+class EventTourneyConclude implements GlolfEvent {
+  PlayState playState = new PlayState();
+
+  EventTourneyConclude(PlayState ps) { playState = ps; }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return EventPhase.VOID; }
+  String toText() { return playState.tourney.tourneyName + " has concluded."; }
 }
