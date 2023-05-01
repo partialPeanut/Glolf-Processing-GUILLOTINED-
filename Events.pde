@@ -38,6 +38,27 @@ class EventPlayerReplace implements GlolfEvent {
 
 
 
+class EventTempestSwap implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player playerA, playerB;
+  EventPhase nextPhase;
+
+  EventTempestSwap(PlayState ps, Player a, Player b, EventPhase np) {
+    playState = ps;
+    playerA = a;
+    playerB = b;
+    nextPhase = np;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return "Harsh winds blow. " + Format.playerToName(playerA) + " and " + Format.playerToName(playerB) + " switch places.";
+  }
+}
+
+
+
 class EventTourneyStart implements GlolfEvent {
   PlayState playState = new PlayState();
   

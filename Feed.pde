@@ -8,5 +8,5 @@ class Feed {
   void addEvent(GlolfEvent e) { everyEvent.add(e); }
   GlolfEvent lastEvent() { return everyEvent.get(everyEvent.size()-1); }
   GlolfEvent lastLastEvent() { return everyEvent.get(everyEvent.size()-2); }
-  void removeLastEvent() { everyEvent.remove(lastEvent());}
+  void removeLastEvent() { everyEvent.remove(lastEvent()); }
 }

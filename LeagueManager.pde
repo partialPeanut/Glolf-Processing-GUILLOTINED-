@@ -25,6 +25,8 @@ class LeagueManager {
     return lastEvent;
   }
   
+  void interruptWith(GlolfEvent e) { interruptions.add(0,e); }
+  
   void killPlayerDuringTourney() {
     Player playerToKill = tourneyManager.tourney.randomPlayer();
     Player newPlayer = playerManager.addNewPlayer();
@@ -35,6 +37,6 @@ class LeagueManager {
       }
     }
     
-    interruptions.add(new EventPlayerReplace(replacedPlayState, playerToKill, newPlayer, feed.lastEvent().nextPhase()));
+    interruptWith(new EventPlayerReplace(replacedPlayState, playerToKill, newPlayer, feed.lastEvent().nextPhase()));
   }
 }

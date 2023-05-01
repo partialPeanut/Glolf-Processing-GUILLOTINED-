@@ -115,6 +115,9 @@ class TourneyManager {
         lastEvent = holeControl.nextEvent();
         break;
     }
+    
+    if (tourney.weather.procCheck(lastEvent)) tourney.weather.doEffect(lastEvent);
+    
     return lastEvent;
   }
   
