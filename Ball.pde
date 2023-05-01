@@ -32,4 +32,11 @@ class Ball {
   
   void sunk() { sunk = true; }
   void unsunk() { sunk = false; }
+  
+  void teleportTo(Ball b) {
+    sunk = b.sunk;
+    past = b.past;
+    distance = b.distance;
+    terrain = b.terrain;
+  }
 }

@@ -38,6 +38,27 @@ class EventPlayerReplace implements GlolfEvent {
 
 
 
+class EventMirageSwap implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player playerA, playerB;
+  EventPhase nextPhase;
+
+  EventMirageSwap(PlayState ps, Player a, Player b, EventPhase np) {
+    playState = ps;
+    playerA = a;
+    playerB = b;
+    nextPhase = np;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return "Illusions dance. " + Format.playerToName(playerA) + " and " + Format.playerToName(playerB) + " confuse their turns.";
+  }
+}
+
+
+
 class EventTempestSwap implements GlolfEvent {
   PlayState playState = new PlayState();
   Player playerA, playerB;
@@ -53,7 +74,7 @@ class EventTempestSwap implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return "Harsh winds blow. " + Format.playerToName(playerA) + " and " + Format.playerToName(playerB) + " switch places.";
+    return "Chaotic winds blow. " + Format.playerToName(playerA) + " and " + Format.playerToName(playerB) + " switch places.";
   }
 }
 
