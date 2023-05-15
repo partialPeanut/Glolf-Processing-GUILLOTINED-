@@ -37,12 +37,28 @@ class PlayerManager {
     return clone;
   }
   
-  void setSuffix(Player p, String s) { p.suffix = s; }
+  void applyMod(Player p, Mod m) { p.mods.add(m); }
+  void removeMod(Player p, Mod m) { p.mods.remove(m); }
+  
+  void appendSuffix(Player p, String s) { p.suffixes.append(s); }
+  void removeSuffix(Player p, String s) {
+    for (int i = 0; i < p.suffixes.size(); i++) {
+      if (p.suffixes.get(i) == s) p.suffixes.remove(i);
+      return;
+    }
+  }
   
   void entanglePlayers(Player a, Player b) {
     entangledPlayers.add(new StringList(a.id, b.id));
     a.mods.add(Mod.ENTANGLED);
     b.mods.add(Mod.ENTANGLED);
+  }
+  Player entangledWith(Player p) {
+    for (StringList sl : entangledPlayers) {
+      if (sl.get(0) == p.id) return getPlayer(sl.get(1));
+      else if (sl.get(1) == p.id) return getPlayer(sl.get(0));
+    }
+    return null;
   }
   void killPlayer(Player p) {
     livePlayers.remove(p);

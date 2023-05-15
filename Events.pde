@@ -53,7 +53,26 @@ class EventQuantumSquid implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return "Seams tear asunder. " + Format.playerToName(oldPlayer) + " splits into their component spins.";
+    return "Waves crash. Bonds destabilize. " + Format.playerToName(oldPlayer) + " splits into their component spins.";
+  }
+}
+
+class EventQuantumUnsquid implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player oldPlayer, restoredPlayer;
+  EventPhase nextPhase;
+
+  EventQuantumUnsquid(PlayState ps, Player o, Player r, EventPhase np) {
+    playState = ps;
+    oldPlayer = o;
+    restoredPlayer = r;
+    nextPhase = np;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return "Up and down collapse. Waves align. " + Format.playerToName(restoredPlayer) + " harmonizes.";
   }
 }
 

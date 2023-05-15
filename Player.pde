@@ -2,7 +2,8 @@
 //          bisexuality (curve skill), asexuality (hole-in-one chance), scrappiness (skill in rough areas), charisma (get it in the hole ;3), autism (magic)
 
 class Player {
-  String id, firstName, lastName, suffix, gender;
+  String id, firstName, lastName, gender;
+  StringList suffixes;
   float cringe, dumbassery, yeetness, trigonometry, bisexuality, asexuality, scrappiness, charisma, autism;
   int networth;
   ArrayList<Mod> mods = new ArrayList<Mod>();
@@ -12,7 +13,7 @@ class Player {
     id = _id;
     firstName = generateRandomFromList("data/firstnames.txt");
     lastName = generateRandomFromList("data/lastnames.txt");
-    suffix = "";
+    suffixes = new StringList();
     gender = generateRandomFromList("data/genders.txt");
     cringe = generateRandomStat();
     dumbassery = generateRandomStat();
@@ -31,7 +32,6 @@ class Player {
     id = json.getString("id");
     firstName = json.getString("firstName");
     lastName = json.getString("lastName");
-    suffix = json.getString("suffix");
     gender = json.getString("gender");
     cringe = json.getFloat("cringe");
     dumbassery = json.getFloat("dumbassery");
@@ -50,7 +50,7 @@ class Player {
     id = p.id;
     firstName = p.firstName;
     lastName = p.lastName;
-    suffix = p.suffix;
+    suffixes = new StringList(p.suffixes);
     gender = p.gender;
     cringe = p.cringe;
     dumbassery = p.dumbassery;
@@ -70,7 +70,6 @@ class Player {
     json.setString("id", id);
     json.setString("firstName", firstName);
     json.setString("lastName", lastName);
-    json.setString("suffix", suffix);
     json.setString("gender", gender);
     json.setFloat("cringe", cringe);
     json.setFloat("dumbassery", dumbassery);

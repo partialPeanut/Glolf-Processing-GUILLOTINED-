@@ -48,8 +48,8 @@ TourneyManager tourneyManager;
 Feed feed = new Feed();
 
 int totalPlayers = 96;
-int playersPerTourney = 4;
-int holesPerTourney = 2;
+int playersPerTourney = 16;
+int holesPerTourney = 9;
 
 int margin = 10;
 int buttonSetHeight = 80;

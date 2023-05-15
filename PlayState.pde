@@ -50,11 +50,15 @@ class PlayState {
     return effects;
   }
   
-  Ball randomActiveBall() {
+  ArrayList<Ball> activeBalls() {
     ArrayList<Ball> activeBalls = new ArrayList<Ball>();
     for (Ball b : balls) {
       if (!b.sunk) activeBalls.add(b);
     }
+    return activeBalls;
+  }
+  Ball randomActiveBall() {
+    ArrayList<Ball> activeBalls = activeBalls();
     
     if (activeBalls.size() == 0) return null;
     else return activeBalls.get(int(random(activeBalls.size())));

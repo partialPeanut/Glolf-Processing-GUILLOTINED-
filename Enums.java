@@ -39,5 +39,6 @@ enum StrokeOutcomeType {
 
 enum Mod {
   AQUATIC,
-  ENTANGLED
+  ENTANGLED,
+  HARMONIZED
 }

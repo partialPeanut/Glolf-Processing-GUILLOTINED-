@@ -41,16 +41,25 @@ class WeatherTempest implements Weather {
   void doEffect(GlolfEvent le) {
     PlayState newPlayState = new PlayState(le.playState());
     
+    ArrayList<Ball> abs = newPlayState.activeBalls();
+    if (abs.size() < 2) return;
+    
     Ball aBall = newPlayState.randomActiveBall();
-    Ball bBall = newPlayState.randomActiveBall();
+    abs.remove(aBall);
+    Ball bBall = abs.get(int(random(abs.size())));
     
     if (aBall == null || bBall == null || (aBall.terrain == Terrain.TEE && bBall.terrain == Terrain.TEE)) return;
     
-    Ball aBallCopy = new Ball(aBall);
-    aBall.teleportTo(bBall);
-    bBall.teleportTo(aBallCopy);
-    
-    if (aBall == bBall) { leagueManager.quantumSquid(aBall); }
+    float squidChance = 0.001;
+    if (random(0,1) < squidChance) {
+      bBall = aBall;
+      leagueManager.quantumSquid(aBall);
+    }
+    else {
+      Ball aBallCopy = new Ball(aBall);
+      aBall.teleportTo(bBall);
+      bBall.teleportTo(aBallCopy);
+    }
     
     leagueManager.interruptWith(new EventTempestSwap(newPlayState, aBall.player, bBall.player, le.nextPhase()));
   }
