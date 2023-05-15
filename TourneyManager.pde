@@ -42,9 +42,11 @@ class TourneyManager {
       case VOID:
         lastEvent = new EventVoid();
         break;
+        
       case TOURNEY_START:
         lastEvent = new EventTourneyStart(tourney);
         break;
+        
       case HOLE_SETUP:
         ArrayList<Ball> balls = new ArrayList<Ball>();
         for (Player p : tourney.players) { balls.add(new Ball(p, currentHole().realLength)); }
@@ -53,6 +55,7 @@ class TourneyManager {
         holeVisualizer.setHole(tourney.holes.get(currentHole));
         generateNewHole();
         break;
+        
       case HOLE_FINISH:
         for (Ball b : le.playState().balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);
@@ -61,6 +64,7 @@ class TourneyManager {
         lastEvent = new EventHoleFinish(le.playState(), currentHole, last);
         currentHole++;
         break;
+        
       case TOURNEY_FINISH:
         currentScores.sortValues();
         
@@ -81,6 +85,7 @@ class TourneyManager {
         lastEvent = new EventTourneyFinish(le.playState(), winners);
         holeVisualizer.setHole(null);
         break;
+        
       case TOURNEY_REWARD:
         currentScores.sortValues();
         
@@ -107,10 +112,12 @@ class TourneyManager {
         lastEvent = new EventTourneyReward(le.playState(), firstWinners, 1, (tourney.prizeMoney/firstWinners.size()), end);
         end--;
         break;
+        
       case TOURNEY_CONCLUDE:
         lastEvent = new EventTourneyConclude(le.playState());
         stopTime();
         break;
+        
       default:
         lastEvent = holeControl.nextEvent();
         if (tourney.weather.procCheck(lastEvent)) tourney.weather.doEffect(lastEvent);
