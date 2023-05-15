@@ -37,6 +37,27 @@ class EventPlayerReplace implements GlolfEvent {
 }
 
 
+class EventQuantumSquid implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player oldPlayer, playerUp, playerDown;
+  EventPhase nextPhase;
+
+  EventQuantumSquid(PlayState ps, Player o, Player u, Player d, EventPhase np) {
+    playState = ps;
+    oldPlayer = o;
+    playerUp = u;
+    playerDown = d;
+    nextPhase = np;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return "Seams tear asunder. " + Format.playerToName(oldPlayer) + " splits into their component parts.";
+  }
+}
+
+
 
 class EventMirageSwap implements GlolfEvent {
   PlayState playState = new PlayState();
@@ -53,7 +74,8 @@ class EventMirageSwap implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return "Illusions dance. " + Format.playerToName(playerA) + " and " + Format.playerToName(playerB) + " confuse their turns.";
+    if (playerA != playerB) return "Illusions dance. " + Format.playerToName(playerA) + " and " + Format.playerToName(playerB) + " confuse their turns.";
+    else return "Illusions dance. " + Format.playerToName(playerA) + " gets confused.";
   }
 }
 
@@ -197,8 +219,8 @@ class EventStrokeOutcome implements GlolfEvent {
       case ACE: return "Hole in one!!";
       case SINK: return "They sink it for a " + Format.intToBird(strokesOverPar) + ".";
       case FLY:
-        if (fromTerrain != toTerrain) return "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText + ".";
-        else return "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText + ".";
+        if (fromTerrain != toTerrain) return "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText;
+        else return "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText;
       case WHIFF: return "They barely tap the ball!";
       case NOTHING: default: return "Nothing happens.";
     }

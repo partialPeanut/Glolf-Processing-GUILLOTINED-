@@ -2,16 +2,17 @@
 //          bisexuality (curve skill), asexuality (hole-in-one chance), scrappiness (skill in rough areas), charisma (get it in the hole ;3), autism (magic)
 
 class Player {
-  String id, firstName, lastName, gender;
+  String id, firstName, lastName, suffix, gender;
   float cringe, dumbassery, yeetness, trigonometry, bisexuality, asexuality, scrappiness, charisma, autism;
   int networth;
-  ArrayList<Effect> mods = new ArrayList<Effect>();
+  ArrayList<Mod> mods = new ArrayList<Mod>();
 
   // Full random player gen
   Player(String _id) {
     id = _id;
     firstName = generateRandomFromList("data/firstnames.txt");
     lastName = generateRandomFromList("data/lastnames.txt");
+    suffix = "";
     gender = generateRandomFromList("data/genders.txt");
     cringe = generateRandomStat();
     dumbassery = generateRandomStat();
@@ -30,6 +31,7 @@ class Player {
     id = json.getString("id");
     firstName = json.getString("firstName");
     lastName = json.getString("lastName");
+    suffix = json.getString("suffix");
     gender = json.getString("gender");
     cringe = json.getFloat("cringe");
     dumbassery = json.getFloat("dumbassery");
@@ -42,6 +44,25 @@ class Player {
     autism = json.getFloat("autism");
     networth = json.getInt("networth");
   }
+  
+  // Player copy
+  Player(Player p) {
+    id = p.id;
+    firstName = p.firstName;
+    lastName = p.lastName;
+    suffix = p.suffix;
+    gender = p.gender;
+    cringe = p.cringe;
+    dumbassery = p.dumbassery;
+    yeetness = p.yeetness;
+    trigonometry = p.trigonometry;
+    bisexuality = p.bisexuality;
+    asexuality = p.asexuality;
+    scrappiness = p.scrappiness;
+    charisma = p.charisma;
+    autism = p.autism;
+    networth = p.networth;
+  }
 
   JSONObject toJSON() {
     JSONObject json = new JSONObject();
@@ -49,6 +70,7 @@ class Player {
     json.setString("id", id);
     json.setString("firstName", firstName);
     json.setString("lastName", lastName);
+    json.setString("suffix", suffix);
     json.setString("gender", gender);
     json.setFloat("cringe", cringe);
     json.setFloat("dumbassery", dumbassery);

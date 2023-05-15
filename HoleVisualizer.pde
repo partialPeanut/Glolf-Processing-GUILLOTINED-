@@ -21,6 +21,9 @@ class HoleVisualizer {
   int windArrowLength = 40; // Length of one wind arrow
   int windArrowHeight = 15; // Height of wind arrows
   
+  int tempestArrowHeight = 30; // Height of tempest swap indicator arrows
+  int tempestArrowMargin = 10; // Space between markers and tempest arrows
+  
   int terrainY; // Y position of the middle of the terrain
   int greenSlope = 20; // "Run-up" for terrain-green transition
   float noiseScale = 0.01; // Roughness of rough
@@ -137,6 +140,45 @@ class HoleVisualizer {
       b.display();
     }
   }
+  
+  color determineBallColor(Ball b) {
+    ArrayList<Ball> bs = new ArrayList<Ball>();
+    bs.add(b);
+    return combineBallColors(bs);
+  }
+  
+  color combineBallColors(ArrayList<Ball> balls) {
+    GlolfEvent lastEvent = feed.lastEvent();
+    color[] prioList = {
+      staticColor,
+      WeatherTempest.col,
+      WeatherMirage.col,
+      variableDisplayer.hoveredTextCol,
+      variableDisplayer.selectedTextCol
+    };
+    
+    int prio = -1;
+    for (Ball b : balls) {
+      if (b.player == variableDisplayer.selectedPlayer) prio = max(prio, 4);
+      else if (b.player == variableDisplayer.hoveredPlayer) prio = max(prio, 3);
+      else if (lastEvent instanceof EventMirageSwap) {
+        EventMirageSwap ems = (EventMirageSwap)lastEvent;
+        if (b.player == ems.playerA || b.player == ems.playerB) prio = max(prio, 2);
+      }
+      else if (lastEvent instanceof EventTempestSwap) {
+        EventTempestSwap ets = (EventTempestSwap)lastEvent;
+        if (b.player == ets.playerA || b.player == ets.playerB) prio = max(prio, 1);
+      }
+      else if (b == lastEvent.playState().currentBall) prio = max(prio, 0);
+    }
+    
+    if (prio == -1) return color(0,0);
+    else return prioList[prio];
+  }
+  
+  color combineBallColors(ArrayList<Ball> balls, color def) {
+    return combineBallColors(balls) == color(0,0) ? def : combineBallColors(balls);
+  }
    
   void displayHoleVisualizerReal() {
     strokeWeight(4);
@@ -203,16 +245,73 @@ class HoleVisualizer {
     }
     endShape();
     
+    // Choose the color of the tee
+    ArrayList<Ball> teeBalls = new ArrayList<Ball>(balls);
+    teeBalls.removeIf(b -> b.terrain != Terrain.TEE);
+    color teeStroke = combineBallColors(teeBalls, Terrain.TEE.tColor);
+        
+    // Draw the tee
+    float teeY = 0;
+    if (teePoint < roughHeights.size()) teeY = roughHeights.get(teePoint);
+    else teeY = greenHeights.get(teePoint-roughHeights.size());
+    stroke(teeStroke);
+    line(x+margin+teePoint, y+terrainY+teeY, x+margin+teePoint, y+terrainY+teeY-teeHeight);
+    line(x+margin+teePoint-teeWidth/2, y+terrainY+teeY-teeHeight, x+margin+teePoint+teeWidth/2, y+terrainY+teeY-teeHeight);
+    
+    // Select flagpole color
+    color flagpoleColor = Terrain.HOLE.tColor;
+    if (currentBall.sunk) flagpoleColor = staticColor;
+    else if (ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
+    else if (ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
+    
+    // Draw the flagpole
+    stroke(flagpoleColor);
+    line(x+margin+holePoint, y+terrainY, x+margin+holePoint, y+terrainY-flagpoleHeight);
+    fill(flagFill);
+    stroke(flagStroke);
+    triangle(x+margin+holePoint, y+terrainY-flagpoleHeight,
+             x+margin+holePoint, y+terrainY-flagpoleHeight+flagHeight,
+             x+margin+holePoint-flagWidth, y+terrainY-flagpoleHeight+flagHeight/2);
+    
+    // Choose ball colors
+    for (Ball b : balls) {
+      b.col = determineBallColor(b);
+    }
+    
     // Draw the ball markers
     for (Ball b : balls) {
       int pixDist = int((w-2*margin)*b.distance/totalLength);
       int ballPoint = b.past ? holePoint + pixDist : holePoint - pixDist;
       
-      color ballMarkColor = defaultBallMarkColor;
-      if (b.player == variableDisplayer.selectedPlayer) ballMarkColor = variableDisplayer.selectedTextCol;
-      else if (b.player == variableDisplayer.hoveredPlayer) ballMarkColor = variableDisplayer.hoveredTextCol;
+      color ballMarkColor = b.col == color(0,0) ? defaultBallMarkColor : b.col;
       stroke(ballMarkColor);
       if (!b.sunk && b.terrain != Terrain.TEE) line(x+margin+ballPoint, y+terrainY-ballMarkHeight/2, x+margin+ballPoint, y+terrainY+ballMarkHeight/2);
+      
+      // Draws swap arrows for tempest weather
+      if (lastEvent instanceof EventTempestSwap) {
+        EventTempestSwap ets = (EventTempestSwap)lastEvent;
+        if (b.player == ets.playerA || b.player == ets.playerB) {
+          float relDistThis = b.past ? b.distance : -b.distance;
+          Ball ballOther = b.player == ets.playerA ? ballOf(ets.playerB) : ballOf(ets.playerA);
+          float relDistOther = ballOther.past ? ballOther.distance : -ballOther.distance;
+          int pixRelDist = int((w-2*margin)*(relDistThis-relDistOther)/totalLength);
+          
+          int flip = relDistThis < relDistOther ? 1 : -1;
+          if (relDistThis == relDistOther) flip = b.player == ets.playerA ? 1 : -1;
+          
+          stroke(WeatherTempest.col);
+          if (abs(pixRelDist) < tempestArrowHeight + 3*tempestArrowMargin) {
+            line(x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY-tempestArrowHeight/2, x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY+tempestArrowHeight/2);
+            line(x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY, x+margin+ballPoint - flip*(tempestArrowMargin+tempestArrowHeight/2), y+terrainY+tempestArrowHeight/2);
+            line(x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY, x+margin+ballPoint - flip*(tempestArrowMargin+tempestArrowHeight/2), y+terrainY-tempestArrowHeight/2);
+          }
+          else {
+            line(x+margin+ballPoint + flip*tempestArrowMargin, y+terrainY, x+margin+ballPoint + flip*(tempestArrowMargin+tempestArrowHeight/2), y+terrainY+tempestArrowHeight/2);
+            line(x+margin+ballPoint + flip*tempestArrowMargin, y+terrainY, x+margin+ballPoint + flip*(tempestArrowMargin+tempestArrowHeight/2), y+terrainY-tempestArrowHeight/2);
+            if (flip == 1) line(x+margin+ballPoint + tempestArrowMargin, y+terrainY, x+margin+ballPoint + abs(pixRelDist) - tempestArrowMargin, y+terrainY);
+          }
+        }
+      }
     }
     
     // Draws arc
@@ -276,42 +375,6 @@ class HoleVisualizer {
     stroke(staticColor);
     if (!currentBall.sunk && currentBall.terrain != Terrain.TEE)
       line(x+margin+activeBallPoint, y+terrainY-ballMarkHeight/2, x+margin+activeBallPoint, y+terrainY+ballMarkHeight/2);
-    
-    // Choose the color of the tee
-    color teeStroke = Terrain.TEE.tColor;
-    for (Ball b : balls) {
-      if (b.terrain == Terrain.TEE) {
-        if (b.player == variableDisplayer.selectedPlayer) {
-          teeStroke = variableDisplayer.selectedTextCol;
-          break;
-        }
-        else if (b.player == variableDisplayer.hoveredPlayer) teeStroke = variableDisplayer.hoveredTextCol;
-        else if (b == currentBall && teeStroke == Terrain.TEE.tColor) teeStroke = staticColor;
-      }
-    }
-        
-    // Draw the tee
-    float teeY = 0;
-    if (teePoint < roughHeights.size()) teeY = roughHeights.get(teePoint);
-    else teeY = greenHeights.get(teePoint-roughHeights.size());
-    stroke(teeStroke);
-    line(x+margin+teePoint, y+terrainY+teeY, x+margin+teePoint, y+terrainY+teeY-teeHeight);
-    line(x+margin+teePoint-teeWidth/2, y+terrainY+teeY-teeHeight, x+margin+teePoint+teeWidth/2, y+terrainY+teeY-teeHeight);
-    
-    // Select flagpole color
-    color flagpoleColor = Terrain.HOLE.tColor;
-    if (currentBall.sunk) flagpoleColor = staticColor;
-    else if (ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
-    else if (ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
-    
-    // Draw the flagpole
-    stroke(flagpoleColor);
-    line(x+margin+holePoint, y+terrainY, x+margin+holePoint, y+terrainY-flagpoleHeight);
-    fill(flagFill);
-    stroke(flagStroke);
-    triangle(x+margin+holePoint, y+terrainY-flagpoleHeight,
-             x+margin+holePoint, y+terrainY-flagpoleHeight+flagHeight,
-             x+margin+holePoint-flagWidth, y+terrainY-flagpoleHeight+flagHeight/2);
     
     strokeWeight(2);
     noClip();

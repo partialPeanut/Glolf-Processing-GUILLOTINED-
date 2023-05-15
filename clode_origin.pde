@@ -17,6 +17,7 @@
 
 // Potential future mechanics
 //
+// Swapping with oneself causes a player to split in two (upspin and downspin)
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
@@ -47,7 +48,7 @@ TourneyManager tourneyManager;
 Feed feed = new Feed();
 
 int totalPlayers = 96;
-int playersPerTourney = 16;
+int playersPerTourney = 4;
 int holesPerTourney = 2;
 
 int margin = 10;

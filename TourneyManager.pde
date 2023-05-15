@@ -138,12 +138,22 @@ class TourneyManager {
     else holeControl.undoEvent(e);
   }
   
+  void addPlayer(Player p, int score) {
+    tourney.players.add(p);
+    currentScores.set(p.id, score);
+  }
   void replacePlayer(Player a, Player b) {
-    tourney.players.remove(a);
-    tourney.players.add(b);
-    
-    currentScores.set(b.id, currentScores.get(a.id));
-    currentScores.remove(a.id);
+    addPlayer(b, currentScores.get(a.id));
+    removePlayer(a);
+  }
+  void replacePlayer(Player o, Player a, Player b) {
+    addPlayer(a, currentScores.get(o.id));
+    addPlayer(b, currentScores.get(o.id));
+    removePlayer(o);
+  }
+  void removePlayer(Player p) {
+    tourney.players.remove(p);
+    currentScores.remove(p.id);
   }
   
   Hole currentHole() { return tourney.holes.get(currentHole); }

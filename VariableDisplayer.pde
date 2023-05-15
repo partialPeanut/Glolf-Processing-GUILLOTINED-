@@ -217,7 +217,7 @@ class VariableDisplayer {
   String playerToText(Player player) {
     if (player == null) return statsPlaceholder;
     else return 
-      "Name: " + player.firstName + " " + player.lastName +
+      "Name: " + Format.playerToName(player) +
       "\nGender: " + player.gender +
       "\nNet Worth: " + nfc(player.networth) + " $ins" +
       "\nCringe: " + player.cringe +

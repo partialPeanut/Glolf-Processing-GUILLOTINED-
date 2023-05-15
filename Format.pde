@@ -3,7 +3,8 @@ static class Format {
   
   static String playerToName(Player p) {
     if (p == null) return DEFAULT;
-    else return p.firstName + " " + p.lastName;
+    else if (p.suffix == "") return p.firstName + " " + p.lastName;
+    else return p.firstName + " " + p.lastName + " " + p.suffix;
   }
 
   static String intToStrokes(int strokes) {

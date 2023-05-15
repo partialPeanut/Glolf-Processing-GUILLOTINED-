@@ -4,11 +4,16 @@ class PlayerManager {
   ArrayList<Player> allPlayers;
   ArrayList<Player> livePlayers;
   ArrayList<Player> deadPlayers;
+  ArrayList<Player> erasedPlayers;
+  
+  ArrayList<StringList> entangledPlayers;
 
   PlayerManager() {
     allPlayers = new ArrayList<Player>();
     livePlayers = new ArrayList<Player>();
     deadPlayers = new ArrayList<Player>();
+    erasedPlayers = new ArrayList<Player>();
+    entangledPlayers = new ArrayList<StringList>();
   }
 
   void clearAllPlayers() { allPlayers.clear(); }
@@ -24,10 +29,28 @@ class PlayerManager {
     livePlayers.add(newPlayer);
     return newPlayer;
   }
+  Player addPlayerClone(Player p) {
+    Player clone = new Player(p);
+    clone.id = generateNewID();
+    allPlayers.add(clone);
+    livePlayers.add(clone);
+    return clone;
+  }
   
+  void setSuffix(Player p, String s) { p.suffix = s; }
+  
+  void entanglePlayers(Player a, Player b) {
+    entangledPlayers.add(new StringList(a.id, b.id));
+    a.mods.add(Mod.ENTANGLED);
+    b.mods.add(Mod.ENTANGLED);
+  }
   void killPlayer(Player p) {
     livePlayers.remove(p);
     deadPlayers.add(p);
+  }
+  void erasePlayer(Player p) {
+    livePlayers.remove(p);
+    erasedPlayers.add(p);
   }
   
   Player getPlayer(String id) {

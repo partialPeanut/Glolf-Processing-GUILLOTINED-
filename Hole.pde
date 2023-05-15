@@ -5,7 +5,7 @@ class Hole {
   float realLength, realWidth, greenLength;
   int par;
   float succblow, roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
-  ArrayList<Effect> mods = new ArrayList<Effect>();
+  ArrayList<Mod> mods = new ArrayList<Mod>();
 
   // Generates random course
   Hole() {

@@ -5,8 +5,9 @@ interface Weather {
 }
 
 // Switches the positions of two players in the lineup
-class MirageWeather implements Weather {
+class WeatherMirage implements Weather {
   String name() { return "Mirage"; }
+  static final color col = #EA6BE6;
   
   float chance = 0.1;
   boolean procCheck(GlolfEvent le) { return random(0,1) < chance; }
@@ -30,8 +31,9 @@ class MirageWeather implements Weather {
 }
 
 // Switches the positions of two players on the course
-class TempestWeather implements Weather {
+class WeatherTempest implements Weather {
   String name() { return "Tempest"; }
+  static final color col = #1281C3;
   
   float chance = 0.1;
   boolean procCheck(GlolfEvent le) { return random(0,1) < chance; }
@@ -47,6 +49,8 @@ class TempestWeather implements Weather {
     Ball aBallCopy = new Ball(aBall);
     aBall.teleportTo(bBall);
     bBall.teleportTo(aBallCopy);
+    
+    if (aBall == bBall) { leagueManager.quantumSquid(aBall); }
     
     leagueManager.interruptWith(new EventTempestSwap(newPlayState, aBall.player, bBall.player, le.nextPhase()));
   }

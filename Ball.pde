@@ -5,6 +5,7 @@ class Ball {
   boolean past;
   float distance;
   Terrain terrain;
+  color col;
 
   Ball(Player p, float dist) {
     player = p;

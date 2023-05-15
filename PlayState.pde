@@ -42,23 +42,12 @@ class PlayState {
     return pas;
   }
 
-  ArrayList<Effect> getAllEffects() {
-    ArrayList<Effect> effects = new ArrayList<Effect>();
+  ArrayList<Mod> getAllEffects() {
+    ArrayList<Mod> effects = new ArrayList<Mod>();
     if (currentPlayer() != null) effects.addAll(currentPlayer().mods);
     if (hole != null) effects.addAll(hole.mods);
     if (tourney != null) effects.addAll(tourney.mods);
     return effects;
-  }
-
-  float totalMod(FactorType ft) {
-    float mod = 1;
-    for (Effect e : getAllEffects()) {
-      if (e instanceof ModifyEffect && e.procCheck(this)) {
-        ModifyEffect me = (ModifyEffect)e;
-        mod *= me.changeFactor(ft, this);
-      }
-    }
-    return mod;
   }
   
   Ball randomActiveBall() {

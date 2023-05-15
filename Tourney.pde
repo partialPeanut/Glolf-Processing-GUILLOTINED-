@@ -1,7 +1,7 @@
 class Tourney {
   ArrayList<Player> players = new ArrayList<Player>();
   ArrayList<Hole> holes = new ArrayList<Hole>();
-  ArrayList<Effect> mods = new ArrayList<Effect>();
+  ArrayList<Mod> mods = new ArrayList<Mod>();
   Weather weather;
   
   int prizeMoney;
@@ -12,7 +12,7 @@ class Tourney {
   Tourney(ArrayList<Player> ps, int holes) {
     players = ps;
     generateNewHoles(holes);
-    weather = new TempestWeather();
+    weather = new WeatherTempest();
     tourneyName = generateTourneyName();
     prizeMoney = generatePrizeMoney();
   }

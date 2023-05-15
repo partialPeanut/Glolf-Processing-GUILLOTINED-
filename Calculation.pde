@@ -4,27 +4,6 @@ static class Calculation {
   static float sRandom(float max) { return sRandom(0, max); }
   static float sRandom(float min, float max) { return (max-min) * random.nextFloat() + min; }
   
-  static float totalMod(ArrayList<Effect> effects, FactorType ft) {
-    float tm = 1;
-    for (Effect e : effects) {
-      if (e instanceof ModifyEffect && e.procCheck()) {
-        ModifyEffect me = (ModifyEffect)e;
-        tm *= me.changeFactor(ft);
-      }
-    }
-    return tm;
-  }
-  static float totalMod(ArrayList<Effect> effects, FactorType ft, PlayState ps) {
-    float tm = 1;
-    for (Effect e : effects) {
-      if (e instanceof ModifyEffect && e.procCheck(ps)) {
-        ModifyEffect me = (ModifyEffect)e;
-        tm *= me.changeFactor(ft);
-      }
-    }
-    return tm;
-  }
-  
   static int weightedChoice(float[] weights) {
     float totalWeight = 0;
     for (float w : weights) totalWeight += w;
@@ -39,13 +18,13 @@ static class Calculation {
   
   static float generateRealWidth(Hole h) {
     float ranFactor = sRandom(120,160);
-    float len = ranFactor * h.thicc * Calculation.totalMod(h.mods, FactorType.REAL_WIDTH);
+    float len = ranFactor * h.thicc;
     return len;
   }
   
   static float generateGreenLength(Hole h) {
     float ranFactor = sRandom(80,120);
-    float len = ranFactor * h.verdancy * Calculation.totalMod(h.mods, FactorType.GREEN_SIZE);
+    float len = ranFactor * h.verdancy;
     return len;
   }
   
@@ -59,11 +38,11 @@ static class Calculation {
     
     float windFactor = 1 + (ps.currentBall.past ? -1 : 1) * ps.hole.succblow;
     
-    dists[0] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[0] * windFactor * ps.totalMod(FactorType.TEE_DISTANCE);
-    dists[1] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[1] * windFactor * ps.totalMod(FactorType.DRIVE_DISTANCE);
-    dists[2] = Slope.loggy(145,190,ps.currentPlayer().yeetness) * terrainFactor[2] * windFactor * ps.totalMod(FactorType.APPROACH_DISTANCE);
-    dists[3] = Slope.loggy(105,150,ps.currentPlayer().yeetness) * terrainFactor[3] * windFactor * ps.totalMod(FactorType.CHIP_DISTANCE);
-    dists[4] = Slope.loggy(50, 95, ps.currentPlayer().yeetness) * terrainFactor[4] * windFactor * ps.totalMod(FactorType.PUTT_DISTANCE);
+    dists[0] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[0] * windFactor;
+    dists[1] = Slope.loggy(190,250,ps.currentPlayer().yeetness) * terrainFactor[1] * windFactor;
+    dists[2] = Slope.loggy(145,190,ps.currentPlayer().yeetness) * terrainFactor[2] * windFactor;
+    dists[3] = Slope.loggy(105,150,ps.currentPlayer().yeetness) * terrainFactor[3] * windFactor;
+    dists[4] = Slope.loggy(50, 95, ps.currentPlayer().yeetness) * terrainFactor[4] * windFactor;
     
     return dists;
   }
@@ -80,7 +59,7 @@ static class Calculation {
 
   static StrokeType calculateStrokeType(PlayState ps) {
     // Chance to do nothing
-    float nothingChance = 0.001 * ps.totalMod(FactorType.NOTHING_CHANCE);
+    float nothingChance = 0.001;
     if (sRandom(1) <= nothingChance) return StrokeType.NOTHING;
     
     // Always tee off the tee
@@ -91,12 +70,6 @@ static class Calculation {
     
     // In order: tee, drive, approach, chip, putt
     float[] weights = calculateBaseWeights(subset(projDists,1), ps);
-    
-    // Apply effects
-    weights[0] *= ps.totalMod(FactorType.DRIVE_WEIGHT);
-    weights[1] *= ps.totalMod(FactorType.APPROACH_WEIGHT);
-    weights[2] *= ps.totalMod(FactorType.CHIP_WEIGHT);
-    weights[3] *= ps.totalMod(FactorType.PUTT_WEIGHT);
     
     // Output the chosen swing type
     switch (weightedChoice(weights)) {
@@ -124,7 +97,7 @@ static class Calculation {
         distAndAngle[1] = 0;
         break;
       case WHIFF:
-        distAndAngle[0] = 1 * ps.totalMod(FactorType.WHIFF_DISTANCE);
+        distAndAngle[0] = 1;
         distAndAngle[1] = sRandom(-PI,PI);
         break;
       case NOTHING:
@@ -145,12 +118,12 @@ static class Calculation {
     
     // Check for ace
     if (ps.currentBall.stroke == 0) {
-      float aceChance = 0.01 * ps.totalMod(FactorType.ACE_CHANCE);
+      float aceChance = 0.01;
       if (sRandom(1) <= aceChance) return StrokeOutcomeType.ACE;
     }
     
     // Check whiff
-    float whiffRate = Slope.loggy(0.005, 0.015, ps.currentPlayer().cringe) * ps.totalMod(FactorType.WHIFF_RATE);
+    float whiffRate = Slope.loggy(0.005, 0.015, ps.currentPlayer().cringe);
     if (sRandom(1) <= whiffRate) return StrokeOutcomeType.WHIFF;
     
     // Check sink
@@ -163,7 +136,7 @@ static class Calculation {
       case PUTT: strokeTypeFactor = 1; break;
       case NOTHING: strokeTypeFactor = 0; break;
     }
-    float sinkChance = Slope.expy(ps.currentBall.distance, 0.3, 0.8) * ps.hole.obedience * strokeTypeFactor * Slope.loggy(0.5, 1.5, ps.currentPlayer().charisma) * ps.totalMod(FactorType.SINK_CHANCE);
+    float sinkChance = Slope.expy(ps.currentBall.distance, 0.3, 0.8) * ps.hole.obedience * strokeTypeFactor * Slope.loggy(0.5, 1.5, ps.currentPlayer().charisma);
     if (sRandom(1) <= sinkChance && dist >= ps.currentBall.distance) return ps.currentBall.stroke == 0 ? StrokeOutcomeType.ACE : StrokeOutcomeType.SINK;
     
     // Fly by default
@@ -180,36 +153,36 @@ static class Calculation {
     switch (st) {
       case TEE:
         idx = 0;
-        variance = Slope.loggy(0.2,0.05,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.TEE_VARIANCE);
-        angle = Slope.loggy(PI/4,PI/40,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.TEE_ANGLE);
+        variance = Slope.loggy(0.2,0.05,ps.currentPlayer().trigonometry);
+        angle = Slope.loggy(PI/4,PI/40,ps.currentPlayer().trigonometry);
         break;
       case DRIVE:
         idx = 1;
-        variance = Slope.loggy(0.15,0.04,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.DRIVE_VARIANCE);
-        angle = Slope.loggy(PI/4,PI/40,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.DRIVE_ANGLE);
+        variance = Slope.loggy(0.15,0.04,ps.currentPlayer().trigonometry);
+        angle = Slope.loggy(PI/4,PI/40,ps.currentPlayer().trigonometry);
         break;
       case APPROACH:
         idx = 2;
-        variance = Slope.loggy(0.1,0.03,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.APPROACH_VARIANCE);
-        angle = Slope.loggy(PI/6,PI/60,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.APPROACH_ANGLE);
+        variance = Slope.loggy(0.1,0.03,ps.currentPlayer().trigonometry);
+        angle = Slope.loggy(PI/6,PI/60,ps.currentPlayer().trigonometry);
         break;
       case CHIP:
         idx = 3;
-        variance = Slope.loggy(0.05,0.02,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.CHIP_VARIANCE);
-        angle = Slope.loggy(PI/8,PI/80,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.CHIP_ANGLE);
+        variance = Slope.loggy(0.05,0.02,ps.currentPlayer().trigonometry);
+        angle = Slope.loggy(PI/8,PI/80,ps.currentPlayer().trigonometry);
         break;
       case PUTT:
         idx = 4;
-        variance = Slope.loggy(0.02,0.01,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.PUTT_VARIANCE);
-        angle = Slope.loggy(PI/12,PI/120,ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.PUTT_ANGLE);
+        variance = Slope.loggy(0.02,0.01,ps.currentPlayer().trigonometry);
+        angle = Slope.loggy(PI/12,PI/120,ps.currentPlayer().trigonometry);
         break;
       case NOTHING:
         float[] dan2 = {0,0};
         return dan2;
     }
     variance = max(variance, 0);
-    angle = constrain(angle * ps.totalMod(FactorType.ANY_STROKE_ANGLE), 0, PI);
-    da[0] = distBases[idx] * sRandom(1-variance, 1+variance) * ps.totalMod(FactorType.ANY_STROKE_DISTANCE);
+    angle = constrain(angle, 0, PI);
+    da[0] = distBases[idx] * sRandom(1-variance, 1+variance);
     da[1] = sRandom(-angle,angle);
     return da;
   }
@@ -235,9 +208,12 @@ static class Calculation {
         if (sideways > wiggleRoom) return Terrain.OUT_OF_BOUNDS;
         
         // Probabilities of landing in hazards
-        float waterHazardChance = ps.hole.quench * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.WATER_HAZARD_CHANCE);
-        if (sRandom(1) <= waterHazardChance) return Terrain.WATER_HAZARD;
-        float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry) * ps.totalMod(FactorType.BUNKER_CHANCE);
+        float waterHazardChance = ps.hole.quench * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
+        if (sRandom(1) <= waterHazardChance) {
+          Terrain waterType = ps.currentBall.player.mods.contains(Mod.AQUATIC) ? Terrain.WATER_FLOAT : Terrain.WATER_HAZARD;
+          return waterType;
+        }
+        float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
         if (sRandom(1) <= sandBunkerChance) return Terrain.BUNKER;
         
         return Terrain.ROUGH;
