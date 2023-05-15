@@ -17,7 +17,7 @@
 
 // Potential future mechanics
 //
-// Swapping with oneself causes a player to split in two (upspin and downspin)
+// Harmonization
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games

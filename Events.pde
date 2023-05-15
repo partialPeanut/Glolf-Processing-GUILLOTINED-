@@ -53,7 +53,7 @@ class EventQuantumSquid implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return "Seams tear asunder. " + Format.playerToName(oldPlayer) + " splits into their component parts.";
+    return "Seams tear asunder. " + Format.playerToName(oldPlayer) + " splits into their component spins.";
   }
 }
 
