@@ -47,13 +47,13 @@ class HoleControl {
         
         newPlayState = new PlayState(playState);
         Ball ball = newPlayState.currentBall;
+        float newDist = Calculation.newDistToHole(ball.distance, so.distance, so.angle);
         
         if (ball.player.mods.contains(Mod.HARMONIZED) && nextStrokeType == StrokeType.TEE) {
           StrokeOutcome so2 = Calculation.calculateStrokeOutcome(playState, nextStrokeType);
+          float newDist2 = Calculation.newDistToHole(ball.distance, so2.distance, so2.angle);
           
-          if (so2.type == StrokeOutcomeType.ACE) so = so2;
-          else if (so.newTerrain.outOfBounds) so = so2;
-          else if (Calculation.newDistToHole(ball.distance, so.distance, so.angle) > Calculation.newDistToHole(ball.distance, so2.distance, so2.angle)) so = so2;
+          if (so.newTerrain.outOfBounds || newDist > newDist2) so = so2;
         }
         
         switch(so.type) {
@@ -65,7 +65,7 @@ class HoleControl {
           case WHIFF:
             if (!so.newTerrain.outOfBounds) {
               if (so.distance > ball.distance) ball.past = !ball.past;
-              ball.distance = Calculation.newDistToHole(ball.distance, so.distance, so.angle);
+              ball.distance = newDist;
               ball.terrain = so.newTerrain;
             }
             break;

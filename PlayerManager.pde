@@ -37,6 +37,39 @@ class PlayerManager {
     return clone;
   }
   
+  String generateNewID() {
+    boolean isNew = false;
+    String newID = "-1";
+    while (!isNew) {
+      isNew = true;
+      int newIDint = int(random(minID, maxID+1));
+      newID = "" + newIDint;
+      for (Player p : allPlayers) {
+        if (p.id == newID) isNew = false;
+      }
+    }
+    return newID;
+  }
+
+  void savePlayersToJSON() {
+    JSONArray players = new JSONArray();
+    int i = 0;
+    for (Player p : allPlayers) {
+      players.setJSONObject(i, p.toJSON());
+      i++;
+    }
+    saveJSONArray(players, "data/players.json");
+  }
+
+  void loadPlayersFromJSON(String filename) {
+    clearAllPlayers();
+    JSONArray players = loadJSONArray(filename);
+    for (int i = 0; i < players.size(); i++) {
+      JSONObject player = players.getJSONObject(i);
+      allPlayers.add(new Player(player));
+    }
+  }
+  
   void applyMod(Player p, Mod m) { p.mods.add(m); }
   void removeMod(Player p, Mod m) { p.mods.remove(m); }
   
@@ -48,18 +81,8 @@ class PlayerManager {
     }
   }
   
-  void entanglePlayers(Player a, Player b) {
-    entangledPlayers.add(new StringList(a.id, b.id));
-    a.mods.add(Mod.ENTANGLED);
-    b.mods.add(Mod.ENTANGLED);
-  }
-  Player entangledWith(Player p) {
-    for (StringList sl : entangledPlayers) {
-      if (sl.get(0) == p.id) return getPlayer(sl.get(1));
-      else if (sl.get(1) == p.id) return getPlayer(sl.get(0));
-    }
-    return null;
-  }
+  void giveSins(Player p, int s) { p.networth += s; }
+  
   void killPlayer(Player p) {
     livePlayers.remove(p);
     deadPlayers.add(p);
@@ -97,40 +120,33 @@ class PlayerManager {
     }
     return chosenPlayers;
   }
-
-  String generateNewID() {
-    boolean isNew = false;
-    String newID = "-1";
-    while (!isNew) {
-      isNew = true;
-      int newIDint = int(random(minID, maxID+1));
-      newID = "" + newIDint;
-      for (Player p : allPlayers) {
-        if (p.id == newID) isNew = false;
+  
+  void entanglePlayers(Player a, Player b) {
+    entangledPlayers.add(new StringList(a.id, b.id));
+    a.mods.add(Mod.ENTANGLED);
+    b.mods.add(Mod.ENTANGLED);
+  }
+  void detanglePlayer(Player p) {
+    for (StringList sl : entangledPlayers) {
+      if (sl.hasValue(p.id)) {
+        entangledPlayers.remove(sl);
+        return;
       }
     }
-    return newID;
   }
-
-  void savePlayersToJSON() {
-    JSONArray players = new JSONArray();
-
-    int i = 0;
-    for (Player p : allPlayers) {
-      players.setJSONObject(i, p.toJSON());
-      i++;
+  Player entangledWith(Player p) {
+    for (StringList sl : entangledPlayers) {
+      if (sl.get(0) == p.id) return getPlayer(sl.get(1));
+      else if (sl.get(1) == p.id) return getPlayer(sl.get(0));
     }
-
-    saveJSONArray(players, "data/players.json");
+    return null;
   }
-
-  void loadPlayersFromJSON(String filename) {
-    clearAllPlayers();
-    JSONArray players = loadJSONArray(filename);
-
-    for (int i = 0; i < players.size(); i++) {
-      JSONObject player = players.getJSONObject(i);
-      allPlayers.add(new Player(player));
-    }
+  
+  boolean hasRich() { return bourgeoisie().size() > 0; }
+  ArrayList<Player> bourgeoisie() {
+    int tooRich = 500000;
+    ArrayList<Player> rich = new ArrayList<Player>();
+    for (Player p : livePlayers) if (p.networth >= tooRich) rich.add(p);
+    return rich;
   }
 }

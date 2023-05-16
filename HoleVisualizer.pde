@@ -261,8 +261,8 @@ class HoleVisualizer {
     // Select flagpole color
     color flagpoleColor = Terrain.HOLE.tColor;
     if (currentBall.sunk) flagpoleColor = staticColor;
-    else if (ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
-    else if (ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
+    else if (ballOf(variableDisplayer.selectedPlayer) != null && ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
+    else if (ballOf(variableDisplayer.hoveredPlayer) != null && ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
     
     // Draw the flagpole
     stroke(flagpoleColor);
@@ -340,12 +340,12 @@ class HoleVisualizer {
           break;
       }
       
-      int flip = eso.distance > eso.fromDistance ? -1 : 1;
+      int flip = eso.distance > eso.fromDistance && !eso.toTerrain.outOfBounds ? -1 : 1;
       int startDist = flip * int((w-2*margin)*eso.fromDistance/totalLength);
       int startPoint = ballOf(eso.player).past ? holePoint + startDist : holePoint - startDist;
       
       int flipOob = ballOf(eso.player).past ? 1 : -1;
-      float sentDistance = eso.toTerrain.outOfBounds ? eso.fromDistance + flipOob * eso.distance : eso.toDistance;
+      float sentDistance = eso.toTerrain.outOfBounds ? flip*eso.fromDistance + flipOob*eso.distance : eso.toDistance;
       int endDist = int((w-2*margin)*sentDistance/totalLength);
       int endPoint = ballOf(eso.player).past ? holePoint + endDist : holePoint - endDist;
       

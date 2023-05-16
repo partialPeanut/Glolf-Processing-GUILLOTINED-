@@ -17,11 +17,9 @@
 
 // Potential future mechanics
 //
-// Harmonization
 // Cringe has chance to nullify dumbassery
 // High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
-// Weather - applies to entire tourney
 // Giant turtle (the course is on a giant turtle)
 // Balls
 // Clubs (both the sticks and the bougie places)
@@ -166,6 +164,18 @@ String generateRandomFromList(String filename) {
   String[] list = loadStrings(filename);
   int idx = int(random(list.length));
   return list[idx];
+}
+
+// When keys are pressed
+void keyPressed() {
+  switch(key) {
+    case ' ':
+      playActive = !playActive;
+      break;
+    case 'c':
+      if (timeStopped) tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney);
+      break;
+  }
 }
 
 // When mouse is pressed

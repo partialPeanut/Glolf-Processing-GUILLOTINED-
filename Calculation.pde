@@ -50,7 +50,7 @@ static class Calculation {
   static float[] calculateBaseWeights(float[] projDists, PlayState ps) {
     float[] weights = new float[4];
     for (int i = 0; i < projDists.length; i++) {
-      weights[i] = 1000 * Slope.gaussy(projDists[i], abs(ps.currentBall.distance), 6 * ps.currentPlayer().dumbassery);
+      weights[i] = 1000 * Slope.gaussy(projDists[i], abs(ps.currentBall.distance), 6 * max(ps.currentPlayer().dumbassery, 1));
     }
     
     weights[0] = 0;

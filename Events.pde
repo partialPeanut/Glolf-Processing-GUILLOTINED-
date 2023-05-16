@@ -18,21 +18,46 @@ class EventVoid implements GlolfEvent {
 
 
 class EventPlayerReplace implements GlolfEvent {
-  PlayState playState = new PlayState();
+  PlayState playState;
   Player playerA, playerB;
   EventPhase nextPhase;
 
-  EventPlayerReplace(PlayState ps, Player a, Player b, EventPhase np) {
-    playState = ps;
+  EventPlayerReplace(Player a, Player b) {
     playerA = a;
     playerB = b;
-    nextPhase = np;
   }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
     return "Contract Terminated. " + Format.playerToName(playerA) + " rots. " + Format.playerToName(playerB) + " emerges from the ground to take their place.";
+  }
+}
+
+
+class EventGuillotine implements GlolfEvent {
+  PlayState playState = new PlayState();
+  ArrayList<Player> theRich;
+  int totalSins;
+  EventPhase nextPhase;
+
+  EventGuillotine(ArrayList<Player> r, int ts) {
+    theRich = r;
+    totalSins = ts;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    String text = "It is time to topple the bourgeoisie. ";
+    for (int i = 0; i < theRich.size(); i++) {
+      if (i > 0) {
+        text += (theRich.size() > 2 ? "," : "") + " " + (i == theRich.size()-1 ? "and " : "");
+      }
+      text += Format.playerToName(theRich.get(i));
+    }
+    text += " will face the guillotine. " + nfc(totalSins) + " $ins are redistributed to the people.";
+    return text;
   }
 }
 
@@ -303,30 +328,31 @@ class EventTourneyReward implements GlolfEvent {
   ArrayList<Player> winners;
   int place;
   int prize;
-  int end;
+  boolean end;
 
-  EventTourneyReward(PlayState ps, ArrayList<Player> w,int pl,int p,int i) {
+  EventTourneyReward(PlayState ps, ArrayList<Player> w, int pl, int p, boolean e) {
     playState = ps; 
     winners = w;
     place = pl;
     prize = p;
-    end = i;
+    end = e;
   }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() {
-    if (end != 0) return EventPhase.TOURNEY_REWARD;
+    if (!end) return EventPhase.TOURNEY_REWARD;
     else return EventPhase.TOURNEY_CONCLUDE;
   }
   String toText() {
-    String text = "The " + getPlace() + " place winner" + (winners.size() > 1 ? "s" : "") + ": ";
+    String text = "The " + getPlace() + " place ";
+    if (winners.size() > 1) text += "winners receive " + nfc(prize) + " $ins each: ";
+    else text += "winner receives " + nfc(prize) + " $ins: ";
+    
     for (int i = 0; i < winners.size(); i++) {
-      if (i > 0) {
-        text += (winners.size() > 2 ? "," : "") + " " + (i == winners.size()-1 ? "and " : "");
-      }
+      if (i > 0) text += (winners.size() > 2 ? "," : "") + " " + (i == winners.size()-1 ? "and " : "");
       text += Format.playerToName(winners.get(i));
     }
-    text += ", receive" + (winners.size() > 1 ? "s" : "") + " " + nfc(prize) + " $ins.";
+    text += ".";
     return text;
   }
   String getPlace() {

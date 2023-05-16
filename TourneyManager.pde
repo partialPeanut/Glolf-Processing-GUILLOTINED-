@@ -11,8 +11,8 @@ class TourneyManager {
   GlolfEvent nextEvent = null;
 
   IntDict currentScores = new IntDict();
-  
-  int end = 1;
+  ArrayList<ArrayList<Player>> winners = new ArrayList<ArrayList<Player>>();
+  int rewardPlace = 1;
 
   // Generate a new tourney
   TourneyManager(Tourney t) {
@@ -21,7 +21,9 @@ class TourneyManager {
   
   void newTourney(Tourney t) {
     tourney = t;
+    currentScores.clear();
     for (Player p : t.players) currentScores.set(p.id, 0);
+    winners.clear();
     currentHole = 0;
     generateNewHole();
     
@@ -32,9 +34,7 @@ class TourneyManager {
   void newRandomTourney(ArrayList<Player> ps, int holes) { newTourney(new Tourney(ps,holes)); }
   
   // Create control for next hole
-  void generateNewHole() {
-    holeControl = new HoleControl(currentHole());
-  }
+  void generateNewHole() { holeControl = new HoleControl(currentHole()); }
 
   GlolfEvent nextEvent() {
     GlolfEvent le = feed.lastEvent();
@@ -68,49 +68,40 @@ class TourneyManager {
       case TOURNEY_FINISH:
         currentScores.sortValues();
         
-        int bestScore = 0;
+        IntList bestScores = new IntList(-1,-1,-1);
         for (int s : currentScores.values()) {
-          bestScore = s;
-          break;
+          if (bestScores.get(0) == -1 || bestScores.get(0) == s) bestScores.set(0,s);
+          else if (bestScores.get(1) == -1 || bestScores.get(1) == s) bestScores.set(1,s);
+          else if (bestScores.get(2) == -1 || bestScores.get(2) == s) bestScores.set(2,s);
+          else break;
         }
         
-        ArrayList<Player> winners = new ArrayList<Player>();
+        winners.add(new ArrayList<Player>());
+        winners.add(new ArrayList<Player>());
+        winners.add(new ArrayList<Player>());
+        
         for (String id : currentScores.keys()) {
-          if (currentScores.get(id) != bestScore) break;
-          else winners.add(playerManager.getPlayer(id));
+          if (currentScores.get(id) == bestScores.get(0)) winners.get(0).add(playerManager.getPlayer(id));
+          else if (currentScores.get(id) == bestScores.get(1)) winners.get(1).add(playerManager.getPlayer(id));
+          else if (currentScores.get(id) == bestScores.get(2)) winners.get(2).add(playerManager.getPlayer(id));
+          else break;
         }
         
-        end = 1;
-        
-        lastEvent = new EventTourneyFinish(le.playState(), winners);
+        lastEvent = new EventTourneyFinish(le.playState(), winners.get(0));
         holeVisualizer.setHole(null);
         break;
         
       case TOURNEY_REWARD:
-        currentScores.sortValues();
+        ArrayList<Player> batch = winners.get(rewardPlace-1);
+        int batchPrize = floor(tourney.prizeMoney * pow(2,1-rewardPlace) / batch.size());
         
-        int numPlaces = 3;
-        int firstScore = -100;
-        int secondScore = -100;
-        int thirdScore = -100;
-        for (int s : currentScores.values()) {
-          if (firstScore == -100) firstScore = s;
-          else if (secondScore == -100 && s > firstScore) secondScore = s;
-          else if (thirdScore == -100 && s > firstScore && s > secondScore) thirdScore = s;
-        }
-        ArrayList<Player> firstWinners = new ArrayList<Player>();
-        ArrayList<Player> secondWinners = new ArrayList<Player>();
-        ArrayList<Player> thirdWinners = new ArrayList<Player>();
-        for (String id : currentScores.keys()) {
-          if (currentScores.get(id) == firstScore) firstWinners.add(playerManager.getPlayer(id));
-          else if (currentScores.get(id) == secondScore) secondWinners.add(playerManager.getPlayer(id));
-          else if (currentScores.get(id) == thirdScore) thirdWinners.add(playerManager.getPlayer(id));
-          else break;
-        }
-        if (secondWinners.size() == 0) numPlaces = 1;
-        else if (thirdWinners.size() == 0) numPlaces = 2;
-        lastEvent = new EventTourneyReward(le.playState(), firstWinners, 1, (tourney.prizeMoney/firstWinners.size()), end);
-        end--;
+        for (Player p : batch) { playerManager.giveSins(p, batchPrize); }
+        
+        boolean end = winners.size() == rewardPlace || winners.get(rewardPlace).size() == 0;
+        lastEvent = new EventTourneyReward(le.playState(), batch, rewardPlace, batchPrize, end);
+        
+        if (end) rewardPlace = 1;
+        else rewardPlace++;
         break;
         
       case TOURNEY_CONCLUDE:
@@ -138,6 +129,7 @@ class TourneyManager {
     else holeControl.undoEvent(e);
   }
   
+  boolean hasPlayer(Player p) { return currentScores.hasKey(p.id); }
   void addPlayer(Player p, int score) {
     tourney.players.add(p);
     currentScores.set(p.id, score);

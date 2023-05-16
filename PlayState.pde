@@ -9,7 +9,8 @@ class PlayState {
     balls = new ArrayList<Ball>();
     for (Ball b : bs) balls.add(new Ball(b));
     
-    currentBall = balls.get(cbi);
+    if (cbi >= 0) currentBall = balls.get(cbi);
+    else currentBall = balls.get(0);
     hole = h;
     tourney = t;
   }
@@ -24,7 +25,7 @@ class PlayState {
   Ball ballOf(Player player) {
     if (balls == null) return null;
     for (Ball b : balls) if (b.player == player) return b;
-    return balls.get(0);
+    return null;
   }
   int currentStrokeOf(Player player) {
     if (balls == null) return -1;

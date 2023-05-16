@@ -11,14 +11,62 @@ class LeagueManager {
       
       if (lastEvent instanceof EventPlayerReplace) {
         EventPlayerReplace epr = (EventPlayerReplace)lastEvent;
+        PlayState lastPS = feed.lastEvent().playState();
+        epr.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+        epr.nextPhase = feed.lastEvent().nextPhase();
+        
         playerManager.killPlayer(epr.playerA);
         tourneyManager.replacePlayer(epr.playerA, epr.playerB);
+        for (Ball b : epr.playState.balls) {
+          if (b.player == epr.playerA) {
+            b.player = epr.playerB;
+          }
+        }
+        
+        lastEvent = epr;
+      }
+      
+      else if (lastEvent instanceof EventGuillotine) {
+        EventGuillotine eg = (EventGuillotine)lastEvent;
+        PlayState lastPS = feed.lastEvent().playState();
+        eg.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+        eg.nextPhase = feed.lastEvent().nextPhase();
+        
+        ArrayList<Player> theRich = eg.theRich;
+        for (Player r : theRich) {
+          playerManager.killPlayer(r);
+          if (tourneyManager.hasPlayer(r)) {
+            tourneyManager.removePlayer(r);
+            eg.playState.balls.remove(eg.playState.ballOf(r));
+          }
+        }
+        
+        int sinsEach = floor(eg.totalSins / playerManager.livePlayers.size());
+        for (Player p : playerManager.livePlayers) {
+          playerManager.giveSins(p, sinsEach);
+        }
+        
+        if (playerManager.hasRich()) {
+          ArrayList<Player> newRich = playerManager.bourgeoisie();
+          int ts = 0;
+          for (Player r : newRich) { ts += r.networth; }
+          interruptWith(new EventGuillotine(newRich, ts));
+        }
+        
+        lastEvent = eg;
       }
     }
     else {
       GlolfEvent le = feed.lastEvent();
       switch (le.nextPhase()) {
         default: lastEvent = tourneyManager.nextEvent();
+      }
+      
+      if (playerManager.hasRich()) {
+        ArrayList<Player> theRich = playerManager.bourgeoisie();
+        int ts = 0;
+        for (Player r : theRich) { ts += r.networth; }
+        interruptWith(new EventGuillotine(theRich, ts));
       }
     }
     
@@ -35,6 +83,7 @@ class LeagueManager {
       Player bestie = playerManager.entangledWith(oldPlayer);
       playerManager.removeMod(bestie, Mod.ENTANGLED);
       playerManager.applyMod(bestie, Mod.HARMONIZED);
+      playerManager.detanglePlayer(bestie);
       playerManager.removeSuffix(bestie, "UP");
       playerManager.removeSuffix(bestie, "DOWN");
       
@@ -73,13 +122,7 @@ class LeagueManager {
   void killPlayerDuringTourney() {
     Player playerToKill = tourneyManager.tourney.randomPlayer();
     Player newPlayer = playerManager.addNewPlayer();
-    PlayState replacedPlayState = new PlayState(feed.lastEvent().playState());
-    for (Ball b : replacedPlayState.balls) {
-      if (b.player == playerToKill) {
-        b.player = newPlayer;
-      }
-    }
     
-    interruptWith(new EventPlayerReplace(replacedPlayState, playerToKill, newPlayer, feed.lastEvent().nextPhase()));
+    interruptWith(new EventPlayerReplace(playerToKill, newPlayer));
   }
 }
