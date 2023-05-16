@@ -51,6 +51,9 @@ int totalPlayers = 96;
 int playersPerTourney = 16;
 int holesPerTourney = 9;
 
+PFont boldFont;
+PFont font;
+
 int margin = 10;
 int buttonSetHeight = 80;
 int varDisplayWidth = 600;
@@ -74,9 +77,9 @@ HoleVisualizer holeVisualizer;
 void setup() {
   surface.setTitle("Glolf!");
   size(1800, 800);
-
-  PFont font = loadFont("data/Calibri-Light-48.vlw");
-  textFont(font);
+  
+  boldFont = loadFont("data/PixelOperator-48.vlw");
+  font = loadFont("data/PixelOperator-48.vlw");
   
   // Initialize Buttons
   timeButtonWidth = buttonSetHeight-2*margin;
@@ -110,10 +113,12 @@ void setup() {
 void draw() {
   background(200);
   
+  textFont(boldFont);
   homeButton.display();
   for (Button button : headButtons) button.display();
   for (Button button : timeButtons) button.display();
-
+  
+  textFont(font);
   strokeWeight(2);
   stroke(0);
   line(0, buttonSetHeight, width, buttonSetHeight);

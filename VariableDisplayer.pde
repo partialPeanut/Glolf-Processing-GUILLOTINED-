@@ -10,8 +10,8 @@ class VariableDisplayer {
 
   int staticDisplayHeight = 80;
   color staticBgCol = color(50);
-  color staticStrokeCol = color(255, 0, 0);
-  color staticTextCol = color(255, 0, 0);
+  color staticStrokeCol = #ffa666;
+  color staticTextCol = #ffa666;
 
   color bgCol = 50;
   color strokeCol = 0;

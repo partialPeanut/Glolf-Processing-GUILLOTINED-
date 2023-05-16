@@ -25,6 +25,7 @@ class Player {
     charisma = generateRandomStat();
     autism = generateRandomStat();
     networth = generateNetWorth();
+    mods.add(Mod.HARMONIZED);
   }
 
   // Custom player gen

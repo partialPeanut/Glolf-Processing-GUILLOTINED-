@@ -234,14 +234,18 @@ class EventStrokeOutcome implements GlolfEvent {
     else return EventPhase.UP_TOP;
   }
   String toText() {
+    String pre = "";
+    if (strokeType == StrokeType.TEE && player.mods.contains(Mod.HARMONIZED)) {
+      pre = "Worlds harmonize. The best of two outcomes is chosen. ";
+    }
     switch(outcome.type) {
-      case ACE: return "Hole in one!!";
-      case SINK: return "They sink it for a " + Format.intToBird(strokesOverPar) + ".";
+      case ACE: return pre + "Hole in one!!";
+      case SINK: return pre + "They sink it for a " + Format.intToBird(strokesOverPar) + ".";
       case FLY:
-        if (fromTerrain != toTerrain) return "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText;
-        else return "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText;
-      case WHIFF: return "They barely tap the ball!";
-      case NOTHING: default: return "Nothing happens.";
+        if (fromTerrain != toTerrain) return pre + "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText;
+        else return pre + "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText;
+      case WHIFF: return pre + "They barely tap the ball!";
+      case NOTHING: default: return pre + "Nothing happens.";
     }
   }
 }

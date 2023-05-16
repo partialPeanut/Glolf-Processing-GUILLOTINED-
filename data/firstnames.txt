@@ -96,6 +96,7 @@ Mary Ann Beth
 Coach
 Doctor
 Chaz
+Chazz
 Yami
 Ruler
 Laura Jane
@@ -159,3 +160,17 @@ Eyestivis
 Astigmatism
 Nitroglycerin
 Hades
+Bots
+Eggs
+Kernel
+Faye
+Fae
+Neopolitan
+Kevink
+Marissa
+Hyogen
+Heium
+Litum
+Bellum
+Sleven
+class

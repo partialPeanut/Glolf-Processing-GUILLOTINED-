@@ -48,6 +48,14 @@ class HoleControl {
         newPlayState = new PlayState(playState);
         Ball ball = newPlayState.currentBall;
         
+        if (ball.player.mods.contains(Mod.HARMONIZED) && nextStrokeType == StrokeType.TEE) {
+          StrokeOutcome so2 = Calculation.calculateStrokeOutcome(playState, nextStrokeType);
+          
+          if (so2.type == StrokeOutcomeType.ACE) so = so2;
+          else if (so.newTerrain.outOfBounds) so = so2;
+          else if (Calculation.newDistToHole(ball.distance, so.distance, so.angle) > Calculation.newDistToHole(ball.distance, so2.distance, so2.angle)) so = so2;
+        }
+        
         switch(so.type) {
           case ACE:
           case SINK:
