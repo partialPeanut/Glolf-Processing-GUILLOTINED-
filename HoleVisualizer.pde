@@ -44,11 +44,11 @@ class HoleVisualizer {
   int textSize = 48;
   int textLeading = 40;
   
-  color staticColor = color(255,0,0); // Color of the currently glolfing player
+  color staticColor = #ffa666; // Color of the currently glolfing player
   color flagFill = color(220, 0, 0); // Flag fill
   color flagStroke = color(255, 0, 0); // Flag stroke
   color defaultBallMarkColor = color(120, 120); // Default ball mark
-  color arcColor = color(255,0,0,120); // Color of the stroke arc
+  color arcColor = #7fffa666; // Color of the stroke arc
 
   HoleVisualizer(int _x, int _y, int _w, int _h) {
     x = _x;
@@ -245,21 +245,8 @@ class HoleVisualizer {
     }
     endShape();
     
-    // Choose the color of the tee
-    ArrayList<Ball> teeBalls = new ArrayList<Ball>(balls);
-    teeBalls.removeIf(b -> b.terrain != Terrain.TEE);
-    color teeStroke = combineBallColors(teeBalls, Terrain.TEE.tColor);
-        
-    // Draw the tee
-    float teeY = 0;
-    if (teePoint < roughHeights.size()) teeY = roughHeights.get(teePoint);
-    else teeY = greenHeights.get(teePoint-roughHeights.size());
-    stroke(teeStroke);
-    line(x+margin+teePoint, y+terrainY+teeY, x+margin+teePoint, y+terrainY+teeY-teeHeight);
-    line(x+margin+teePoint-teeWidth/2, y+terrainY+teeY-teeHeight, x+margin+teePoint+teeWidth/2, y+terrainY+teeY-teeHeight);
-    
     // Select flagpole color
-    color flagpoleColor = Terrain.HOLE.tColor;
+    color flagpoleColor = color(Terrain.HOLE.tColor);
     if (currentBall.sunk) flagpoleColor = staticColor;
     else if (ballOf(variableDisplayer.selectedPlayer) != null && ballOf(variableDisplayer.selectedPlayer).sunk) flagpoleColor = variableDisplayer.inactiveSelectedTextCol;
     else if (ballOf(variableDisplayer.hoveredPlayer) != null && ballOf(variableDisplayer.hoveredPlayer).sunk) flagpoleColor = variableDisplayer.hoveredTextCol;
@@ -368,6 +355,19 @@ class HoleVisualizer {
         line(x+margin+endPoint-crossSize/2, y+terrainY+endY+crossSize/2, x+margin+endPoint+crossSize/2, y+terrainY+endY-crossSize/2);
       }
     }
+    
+    // Choose the color of the tee
+    ArrayList<Ball> teeBalls = new ArrayList<Ball>(balls);
+    teeBalls.removeIf(b -> b.terrain != Terrain.TEE);
+    color teeStroke = combineBallColors(teeBalls, Terrain.TEE.tColor);
+        
+    // Draw the tee
+    float teeY = 0;
+    if (teePoint < roughHeights.size()) teeY = roughHeights.get(teePoint);
+    else teeY = greenHeights.get(teePoint-roughHeights.size());
+    stroke(teeStroke);
+    line(x+margin+teePoint, y+terrainY+teeY, x+margin+teePoint, y+terrainY+teeY-teeHeight);
+    line(x+margin+teePoint-teeWidth/2, y+terrainY+teeY-teeHeight, x+margin+teePoint+teeWidth/2, y+terrainY+teeY-teeHeight);
     
     // Draws active ball marker
     int activePixDist = int((w-2*margin)*currentBall.distance/totalLength);

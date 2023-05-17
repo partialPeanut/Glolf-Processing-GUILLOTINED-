@@ -15,8 +15,8 @@ class WeatherMirage implements Weather {
   void doEffect(GlolfEvent le) {
     PlayState newPlayState = new PlayState(le.playState());
     
-    Ball aBall = newPlayState.randomActiveBall();
-    Ball bBall = newPlayState.randomActiveBall();
+    Ball aBall = newPlayState.randomActiveBallWithAutism();
+    Ball bBall = newPlayState.randomActiveBallWithAutism();
     
     if (aBall == null || bBall == null) return;
     
@@ -44,9 +44,8 @@ class WeatherTempest implements Weather {
     ArrayList<Ball> abs = newPlayState.activeBalls();
     if (abs.size() < 2) return;
     
-    Ball aBall = newPlayState.randomActiveBall();
-    abs.remove(aBall);
-    Ball bBall = abs.get(int(random(abs.size())));
+    Ball aBall = newPlayState.randomActiveBallWithAutism();
+    Ball bBall = newPlayState.randomActiveBallWithAutismExceptFor(aBall);
     
     if (aBall == null || bBall == null || (aBall.terrain == Terrain.TEE && bBall.terrain == Terrain.TEE)) return;
     

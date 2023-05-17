@@ -49,11 +49,14 @@ class HoleControl {
         Ball ball = newPlayState.currentBall;
         float newDist = Calculation.newDistToHole(ball.distance, so.distance, so.angle);
         
-        if (ball.player.mods.contains(Mod.HARMONIZED) && nextStrokeType == StrokeType.TEE) {
+        if (ball.player.mods.contains(Mod.HARMONIZED) && random(1) <= Mod.HARMONIZED.procChance && nextStrokeType == StrokeType.TEE) {
           StrokeOutcome so2 = Calculation.calculateStrokeOutcome(playState, nextStrokeType);
           float newDist2 = Calculation.newDistToHole(ball.distance, so2.distance, so2.angle);
           
-          if (so.newTerrain.outOfBounds || newDist > newDist2) so = so2;
+          if (so.newTerrain.outOfBounds || newDist > newDist2) {
+            so = so2;
+            newDist = newDist2;
+          }
         }
         
         switch(so.type) {
@@ -72,10 +75,20 @@ class HoleControl {
           case NOTHING: break;
         }
         
+        Ball knockedBall = null;
+        if (ball.player.mods.contains(Mod.AGGRESSIVE) && random(1) <= Mod.AGGRESSIVE.procChance) {
+          Ball closeBall = newPlayState.getClosestActiveBallTo(ball);
+          if (closeBall != null && playState.distanceBetweenBalls(ball, closeBall) <= ball.player.yeetness) {
+            knockedBall = closeBall;
+            knockedBall.distance = knockedBall.distance + random(1,5)*ball.player.yeetness;
+            knockedBall.terrain = Calculation.calculatePostRollTerrain(newPlayState, knockedBall);
+          }
+        }
+        
         if (!ball.sunk) currentBall++;
         boolean returnUpTop = currentBall >= newPlayState.balls.size() || newPlayState.balls.get(currentBall).sunk;
         
-        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, returnUpTop);
+        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, returnUpTop, knockedBall);
         return lastEvent;
         
       default:

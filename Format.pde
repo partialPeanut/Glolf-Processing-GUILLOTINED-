@@ -6,6 +6,20 @@ static class Format {
     else if (p.suffixes.size() == 0) return p.firstName + " " + p.lastName;
     else return p.firstName + " " + p.lastName + " " + p.suffixes.join(" ");
   }
+  
+  static String modsToBrief(ArrayList<Mod> mods) {
+    if (mods.size() == 0) return "None";
+    else {
+      String text = "";
+      boolean first = true;
+      for (Mod m : mods) {
+        if (!first) text += ", ";
+        else first = false;
+        text += m.brief;
+      }
+      return text;
+    }
+  }
 
   static String intToStrokes(int strokes) {
     if (strokes < 0) return DEFAULT;

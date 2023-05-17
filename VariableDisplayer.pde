@@ -219,6 +219,7 @@ class VariableDisplayer {
     else return 
       "Name: " + Format.playerToName(player) +
       "\nGender: " + player.gender +
+      "\nMods: " + Format.modsToBrief(player.mods) + 
       "\nNet Worth: " + nfc(player.networth) + " $ins" +
       "\nCringe: " + player.cringe +
       "\nDumbassery: " + player.dumbassery +

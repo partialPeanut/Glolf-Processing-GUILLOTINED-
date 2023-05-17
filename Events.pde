@@ -228,6 +228,7 @@ class EventStrokeOutcome implements GlolfEvent {
   PlayState playState = new PlayState();
   Player player;
   Ball lastBall;
+  Ball knockedBall;
   StrokeType strokeType;
   StrokeOutcome outcome;
   Terrain fromTerrain;
@@ -238,7 +239,7 @@ class EventStrokeOutcome implements GlolfEvent {
   int strokesOverPar;
   boolean last;
 
-  EventStrokeOutcome(PlayState ps, PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end) {
+  EventStrokeOutcome(PlayState ps, PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end, Ball k) {
     playState = ps;
     player = in.currentBall.player;
     lastBall = in.currentBall;
@@ -251,6 +252,7 @@ class EventStrokeOutcome implements GlolfEvent {
     toDistance = td;
     strokesOverPar = in.currentBall.stroke+1 - in.hole.par;
     last = end;
+    knockedBall = k;
   }
   
   PlayState playState() { return playState; }
@@ -259,19 +261,24 @@ class EventStrokeOutcome implements GlolfEvent {
     else return EventPhase.UP_TOP;
   }
   String toText() {
-    String pre = "";
+    String text = "";
     if (strokeType == StrokeType.TEE && player.mods.contains(Mod.HARMONIZED)) {
-      pre = "Worlds harmonize. The best of two outcomes is chosen. ";
+      text = "Worlds harmonize. The best of two outcomes is chosen. ";
     }
     switch(outcome.type) {
-      case ACE: return pre + "Hole in one!!";
-      case SINK: return pre + "They sink it for a " + Format.intToBird(strokesOverPar) + ".";
+      case ACE: text += "Hole in one!!"; break;
+      case SINK: text += "They sink it for a " + Format.intToBird(strokesOverPar) + "."; break;
       case FLY:
-        if (fromTerrain != toTerrain) return pre + "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText;
-        else return pre + "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText;
-      case WHIFF: return pre + "They barely tap the ball!";
-      case NOTHING: default: return pre + "Nothing happens.";
+        if (fromTerrain != toTerrain) text += "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText;
+        else text += "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText;
+        break;
+      case WHIFF: text += "They barely tap the ball!"; break;
+      case NOTHING: default: text += "Nothing happens."; break;
     }
+    if (knockedBall != null) {
+      text += " " + Format.playerToName(player) + " gets aggressive! " + Format.playerToName(knockedBall.player) + "'s ball is knocked away from the hole!";
+    }
+    return text;
   }
 }
 

@@ -33,7 +33,7 @@ static class Calculation {
     float[] dists = new float[5];
     float[] terrainFactor = new float[5];
     for (int i = 0; i < 5; i++) {
-      terrainFactor[i] = constrain(Slope.scrappy(1.2, ps.currentBall.terrain.smoothness[i]/ps.hole.roughness, ps.currentPlayer().scrappiness), 0.05, 1);
+      terrainFactor[i] = constrain(Slope.scrappy(1.2, (float)ps.currentBall.terrain.smoothness[i]/ps.hole.roughness, ps.currentPlayer().scrappiness), 0.05, 1);
     }
     
     float windFactor = 1 + (ps.currentBall.past ? -1 : 1) * ps.hole.succblow;
@@ -137,7 +137,7 @@ static class Calculation {
       case NOTHING: strokeTypeFactor = 0; break;
     }
     float sinkChance = Slope.expy(ps.currentBall.distance, 0.3, 0.8) * ps.hole.obedience * strokeTypeFactor * Slope.loggy(0.5, 1.5, ps.currentPlayer().charisma);
-    if (sRandom(1) <= sinkChance && dist >= ps.currentBall.distance) return ps.currentBall.stroke == 0 ? StrokeOutcomeType.ACE : StrokeOutcomeType.SINK;
+    if (sRandom(1) <= sinkChance && dist >= ps.currentBall.distance) return ps.currentBall.stroke <= 1 ? StrokeOutcomeType.ACE : StrokeOutcomeType.SINK;
     
     // Fly by default
     return StrokeOutcomeType.FLY;
@@ -187,6 +187,18 @@ static class Calculation {
     return da;
   }
   
+  // Determine next terrain of a ball given a "rolling", knocked, or whiffed ball
+  static Terrain calculatePostRollTerrain(PlayState ps, Ball b) {
+    if (abs(b.distance) <= ps.hole.greenLength) return Terrain.GREEN;
+    else if (b.terrain == Terrain.TEE || b.terrain == Terrain.GREEN) return Terrain.ROUGH;
+    else return b.terrain;
+  }
+  static Terrain calculatePostRollTerrain(PlayState ps, float d, Ball b) {
+    if (abs(d) <= ps.hole.greenLength) return Terrain.GREEN;
+    else if (b.terrain == Terrain.TEE || b.terrain == Terrain.GREEN) return Terrain.ROUGH;
+    else return b.terrain;
+  }
+  
   // Determine next terrain
   static Terrain calculateNextTerrain(PlayState ps, StrokeOutcomeType sot, float distFromHole, float strokeDist, float strokeAngle) {
     switch (sot) {
@@ -194,9 +206,7 @@ static class Calculation {
       case SINK:
         return Terrain.HOLE;
       case WHIFF:
-        if (abs(distFromHole) <= ps.hole.greenLength) return Terrain.GREEN;
-        else if (ps.currentBall.terrain == Terrain.TEE) return Terrain.ROUGH;
-        else return ps.currentBall.terrain;
+        return calculatePostRollTerrain(ps, distFromHole, ps.currentBall);
       case NOTHING:
         return ps.currentBall.terrain;
       case FLY:

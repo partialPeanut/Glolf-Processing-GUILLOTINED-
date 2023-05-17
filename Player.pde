@@ -15,6 +15,7 @@ class Player {
     lastName = generateRandomFromList("data/lastnames.txt");
     suffixes = new StringList();
     gender = generateRandomFromList("data/genders.txt");
+    mods = generateRandomMods();
     cringe = generateRandomStat();
     dumbassery = generateRandomStat();
     yeetness = generateRandomStat();
@@ -25,7 +26,6 @@ class Player {
     charisma = generateRandomStat();
     autism = generateRandomStat();
     networth = generateNetWorth();
-    mods.add(Mod.HARMONIZED);
   }
 
   // Custom player gen
@@ -89,6 +89,14 @@ class Player {
   // Generates a random float via normal distribution w mean 6 and s.d. 2
   float generateRandomStat() {
     return 6 + randomGaussian() * 2;
+  }
+  
+  ArrayList<Mod> generateRandomMods() {
+    ArrayList<Mod> _mods = new ArrayList<Mod>();
+    for (Mod m : Mod.values()) {
+      if (random(1) < m.pickChance) _mods.add(m);
+    }
+    return _mods;
   }
     
   // Generates a random net worth
