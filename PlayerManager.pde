@@ -98,25 +98,29 @@ class PlayerManager {
   }
   
   ArrayList<Player> chooseRandomLivingPlayers(int num) {
-    if (num >= livePlayers.size()) return new ArrayList<Player>(livePlayers);
+    ArrayList<Player> unchosenPlayers = new ArrayList<Player>(livePlayers);
+    if (num >= livePlayers.size()) return unchosenPlayers;
     
     ArrayList<Player> chosenPlayers = new ArrayList<Player>();
-    while (chosenPlayers.size() < num) {
-      int idx = int(random(livePlayers.size()));
-      Player p = livePlayers.get(idx);
-      if (!chosenPlayers.contains(p)) chosenPlayers.add(p);
+    for (int i = 0; i < num; i++) {
+      int idx = int(random(unchosenPlayers.size()));
+      Player p = unchosenPlayers.get(idx);
+      chosenPlayers.add(p);
+      unchosenPlayers.remove(p);
     }
     return chosenPlayers;
   }
   
   ArrayList<Player> chooseRandomAllPlayers(int num) {
-    if (num >= allPlayers.size()) return new ArrayList<Player>(allPlayers);
+    ArrayList<Player> unchosenPlayers = new ArrayList<Player>(allPlayers);
+    if (num >= livePlayers.size()) return unchosenPlayers;
     
     ArrayList<Player> chosenPlayers = new ArrayList<Player>();
-    while (chosenPlayers.size() < num) {
-      int idx = int(random(allPlayers.size()));
-      Player p = allPlayers.get(idx);
-      if (!chosenPlayers.contains(p)) chosenPlayers.add(p);
+    for (int i = 0; i < num; i++) {
+      int idx = int(random(unchosenPlayers.size()));
+      Player p = unchosenPlayers.get(idx);
+      chosenPlayers.add(p);
+      unchosenPlayers.remove(p);
     }
     return chosenPlayers;
   }
@@ -144,7 +148,7 @@ class PlayerManager {
   
   boolean hasRich() { return bourgeoisie().size() > 0; }
   ArrayList<Player> bourgeoisie() {
-    int tooRich = 500000;
+    int tooRich = 200000;
     ArrayList<Player> rich = new ArrayList<Player>();
     for (Player p : livePlayers) if (p.networth >= tooRich) rich.add(p);
     return rich;

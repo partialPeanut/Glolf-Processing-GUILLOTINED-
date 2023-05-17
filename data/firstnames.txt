@@ -177,3 +177,7 @@ class
 Eve
 Aoi
 Evangeline
+Trinity
+Neo
+Morpheus
+Duality

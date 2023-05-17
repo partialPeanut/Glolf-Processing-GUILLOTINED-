@@ -75,20 +75,17 @@ class HoleControl {
           case NOTHING: break;
         }
         
-        Ball knockedBall = null;
         if (ball.player.mods.contains(Mod.AGGRESSIVE) && random(1) <= Mod.AGGRESSIVE.procChance) {
           Ball closeBall = newPlayState.getClosestActiveBallTo(ball);
           if (closeBall != null && playState.distanceBetweenBalls(ball, closeBall) <= ball.player.yeetness) {
-            knockedBall = closeBall;
-            knockedBall.distance = knockedBall.distance + random(1,5)*ball.player.yeetness;
-            knockedBall.terrain = Calculation.calculatePostRollTerrain(newPlayState, knockedBall);
+            leagueManager.interruptWith(new EventAggression(ball.player, closeBall.player));
           }
         }
         
         if (!ball.sunk) currentBall++;
         boolean returnUpTop = currentBall >= newPlayState.balls.size() || newPlayState.balls.get(currentBall).sunk;
         
-        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, returnUpTop, knockedBall);
+        lastEvent = new EventStrokeOutcome(newPlayState, playState, so, nextStrokeType, ball.distance, returnUpTop);
         return lastEvent;
         
       default:

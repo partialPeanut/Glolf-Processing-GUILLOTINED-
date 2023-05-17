@@ -9,52 +9,9 @@ class LeagueManager {
       lastEvent = interruptions.get(0);
       interruptions.remove(0);
       
-      if (lastEvent instanceof EventPlayerReplace) {
-        EventPlayerReplace epr = (EventPlayerReplace)lastEvent;
-        PlayState lastPS = feed.lastEvent().playState();
-        epr.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-        epr.nextPhase = feed.lastEvent().nextPhase();
-        
-        playerManager.killPlayer(epr.playerA);
-        tourneyManager.replacePlayer(epr.playerA, epr.playerB);
-        for (Ball b : epr.playState.balls) {
-          if (b.player == epr.playerA) {
-            b.player = epr.playerB;
-          }
-        }
-        
-        lastEvent = epr;
-      }
-      
-      else if (lastEvent instanceof EventGuillotine) {
-        EventGuillotine eg = (EventGuillotine)lastEvent;
-        PlayState lastPS = feed.lastEvent().playState();
-        eg.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-        eg.nextPhase = feed.lastEvent().nextPhase();
-        
-        ArrayList<Player> theRich = eg.theRich;
-        for (Player r : theRich) {
-          playerManager.killPlayer(r);
-          if (tourneyManager.hasPlayer(r)) {
-            tourneyManager.removePlayer(r);
-            eg.playState.balls.remove(eg.playState.ballOf(r));
-          }
-        }
-        
-        int sinsEach = floor(eg.totalSins / playerManager.livePlayers.size());
-        for (Player p : playerManager.livePlayers) {
-          playerManager.giveSins(p, sinsEach);
-        }
-        
-        if (playerManager.hasRich()) {
-          ArrayList<Player> newRich = playerManager.bourgeoisie();
-          int ts = 0;
-          for (Player r : newRich) { ts += r.networth; }
-          interruptWith(new EventGuillotine(newRich, ts));
-        }
-        
-        lastEvent = eg;
-      }
+      if (lastEvent instanceof EventAggression) { lastEvent = doEventAggression(lastEvent); }
+      else if (lastEvent instanceof EventPlayerReplace) { lastEvent = doEventPlayerReplace(lastEvent); }
+      else if (lastEvent instanceof EventGuillotine) { lastEvent = doEventGuillotine(lastEvent); }
     }
     else {
       GlolfEvent le = feed.lastEvent();
@@ -74,6 +31,60 @@ class LeagueManager {
   }
   
   void interruptWith(GlolfEvent e) { interruptions.add(0,e); }
+  
+  EventAggression doEventAggression(GlolfEvent le) {
+    EventAggression ea = (EventAggression)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    ea.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    ea.nextPhase = feed.lastEvent().nextPhase();
+    
+    Ball knockedBall = ea.playState.ballOf(ea.knockedPlayer);
+    knockedBall.distance += random(1,5)*ea.knockingPlayer.yeetness;
+    knockedBall.terrain = Calculation.calculatePostRollTerrain(ea.playState, knockedBall);
+    
+    return ea;
+  }
+  
+  EventPlayerReplace doEventPlayerReplace(GlolfEvent le) {
+    EventPlayerReplace epr = (EventPlayerReplace)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    epr.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    epr.nextPhase = feed.lastEvent().nextPhase();
+    
+    playerManager.killPlayer(epr.playerA);
+    tourneyManager.replacePlayer(epr.playerA, epr.playerB);
+    for (Ball b : epr.playState.balls) {
+      if (b.player == epr.playerA) {
+        b.player = epr.playerB;
+      }
+    }
+    
+    return epr;
+  }
+  
+  EventGuillotine doEventGuillotine(GlolfEvent le) {
+    EventGuillotine eg = (EventGuillotine)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    eg.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    eg.nextPhase = feed.lastEvent().nextPhase();
+    
+    ArrayList<Player> theRich = eg.theRich;
+    for (Player r : theRich) { killPlayer(r, eg.playState); }
+    
+    int sinsEach = floor(eg.totalSins / playerManager.livePlayers.size());
+    for (Player p : playerManager.livePlayers) {
+      playerManager.giveSins(p, sinsEach);
+    }
+    
+    if (playerManager.hasRich()) {
+      ArrayList<Player> newRich = playerManager.bourgeoisie();
+      int ts = 0;
+      for (Player r : newRich) { ts += r.networth; }
+      interruptWith(new EventGuillotine(newRich, ts));
+    }
+    
+    return eg;
+  }
   
   void quantumSquid(Ball ball) {
     Player oldPlayer = ball.player;
@@ -118,10 +129,8 @@ class LeagueManager {
   }
   
   PlayState removeFromPlay(Player p, PlayState ps) {
-    if (tourneyManager.hasPlayer(p)) {
-      tourneyManager.removePlayer(p);
-      ps.balls.remove(ps.ballOf(p));
-    }
+    if (tourneyManager.hasPlayer(p)) { tourneyManager.removePlayer(p); }
+    if (ps.balls != null) { ps.balls.remove(ps.ballOf(p)); }
     return ps;
   }
   PlayState killPlayer(Player p, PlayState ps) {

@@ -178,3 +178,6 @@ Schadenfreude
 Avalon
 Amawashi
 Kimishima
+DoubleDouble
+Frontflip
+Morbid

@@ -228,7 +228,6 @@ class EventStrokeOutcome implements GlolfEvent {
   PlayState playState = new PlayState();
   Player player;
   Ball lastBall;
-  Ball knockedBall;
   StrokeType strokeType;
   StrokeOutcome outcome;
   Terrain fromTerrain;
@@ -239,7 +238,7 @@ class EventStrokeOutcome implements GlolfEvent {
   int strokesOverPar;
   boolean last;
 
-  EventStrokeOutcome(PlayState ps, PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end, Ball k) {
+  EventStrokeOutcome(PlayState ps, PlayState in, StrokeOutcome out, StrokeType st, float td, boolean end) {
     playState = ps;
     player = in.currentBall.player;
     lastBall = in.currentBall;
@@ -252,7 +251,6 @@ class EventStrokeOutcome implements GlolfEvent {
     toDistance = td;
     strokesOverPar = in.currentBall.stroke+1 - in.hole.par;
     last = end;
-    knockedBall = k;
   }
   
   PlayState playState() { return playState; }
@@ -275,13 +273,27 @@ class EventStrokeOutcome implements GlolfEvent {
       case WHIFF: text += "They barely tap the ball!"; break;
       case NOTHING: default: text += "Nothing happens."; break;
     }
-    if (knockedBall != null) {
-      text += " " + Format.playerToName(player) + " gets aggressive! " + Format.playerToName(knockedBall.player) + "'s ball is knocked away from the hole!";
-    }
     return text;
   }
 }
 
+
+class EventAggression implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player knockingPlayer, knockedPlayer;
+  EventPhase nextPhase;
+
+  EventAggression(Player ram, Player rammed) {
+    knockingPlayer = ram;
+    knockedPlayer = rammed;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return Format.playerToName(knockingPlayer) + " gets aggressive! " + Format.playerToName(knockedPlayer) + "'s ball is knocked away from the hole!";
+  }
+}
 
 
 class EventHoleFinish implements GlolfEvent {
