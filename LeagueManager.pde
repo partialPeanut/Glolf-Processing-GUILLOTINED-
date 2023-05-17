@@ -77,7 +77,6 @@ class LeagueManager {
   
   void quantumSquid(Ball ball) {
     Player oldPlayer = ball.player;
-    playerManager.erasePlayer(oldPlayer);
     
     if (oldPlayer.mods.contains(Mod.ENTANGLED)) {
       Player bestie = playerManager.entangledWith(oldPlayer);
@@ -87,12 +86,11 @@ class LeagueManager {
       playerManager.removeSuffix(bestie, "UP");
       playerManager.removeSuffix(bestie, "DOWN");
       
-      PlayState unsquidPlayState = new PlayState(feed.lastEvent().playState());
-      unsquidPlayState.balls.remove(unsquidPlayState.ballOf(oldPlayer));
-      
+      PlayState unsquidPlayState = erasePlayer(oldPlayer, new PlayState(feed.lastEvent().playState()));
       interruptWith(new EventQuantumUnsquid(unsquidPlayState, oldPlayer, bestie, feed.lastEvent().nextPhase()));
     }
     else {
+      playerManager.erasePlayer(oldPlayer);
       Player up = playerManager.addPlayerClone(oldPlayer);
       Player down = playerManager.addPlayerClone(oldPlayer);
       
@@ -119,6 +117,21 @@ class LeagueManager {
     }
   }
   
+  PlayState removeFromPlay(Player p, PlayState ps) {
+    if (tourneyManager.hasPlayer(p)) {
+      tourneyManager.removePlayer(p);
+      ps.balls.remove(ps.ballOf(p));
+    }
+    return ps;
+  }
+  PlayState killPlayer(Player p, PlayState ps) {
+    playerManager.killPlayer(p);
+    return removeFromPlay(p, ps);
+  }
+  PlayState erasePlayer(Player p, PlayState ps) {
+    playerManager.erasePlayer(p);
+    return removeFromPlay(p, ps);
+  }
   void killPlayerDuringTourney() {
     Player playerToKill = tourneyManager.tourney.randomPlayer();
     Player newPlayer = playerManager.addNewPlayer();
