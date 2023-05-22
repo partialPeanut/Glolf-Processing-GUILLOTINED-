@@ -49,14 +49,14 @@ class EventGuillotine implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    String text = "It is time to topple the bourgeoisie. ";
+    String text = "It is time to topple the bourgeoisie. The League has been weighed down by their sins. ";
     for (int i = 0; i < theRich.size(); i++) {
       if (i > 0) {
         text += (theRich.size() > 2 ? "," : "") + " " + (i == theRich.size()-1 ? "and " : "");
       }
       text += Format.playerToName(theRich.get(i));
     }
-    text += " will face the guillotine. " + nfc(totalSins) + " $ins are redistributed to the people.";
+    text += " will face the guillotine.";
     return text;
   }
 }

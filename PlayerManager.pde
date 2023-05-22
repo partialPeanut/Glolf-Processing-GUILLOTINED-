@@ -148,7 +148,7 @@ class PlayerManager {
   
   boolean hasRich() { return bourgeoisie().size() > 0; }
   ArrayList<Player> bourgeoisie() {
-    int tooRich = 200000;
+    int tooRich = 500000;
     ArrayList<Player> rich = new ArrayList<Player>();
     for (Player p : livePlayers) if (p.networth >= tooRich) rich.add(p);
     return rich;

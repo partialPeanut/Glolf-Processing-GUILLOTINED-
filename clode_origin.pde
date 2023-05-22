@@ -17,13 +17,10 @@
 
 // Potential future mechanics
 //
-// Cringe has chance to nullify dumbassery
-// High enough scrappiness -> hitting out of bunker is an advantage
 // Shadow games
 // Giant turtle (the course is on a giant turtle)
 // Balls
 // Clubs (both the sticks and the bougie places)
-// Course/hole names
 // Tourny of the Damned (Revive player?)
 // Charity Match: Atone
 // Resdistribute Wealth: "The League has been weighed down by their sins."

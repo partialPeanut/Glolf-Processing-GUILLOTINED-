@@ -49,6 +49,8 @@ class HoleVisualizer {
   color flagStroke = color(255, 0, 0); // Flag stroke
   color defaultBallMarkColor = color(120, 120); // Default ball mark
   color arcColor = #7fffa666; // Color of the stroke arc
+  
+  color knockedColor = #C70039; // Color when a ball is knocked away
 
   HoleVisualizer(int _x, int _y, int _w, int _h) {
     x = _x;
@@ -153,14 +155,19 @@ class HoleVisualizer {
       staticColor,
       WeatherTempest.col,
       WeatherMirage.col,
+      knockedColor,
       variableDisplayer.hoveredTextCol,
       variableDisplayer.selectedTextCol
     };
     
     int prio = -1;
     for (Ball b : balls) {
-      if (b.player == variableDisplayer.selectedPlayer) prio = max(prio, 4);
-      else if (b.player == variableDisplayer.hoveredPlayer) prio = max(prio, 3);
+      if (b.player == variableDisplayer.selectedPlayer) prio = max(prio, 5);
+      else if (b.player == variableDisplayer.hoveredPlayer) prio = max(prio, 4);
+      else if (lastEvent instanceof EventAggression) {
+        EventAggression ea = (EventAggression)lastEvent;
+        if (b.player == ea.knockedPlayer) prio = max(prio, 3);
+      }
       else if (lastEvent instanceof EventMirageSwap) {
         EventMirageSwap ems = (EventMirageSwap)lastEvent;
         if (b.player == ems.playerA || b.player == ems.playerB) prio = max(prio, 2);

@@ -181,3 +181,5 @@ Trinity
 Neo
 Morpheus
 Duality
+Skitter
+Imp
