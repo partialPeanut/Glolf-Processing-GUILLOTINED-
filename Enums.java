@@ -42,15 +42,16 @@ enum Mod {
   AGGRESSIVE ("AGRO", 0.20, 1.0),
   AQUATIC    ("AQUA", 0.20, 1.0),
   ENTANGLED  ("ETNG", 0.00, 1.0),
-  HARMONIZED ("HRMZ", 0.00, 1.0);
+  HARMONIZED ("HRMZ", 0.00, 1.0),
+  POISONED   ("POSN", 0.00, 1.0);
   
   String brief;
   double pickChance;
   double procChance;
-  Mod(String b, double k, double c) {
+  Mod(String b, double k, double r) {
     brief = b;
     pickChance = k;
-    procChance = c;
+    procChance = r;
   }
 }
 
@@ -82,6 +83,22 @@ enum Terrain {
   }
 }
 
+enum Weather {
+  MIRAGE  ("Mirage",  0xFFEA6BE6, 0.1),
+  TEMPEST ("Tempest", 0xFF1281C3, 0.1);
+  
+  String name;
+  int col;
+  double procChance;
+  
+  Weather(String n, int c, double pc) {
+    name = n;
+    col = c;
+    procChance = pc;
+  }
+  
+  boolean procCheck(clode_origin.GlolfEvent le) { return clode_origin.Calculation.sRandom(0,1) < procChance; }
+}
 
 enum Wildlife {
   BIRDS   ("BIRD", "Birds in the sky! Keep your balls covered!"),

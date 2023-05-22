@@ -21,7 +21,7 @@ class Hole {
     thirst = generateHazardousQuality();
     
     //wildlife = generateRandomWildlife();
-    wildlife = Wildlife.WORMS;
+    wildlife = Wildlife.KOMODOS;
     
     realLength = generateRealLength();
     realWidth = generateRealWidth();

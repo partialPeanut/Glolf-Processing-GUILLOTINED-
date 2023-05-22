@@ -7,13 +7,16 @@ class PlayerManager {
   ArrayList<Player> erasedPlayers;
   
   ArrayList<StringList> entangledPlayers;
+  IntDict poisonCounters;
 
   PlayerManager() {
     allPlayers = new ArrayList<Player>();
     livePlayers = new ArrayList<Player>();
     deadPlayers = new ArrayList<Player>();
     erasedPlayers = new ArrayList<Player>();
+    
     entangledPlayers = new ArrayList<StringList>();
+    poisonCounters = new IntDict();
   }
 
   void clearAllPlayers() { allPlayers.clear(); }
@@ -144,6 +147,20 @@ class PlayerManager {
       else if (sl.get(1) == p.id) return getPlayer(sl.get(0));
     }
     return null;
+  }
+  
+  void poisonPlayer(Player p) {
+    p.cringe += 2;
+    p.yeetness -= 2;
+    p.trigonometry -= 2;
+    poisonCounters.set(p.id, 4);
+    p.mods.add(Mod.POISONED);
+  }
+  void unpoisonPlayer(Player p) {
+    p.cringe -= 2;
+    p.yeetness += 2;
+    p.trigonometry += 2;
+    p.mods.remove(Mod.POISONED);
   }
   
   boolean hasRich() { return bourgeoisie().size() > 0; }

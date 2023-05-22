@@ -61,6 +61,7 @@ class TourneyManager {
         break;
         
       case HOLE_FINISH:
+        playerManager.poisonCounters.clear();
         for (Ball b : le.playState().balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);
         }
@@ -115,7 +116,15 @@ class TourneyManager {
         
       default:
         lastEvent = holeControl.nextEvent();
-        if (tourney.weather.procCheck(lastEvent)) tourney.weather.doEffect(lastEvent);
+        if (tourney.weather.procCheck(lastEvent)) {
+          GlolfEvent weatherEvent = null;
+          switch (tourney.weather) {
+            case MIRAGE:  weatherEvent = new EventMirageSwap(); break;
+            case TEMPEST: weatherEvent = new EventTempestSwap(); break;
+            default: break;
+          }
+          if (weatherEvent != null) leagueManager.interruptWith(weatherEvent);
+        }
         break;
     }
     

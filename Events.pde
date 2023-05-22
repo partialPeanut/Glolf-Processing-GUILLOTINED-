@@ -107,13 +107,6 @@ class EventMirageSwap implements GlolfEvent {
   PlayState playState = new PlayState();
   Player playerA, playerB;
   EventPhase nextPhase;
-
-  EventMirageSwap(PlayState ps, Player a, Player b, EventPhase np) {
-    playState = ps;
-    playerA = a;
-    playerB = b;
-    nextPhase = np;
-  }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
@@ -129,13 +122,6 @@ class EventTempestSwap implements GlolfEvent {
   PlayState playState = new PlayState();
   Player playerA, playerB;
   EventPhase nextPhase;
-
-  EventTempestSwap(PlayState ps, Player a, Player b, EventPhase np) {
-    playState = ps;
-    playerA = a;
-    playerB = b;
-    nextPhase = np;
-  }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
@@ -289,7 +275,55 @@ class EventStrokeOutcome implements GlolfEvent {
       case WHIFF: text += "They barely tap the ball!"; break;
       case NOTHING: default: text += "Nothing happens."; break;
     }
+    if (playerManager.poisonCounters.hasKey(player.id)) {
+      switch(outcome.type) {
+        case ACE:
+        case SINK:
+          text += " The prey escapes, and is cured of poison.";
+          break;
+        case FLY:
+        case WHIFF:
+        case NOTHING:
+        default:
+          text += " Shapes stalk closer in the shadows.";
+          break;
+      }
+    }
     return text;
+  }
+}
+
+
+class EventKomodoAttack implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player player;
+  EventPhase nextPhase;
+
+  EventKomodoAttack(Player p) {
+    player = p;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return Format.playerToName(player) + " is attacked my komodo dragons and is poisoned!";
+  }
+}
+
+
+class EventKomodoKill implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player player;
+  EventPhase nextPhase;
+
+  EventKomodoKill(Player p) {
+    player = p;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return "They were too slow. The komodos feast on " + Format.playerToName(player) + ".";
   }
 }
 

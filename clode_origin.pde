@@ -17,7 +17,7 @@
 
 // Potential future mechanics
 //
-// Birds and bogeys
+// Birds and Bogeys
 // Shadow games
 // Giant turtle (the course is on a giant turtle)
 // Balls
@@ -27,7 +27,6 @@
 // Sainthood -100000 $ins
 // Strikes
 // Birds carry balls away
-// Komodo dragons eat players
 // PvP
 
 // Bugs

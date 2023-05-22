@@ -12,7 +12,7 @@ class Tourney {
   Tourney(ArrayList<Player> ps, int holes) {
     players = ps;
     generateNewHoles(holes);
-    weather = new WeatherTempest();
+    weather = generateRandomWeather();
     tourneyName = generateTourneyName();
     prizeMoney = generatePrizeMoney();
   }
@@ -23,6 +23,12 @@ class Tourney {
     for (int i = 0; i < num; i++) {
       holes.add(new Hole());
     }
+  }
+  
+  // Generate weather
+  Weather generateRandomWeather() {
+    Weather[] weathers = Weather.values();
+    return weathers[floor(random(weathers.length))];
   }
   
   // Generate Tourney name

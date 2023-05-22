@@ -21,6 +21,7 @@ class HoleControl {
     GlolfEvent lastEvent = feed.lastEvent();
     PlayState playState = lastEvent.playState();
     PlayState newPlayState;
+    
     switch(lastEvent.nextPhase()) {
       case UP_TOP:
         currentBall = 0;
@@ -75,6 +76,18 @@ class HoleControl {
           case NOTHING: break;
         }
         
+        if (hole.wildlife == Wildlife.KOMODOS && !ball.sunk) {
+          if (ball.player.mods.contains(Mod.POISONED)) {
+            if (playerManager.poisonCounters.get(ball.player.id) <= 0)
+              leagueManager.interruptWith(new EventKomodoKill(ball.player));
+            else
+              playerManager.poisonCounters.sub(ball.player.id, 1);
+          }
+          else if (random(1) < 0.20) {
+            leagueManager.interruptWith(new EventKomodoAttack(ball.player));
+          }
+        }
+        
         if (ball.terrain == Terrain.WORM_PIT) {
           leagueManager.interruptWith(new EventWormBattle(ball));
         }
@@ -111,5 +124,7 @@ class HoleControl {
     b.terrain = Terrain.HOLE;
     ps.balls.remove(b);
     ps.balls.add(b);
+    
+    if (b.player.mods.contains(Mod.POISONED)) playerManager.unpoisonPlayer(b.player);
   }
 }

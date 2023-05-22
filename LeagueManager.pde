@@ -9,8 +9,11 @@ class LeagueManager {
       lastEvent = interruptions.get(0);
       interruptions.remove(0);
       
-      if (lastEvent instanceof EventAggression)         { lastEvent = doEventAggression(lastEvent); }
+           if (lastEvent instanceof EventAggression)    { lastEvent = doEventAggression(lastEvent); }
       else if (lastEvent instanceof EventGuillotine)    { lastEvent = doEventGuillotine(lastEvent); }
+      else if (lastEvent instanceof EventKomodoAttack)  { lastEvent = doEventKomodoAttack(lastEvent); }
+      else if (lastEvent instanceof EventKomodoKill)    { lastEvent = doEventKomodoKill(lastEvent); }
+      else if (lastEvent instanceof EventMirageSwap)    { lastEvent = doEventMirageSwap(lastEvent); }
       else if (lastEvent instanceof EventPlayerReplace) { lastEvent = doEventPlayerReplace(lastEvent); }
       else if (lastEvent instanceof EventWormBattle)    { lastEvent = doEventWormBattle(lastEvent); }
     }
@@ -68,6 +71,76 @@ class LeagueManager {
     }
     
     return eg;
+  }
+  
+  EventKomodoAttack doEventKomodoAttack(GlolfEvent le) {
+    EventKomodoAttack ka = (EventKomodoAttack)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    ka.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    ka.nextPhase = feed.lastEvent().nextPhase();
+    
+    playerManager.poisonPlayer(ka.player);
+    
+    return ka;
+  }
+  
+  EventKomodoKill doEventKomodoKill(GlolfEvent le) {
+    EventKomodoKill kk = (EventKomodoKill)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    kk.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    kk.nextPhase = feed.lastEvent().nextPhase();
+    
+    kk.playState = killPlayer(kk.player, kk.playState);
+    
+    return kk;
+  }
+  
+  EventMirageSwap doEventMirageSwap(GlolfEvent le) {
+    EventMirageSwap ms = (EventMirageSwap)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    ms.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    ms.nextPhase = feed.lastEvent().nextPhase();
+    
+    Ball aBall = ms.playState.randomActiveBallWithAutism();
+    Ball bBall = ms.playState.randomActiveBallWithAutism();
+    
+    if (aBall == null || bBall == null) return ms;
+    
+    int aIndex = ms.playState.balls.indexOf(aBall);
+    int bIndex = ms.playState.balls.indexOf(bBall);
+    
+    ms.playState.balls.set(aIndex, bBall);
+    ms.playState.balls.set(bIndex, aBall);
+    
+    return ms;
+  }
+  
+  EventTempestSwap doEventTempestSwap(GlolfEvent le) {
+    EventTempestSwap ts = (EventTempestSwap)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    ts.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    ts.nextPhase = feed.lastEvent().nextPhase();
+    
+    ArrayList<Ball> abs = ts.playState.activeBalls();
+    if (abs.size() < 2) return ts;
+    
+    Ball aBall = ts.playState.randomActiveBallWithAutism();
+    Ball bBall = ts.playState.randomActiveBallWithAutismExceptFor(aBall);
+    
+    if (aBall == null || bBall == null || (aBall.terrain == Terrain.TEE && bBall.terrain == Terrain.TEE)) return ts;
+    
+    float squidChance = 0.001;
+    if (random(0,1) < squidChance) {
+      bBall = aBall;
+      quantumSquid(aBall);
+    }
+    else {
+      Ball aBallCopy = new Ball(aBall);
+      aBall.teleportTo(bBall);
+      bBall.teleportTo(aBallCopy);
+    }
+    
+    return ts;
   }
   
   EventPlayerReplace doEventPlayerReplace(GlolfEvent le) {

@@ -153,8 +153,8 @@ class HoleVisualizer {
     GlolfEvent lastEvent = feed.lastEvent();
     color[] prioList = {
       staticColor,
-      WeatherTempest.col,
-      WeatherMirage.col,
+      Weather.TEMPEST.col,
+      Weather.MIRAGE.col,
       knockedColor,
       variableDisplayer.hoveredTextCol,
       variableDisplayer.selectedTextCol
@@ -293,7 +293,7 @@ class HoleVisualizer {
           int flip = relDistThis < relDistOther ? 1 : -1;
           if (relDistThis == relDistOther) flip = b.player == ets.playerA ? 1 : -1;
           
-          stroke(WeatherTempest.col);
+          stroke(Weather.TEMPEST.col);
           if (abs(pixRelDist) < tempestArrowHeight + 3*tempestArrowMargin) {
             line(x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY-tempestArrowHeight/2, x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY+tempestArrowHeight/2);
             line(x+margin+ballPoint - flip*tempestArrowMargin, y+terrainY, x+margin+ballPoint - flip*(tempestArrowMargin+tempestArrowHeight/2), y+terrainY+tempestArrowHeight/2);

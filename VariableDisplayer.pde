@@ -237,7 +237,7 @@ class VariableDisplayer {
     else return
       tourney.tourneyName +
       "\nPrize: " + nfc(tourney.prizeMoney) + " $ins" +
-      "\nWeather: " + tourney.weather.name() +
+      "\nWeather: " + tourney.weather.name +
       "\n" +
       "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
       "\nPar: " + hole.par +
