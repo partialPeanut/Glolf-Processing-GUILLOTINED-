@@ -102,9 +102,9 @@ enum Weather {
 }
 
 enum Wildlife {
-  BIRDS   ("Birds",          "Birds in the sky! Keep your balls covered!",                  1.0),
-  KOMODOS ("Komodo Dragons", "Komodo dragons in the shadows. Keep your antibiotics handy!", 0.1),
-  WORMS   ("Sand Worms",     "Worms in the sand! Be wary of those bunkers.",                0.3);
+  BIRDS   ("Birds",          "Birds in the sky! Keep your balls covered!",                  1.000),
+  KOMODOS ("Komodo Dragons", "Komodo dragons in the shadows. Keep your antibiotics handy!", 0.015),
+  WORMS   ("Sand Worms",     "Worms in the sand! Be wary of those bunkers.",                0.100);
   
   String name;
   String reportText;

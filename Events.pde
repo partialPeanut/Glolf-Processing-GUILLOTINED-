@@ -70,21 +70,18 @@ class EventGuillotine implements GlolfEvent {
 
 class EventQuantumSquid implements GlolfEvent {
   PlayState playState = new PlayState();
-  Player oldPlayer, playerUp, playerDown;
+  Ball oldBall;
+  Player playerUp, playerDown;
   EventPhase nextPhase;
 
-  EventQuantumSquid(PlayState ps, Player o, Player u, Player d, EventPhase np) {
-    playState = ps;
-    oldPlayer = o;
-    playerUp = u;
-    playerDown = d;
-    nextPhase = np;
+  EventQuantumSquid(Ball ob) {
+    oldBall = ob;
   }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return "Waves crash. Bonds destabilize. " + Format.playerToName(oldPlayer) + " splits into their component spins.";
+    return "Waves crash. Bonds destabilize. " + Format.playerToName(oldBall.player) + " splits into their component spins.";
   }
 }
 
@@ -93,11 +90,8 @@ class EventQuantumUnsquid implements GlolfEvent {
   Player oldPlayer, restoredPlayer;
   EventPhase nextPhase;
 
-  EventQuantumUnsquid(PlayState ps, Player o, Player r, EventPhase np) {
-    playState = ps;
+  EventQuantumUnsquid(Player o) {
     oldPlayer = o;
-    restoredPlayer = r;
-    nextPhase = np;
   }
   
   PlayState playState() { return playState; }
@@ -476,7 +470,7 @@ class EventMemoriam implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.TOURNEY_CONCLUDE; }
   String toText() {
-    String text = "We dedicate this tournament to those lost to Death's clutches. Rest in Violence: ";
+    String text = "We dedicate this tournament to those lost to Death's clutches: ";
     for (int i = 0; i < theDead.size(); i++) {
       if (i > 0) {
         text += (theDead.size() > 2 ? "," : "") + " " + (i == theDead.size()-1 ? "and " : "");

@@ -9,14 +9,16 @@ class LeagueManager {
       lastEvent = interruptions.get(0);
       interruptions.remove(0);
       
-           if (lastEvent instanceof EventAggression)    { lastEvent = doEventAggression(lastEvent); }
-      else if (lastEvent instanceof EventGuillotine)    { lastEvent = doEventGuillotine(lastEvent); }
-      else if (lastEvent instanceof EventKomodoAttack)  { lastEvent = doEventKomodoAttack(lastEvent); }
-      else if (lastEvent instanceof EventKomodoKill)    { lastEvent = doEventKomodoKill(lastEvent); }
-      else if (lastEvent instanceof EventMirageSwap)    { lastEvent = doEventMirageSwap(lastEvent); }
-      else if (lastEvent instanceof EventTempestSwap)   { lastEvent = doEventTempestSwap(lastEvent); }
-      else if (lastEvent instanceof EventPlayerReplace) { lastEvent = doEventPlayerReplace(lastEvent); }
-      else if (lastEvent instanceof EventWormBattle)    { lastEvent = doEventWormBattle(lastEvent); }
+           if (lastEvent instanceof EventAggression)     { lastEvent = doEventAggression(lastEvent); }
+      else if (lastEvent instanceof EventGuillotine)     { lastEvent = doEventGuillotine(lastEvent); }
+      else if (lastEvent instanceof EventKomodoAttack)   { lastEvent = doEventKomodoAttack(lastEvent); }
+      else if (lastEvent instanceof EventKomodoKill)     { lastEvent = doEventKomodoKill(lastEvent); }
+      else if (lastEvent instanceof EventMirageSwap)     { lastEvent = doEventMirageSwap(lastEvent); }
+      else if (lastEvent instanceof EventPlayerReplace)  { lastEvent = doEventPlayerReplace(lastEvent); }
+      else if (lastEvent instanceof EventQuantumSquid)   { lastEvent = doEventQuantumSquid(lastEvent); }
+      else if (lastEvent instanceof EventQuantumUnsquid) { lastEvent = doEventQuantumUnsquid(lastEvent); }
+      else if (lastEvent instanceof EventTempestSwap)    { lastEvent = doEventTempestSwap(lastEvent); }
+      else if (lastEvent instanceof EventWormBattle)     { lastEvent = doEventWormBattle(lastEvent); }
     }
     else {
       GlolfEvent le = feed.lastEvent();
@@ -36,199 +38,6 @@ class LeagueManager {
   }
   
   void interruptWith(GlolfEvent e) { interruptions.add(0,e); }
-  
-  EventAggression doEventAggression(GlolfEvent le) {
-    EventAggression ea = (EventAggression)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    ea.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    ea.nextPhase = feed.lastEvent().nextPhase();
-    
-    Ball knockedBall = ea.playState.ballOf(ea.knockedPlayer);
-    knockedBall.distance += random(1,5)*ea.knockingPlayer.yeetness;
-    knockedBall.terrain = Calculation.calculatePostRollTerrain(ea.playState, knockedBall);
-    
-    return ea;
-  }
-  
-  EventGuillotine doEventGuillotine(GlolfEvent le) {
-    EventGuillotine eg = (EventGuillotine)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    eg.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    eg.nextPhase = feed.lastEvent().nextPhase();
-    
-    ArrayList<Player> theRich = eg.theRich;
-    for (Player r : theRich) { killPlayer(r, eg.playState); }
-    
-    int sinsEach = floor(eg.totalSins / playerManager.livePlayers.size());
-    for (Player p : playerManager.livePlayers) {
-      playerManager.giveSins(p, sinsEach);
-    }
-    
-    if (playerManager.hasRich()) {
-      ArrayList<Player> newRich = playerManager.bourgeoisie();
-      int ts = 0;
-      for (Player r : newRich) { ts += r.networth; }
-      interruptWith(new EventGuillotine(newRich, ts));
-    }
-    
-    return eg;
-  }
-  
-  EventKomodoAttack doEventKomodoAttack(GlolfEvent le) {
-    EventKomodoAttack ka = (EventKomodoAttack)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    ka.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    ka.nextPhase = feed.lastEvent().nextPhase();
-    
-    playerManager.poisonPlayer(ka.player, ka.playState.hole.par + 4);
-    
-    return ka;
-  }
-  
-  EventKomodoKill doEventKomodoKill(GlolfEvent le) {
-    EventKomodoKill kk = (EventKomodoKill)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    kk.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    kk.nextPhase = feed.lastEvent().nextPhase();
-    
-    kk.playState = killPlayer(kk.player, kk.playState);
-    
-    return kk;
-  }
-  
-  EventMirageSwap doEventMirageSwap(GlolfEvent le) {
-    EventMirageSwap ms = (EventMirageSwap)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    PlayState newPS = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    ms.nextPhase = feed.lastEvent().nextPhase();
-    
-    Ball aBall = newPS.randomActiveBallWithAutism();
-    Ball bBall = newPS.randomActiveBallWithAutism();
-    
-    if (aBall == null || bBall == null) return null;
-    
-    int aIndex = newPS.balls.indexOf(aBall);
-    int bIndex = newPS.balls.indexOf(bBall);
-    
-    newPS.balls.set(aIndex, bBall);
-    newPS.balls.set(bIndex, aBall);
-    
-    ms.playState = newPS;
-    ms.playerA = aBall.player;
-    ms.playerB = bBall.player;
-    
-    return ms;
-  }
-  
-  EventTempestSwap doEventTempestSwap(GlolfEvent le) {
-    EventTempestSwap ts = (EventTempestSwap)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    PlayState newPS = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    ts.nextPhase = feed.lastEvent().nextPhase();
-    
-    ArrayList<Ball> abs = newPS.activeBalls();
-    if (abs.size() < 2) return null;
-    
-    Ball aBall = newPS.randomActiveBallWithAutism();
-    Ball bBall = newPS.randomActiveBallWithAutismExceptFor(aBall);
-    
-    if (aBall == null || bBall == null || (aBall.terrain == Terrain.TEE && bBall.terrain == Terrain.TEE)) return null;
-    
-    float squidChance = 0.001;
-    if (random(0,1) < squidChance) {
-      bBall = aBall;
-      quantumSquid(aBall);
-    }
-    else {
-      Ball aBallCopy = new Ball(aBall);
-      aBall.teleportTo(bBall);
-      bBall.teleportTo(aBallCopy);
-    }
-    
-    ts.playState = newPS;
-    ts.playerA = aBall.player;
-    ts.playerB = bBall.player;
-    
-    return ts;
-  }
-  
-  EventPlayerReplace doEventPlayerReplace(GlolfEvent le) {
-    EventPlayerReplace epr = (EventPlayerReplace)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    epr.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    epr.nextPhase = feed.lastEvent().nextPhase();
-    
-    playerManager.killPlayer(epr.playerA);
-    tourneyManager.replacePlayer(epr.playerA, epr.playerB);
-    for (Ball b : epr.playState.balls) {
-      if (b.player == epr.playerA) {
-        b.player = epr.playerB;
-      }
-    }
-    
-    return epr;
-  }
-  
-  EventWormBattle doEventWormBattle(GlolfEvent le) {
-    EventWormBattle wb = (EventWormBattle)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    wb.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    wb.nextPhase = feed.lastEvent().nextPhase();
-    
-    float winChance = Slope.loggy(0, 1, wb.ball.player.scrappiness);
-    if (random(1) < winChance) {
-      wb.won = true;
-      tourneyManager.holeControl.orgasm(wb.playState, wb.ball);
-    }
-    else {
-      wb.won = false;
-      wb.ball.reset(wb.playState.hole.realLength);
-    }
-    
-    return wb;
-  }
-  
-  void quantumSquid(Ball ball) {
-    Player oldPlayer = ball.player;
-    
-    if (oldPlayer.mods.contains(Mod.ENTANGLED)) {
-      Player bestie = playerManager.entangledWith(oldPlayer);
-      playerManager.removeMod(bestie, Mod.ENTANGLED);
-      playerManager.applyMod(bestie, Mod.HARMONIZED);
-      playerManager.detanglePlayer(bestie);
-      playerManager.removeSuffix(bestie, "UP");
-      playerManager.removeSuffix(bestie, "DOWN");
-      
-      PlayState unsquidPlayState = erasePlayer(oldPlayer, new PlayState(feed.lastEvent().playState()));
-      interruptWith(new EventQuantumUnsquid(unsquidPlayState, oldPlayer, bestie, feed.lastEvent().nextPhase()));
-    }
-    else {
-      playerManager.erasePlayer(oldPlayer);
-      Player up = playerManager.addPlayerClone(oldPlayer);
-      Player down = playerManager.addPlayerClone(oldPlayer);
-      
-      playerManager.appendSuffix(up, "UP");
-      playerManager.appendSuffix(down, "DOWN");
-      playerManager.entanglePlayers(up, down);
-      
-      PlayState squidPlayState = new PlayState(feed.lastEvent().playState());
-      
-      for (Ball b : squidPlayState.balls) {
-        if (b.player == oldPlayer) {
-          b.player = up;
-          Ball downBall = new Ball(ball);
-          downBall.player = down;
-          
-          squidPlayState.balls.add(squidPlayState.balls.indexOf(b)+1, downBall);
-          break;
-        }
-      }
-      
-      tourneyManager.replacePlayer(ball.player, up, down);
-      
-      interruptWith(new EventQuantumSquid(squidPlayState, oldPlayer, up, down, feed.lastEvent().nextPhase()));
-    }
-  }
   
   PlayState removeFromPlay(Player p, PlayState ps) {
     if (tourneyManager.hasPlayer(p)) { tourneyManager.removePlayer(p); }
