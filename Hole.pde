@@ -20,8 +20,7 @@ class Hole {
     quench = generateHazardousQuality();
     thirst = generateHazardousQuality();
     
-    //wildlife = generateRandomWildlife();
-    wildlife = Wildlife.KOMODOS;
+    wildlife = generateRandomWildlife();
     
     realLength = generateRealLength();
     realWidth = generateRealWidth();

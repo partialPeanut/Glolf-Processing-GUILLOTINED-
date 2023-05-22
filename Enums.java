@@ -10,6 +10,7 @@ enum EventPhase {
   PLAYER_DEATH,
   PLAYER_BIRTH,
   TOURNEY_START,
+  WEATHER_REPORT,
   HOLE_SETUP,
   WILDLIFE_REPORT,
   UP_TOP,
@@ -85,15 +86,17 @@ enum Terrain {
 }
 
 enum Weather {
-  MIRAGE  ("Mirage",  0xFFEA6BE6, 0.1),
-  TEMPEST ("Tempest", 0xFF1281C3, 0.1);
+  MIRAGE  ("Mirage",  "Irrelevance and Falsehoods", 0xFFEA6BE6, 0.1),
+  TEMPEST ("Tempest", "Progression and Regression", 0xFF1281C3, 0.1);
   
   String name;
+  String report;
   int col;
   double procChance;
   
-  Weather(String n, int c, double pc) {
+  Weather(String n, String r, int c, double pc) {
     name = n;
+    report = r;
     col = c;
     procChance = pc;
   }

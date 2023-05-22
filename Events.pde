@@ -134,12 +134,34 @@ class EventTempestSwap implements GlolfEvent {
 
 class EventTourneyStart implements GlolfEvent {
   PlayState playState = new PlayState();
+  Tourney tourney;
   
-  EventTourneyStart(Tourney t) { playState.tourney = t; }
+  EventTourneyStart(Tourney t) {
+    playState.tourney = t;
+    tourney = t;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return EventPhase.WEATHER_REPORT; }
+  String toText() {
+    return "Wlecome to " + tourney.tourneyName + "!\n" +
+           tourney.players.size() + " players, " + tourney.holes.size() + " holes, and " + nfc(tourney.prizeMoney) + " $ins up for grabs!" +
+           "\nGLOLF!! BY ANY MEANS NECESSARY.";
+  }
+}
+
+class EventWeatherReport implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Weather weather;
+  
+  EventWeatherReport(PlayState ps, Weather w) {
+    playState = ps;
+    weather = w;
+  }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.HOLE_SETUP; }
-  String toText() { return "GLOLF!! BY ANY MEANS NECESSARY."; }
+  String toText() { return "This tournament's forecast predicts: " + weather.report + "."; }
 }
 
 

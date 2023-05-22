@@ -50,6 +50,10 @@ class TourneyManager {
         lastEvent = new EventTourneyStart(tourney);
         break;
         
+      case WEATHER_REPORT:
+        lastEvent = new EventWeatherReport(le.playState(), tourney.weather);
+        break;
+        
       case HOLE_SETUP:
         ArrayList<Ball> balls = new ArrayList<Ball>();
         for (Player p : tourney.players) { balls.add(new Ball(p, currentHole().realLength)); }
