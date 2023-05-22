@@ -14,6 +14,7 @@ class LeagueManager {
       else if (lastEvent instanceof EventKomodoAttack)  { lastEvent = doEventKomodoAttack(lastEvent); }
       else if (lastEvent instanceof EventKomodoKill)    { lastEvent = doEventKomodoKill(lastEvent); }
       else if (lastEvent instanceof EventMirageSwap)    { lastEvent = doEventMirageSwap(lastEvent); }
+      else if (lastEvent instanceof EventTempestSwap)   { lastEvent = doEventTempestSwap(lastEvent); }
       else if (lastEvent instanceof EventPlayerReplace) { lastEvent = doEventPlayerReplace(lastEvent); }
       else if (lastEvent instanceof EventWormBattle)    { lastEvent = doEventWormBattle(lastEvent); }
     }
@@ -79,7 +80,7 @@ class LeagueManager {
     ka.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
     ka.nextPhase = feed.lastEvent().nextPhase();
     
-    playerManager.poisonPlayer(ka.player);
+    playerManager.poisonPlayer(ka.player, ka.playState.hole.par + 4);
     
     return ka;
   }
@@ -98,19 +99,23 @@ class LeagueManager {
   EventMirageSwap doEventMirageSwap(GlolfEvent le) {
     EventMirageSwap ms = (EventMirageSwap)le;
     PlayState lastPS = feed.lastEvent().playState();
-    ms.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    PlayState newPS = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
     ms.nextPhase = feed.lastEvent().nextPhase();
     
-    Ball aBall = ms.playState.randomActiveBallWithAutism();
-    Ball bBall = ms.playState.randomActiveBallWithAutism();
+    Ball aBall = newPS.randomActiveBallWithAutism();
+    Ball bBall = newPS.randomActiveBallWithAutism();
     
-    if (aBall == null || bBall == null) return ms;
+    if (aBall == null || bBall == null) return null;
     
-    int aIndex = ms.playState.balls.indexOf(aBall);
-    int bIndex = ms.playState.balls.indexOf(bBall);
+    int aIndex = newPS.balls.indexOf(aBall);
+    int bIndex = newPS.balls.indexOf(bBall);
     
-    ms.playState.balls.set(aIndex, bBall);
-    ms.playState.balls.set(bIndex, aBall);
+    newPS.balls.set(aIndex, bBall);
+    newPS.balls.set(bIndex, aBall);
+    
+    ms.playState = newPS;
+    ms.playerA = aBall.player;
+    ms.playerB = bBall.player;
     
     return ms;
   }
@@ -118,16 +123,16 @@ class LeagueManager {
   EventTempestSwap doEventTempestSwap(GlolfEvent le) {
     EventTempestSwap ts = (EventTempestSwap)le;
     PlayState lastPS = feed.lastEvent().playState();
-    ts.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    PlayState newPS = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
     ts.nextPhase = feed.lastEvent().nextPhase();
     
-    ArrayList<Ball> abs = ts.playState.activeBalls();
-    if (abs.size() < 2) return ts;
+    ArrayList<Ball> abs = newPS.activeBalls();
+    if (abs.size() < 2) return null;
     
-    Ball aBall = ts.playState.randomActiveBallWithAutism();
-    Ball bBall = ts.playState.randomActiveBallWithAutismExceptFor(aBall);
+    Ball aBall = newPS.randomActiveBallWithAutism();
+    Ball bBall = newPS.randomActiveBallWithAutismExceptFor(aBall);
     
-    if (aBall == null || bBall == null || (aBall.terrain == Terrain.TEE && bBall.terrain == Terrain.TEE)) return ts;
+    if (aBall == null || bBall == null || (aBall.terrain == Terrain.TEE && bBall.terrain == Terrain.TEE)) return null;
     
     float squidChance = 0.001;
     if (random(0,1) < squidChance) {
@@ -139,6 +144,10 @@ class LeagueManager {
       aBall.teleportTo(bBall);
       bBall.teleportTo(aBallCopy);
     }
+    
+    ts.playState = newPS;
+    ts.playerA = aBall.player;
+    ts.playerB = bBall.player;
     
     return ts;
   }
@@ -228,6 +237,7 @@ class LeagueManager {
   }
   PlayState killPlayer(Player p, PlayState ps) {
     playerManager.killPlayer(p);
+    if (tourneyManager.hasPlayer(p)) { tourneyManager.killedPlayers.add(p); }
     return removeFromPlay(p, ps);
   }
   PlayState erasePlayer(Player p, PlayState ps) {

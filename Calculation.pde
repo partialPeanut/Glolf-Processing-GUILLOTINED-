@@ -225,7 +225,7 @@ static class Calculation {
         }
         float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
         if (sRandom(1) <= sandBunkerChance) {
-          if (ps.hole.wildlife == Wildlife.WORMS && sRandom(1) <= 0.33) return Terrain.WORM_PIT;
+          if (ps.hole.wildlife == Wildlife.WORMS && sRandom(1) <= Wildlife.WORMS.procChance) return Terrain.WORM_PIT;
           return Terrain.BUNKER;
         }
         

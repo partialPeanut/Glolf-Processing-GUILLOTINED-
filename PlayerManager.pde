@@ -149,11 +149,11 @@ class PlayerManager {
     return null;
   }
   
-  void poisonPlayer(Player p) {
+  void poisonPlayer(Player p, int c) {
     p.cringe += 2;
     p.yeetness -= 2;
     p.trigonometry -= 2;
-    poisonCounters.set(p.id, 4);
+    poisonCounters.set(p.id, c);
     p.mods.add(Mod.POISONED);
   }
   void unpoisonPlayer(Player p) {

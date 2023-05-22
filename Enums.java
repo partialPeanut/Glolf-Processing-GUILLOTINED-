@@ -18,6 +18,7 @@ enum EventPhase {
   HOLE_FINISH,
   TOURNEY_FINISH,
   TOURNEY_REWARD,
+  MEMORIAM,
   TOURNEY_CONCLUDE
 }
 
@@ -101,15 +102,17 @@ enum Weather {
 }
 
 enum Wildlife {
-  BIRDS   ("BIRD", "Birds in the sky! Keep your balls covered!"),
-  KOMODOS ("KOMO", "Komodo dragons in the shadows. Keep your antivenom handy!"),
-  WORMS   ("WORM", "Worms in the sand! Be wary of those bunkers.");
+  BIRDS   ("Birds",          "Birds in the sky! Keep your balls covered!",                  1.0),
+  KOMODOS ("Komodo Dragons", "Komodo dragons in the shadows. Keep your antibiotics handy!", 0.1),
+  WORMS   ("Sand Worms",     "Worms in the sand! Be wary of those bunkers.",                0.3);
   
-  String brief;
+  String name;
   String reportText;
+  double procChance;
   
-  Wildlife(String b, String rt) {
-    brief = b;
+  Wildlife(String n, String rt, double pc) {
+    name = n;
     reportText = rt;
+    procChance = pc;
   }
 }

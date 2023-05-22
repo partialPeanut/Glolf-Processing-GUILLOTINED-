@@ -9,6 +9,8 @@ class TourneyManager {
   HoleControl holeControl;
   GlolfEvent lastEvent;
   GlolfEvent nextEvent = null;
+  
+  ArrayList<Player> killedPlayers = new ArrayList<Player>();
 
   IntDict currentScores = new IntDict();
   ArrayList<ArrayList<Player>> winners = new ArrayList<ArrayList<Player>>();
@@ -21,6 +23,7 @@ class TourneyManager {
   
   void newTourney(Tourney t) {
     tourney = t;
+    killedPlayers.clear();
     currentScores.clear();
     for (Player p : t.players) currentScores.set(p.id, 0);
     winners.clear();
@@ -103,10 +106,14 @@ class TourneyManager {
         for (Player p : batch) { playerManager.giveSins(p, batchPrize); }
         
         boolean end = winners.size() == rewardPlace || winners.get(rewardPlace).size() == 0;
-        lastEvent = new EventTourneyReward(le.playState(), batch, rewardPlace, batchPrize, end);
+        lastEvent = new EventTourneyReward(le.playState(), batch, rewardPlace, batchPrize, end, killedPlayers.size() > 0);
         
         if (end) rewardPlace = 1;
         else rewardPlace++;
+        break;
+        
+      case MEMORIAM:
+        lastEvent = new EventMemoriam(le.playState(), killedPlayers);
         break;
         
       case TOURNEY_CONCLUDE:

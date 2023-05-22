@@ -67,7 +67,8 @@ class VariableDisplayer {
   Player getCurrentPlayer() { return tourneyManager.currentPlayer(); }
 
   void scroll(float amount) {
-    listScrollOffset = constrain(listScrollOffset-amount*scrollSpeed, -getPlayerListHeight(), 0);
+    if (getPlayerListHeight() < 0) listScrollOffset = 0;
+    else listScrollOffset = constrain(listScrollOffset+amount*scrollSpeed, 0, getPlayerListHeight());
   }
 
   void display() {
@@ -128,7 +129,7 @@ class VariableDisplayer {
   }
 
   void displayScores() {
-    line(x, varDisplayY+listScrollOffset, x+w, varDisplayY+listScrollOffset);
+    line(x, varDisplayY-listScrollOffset, x+w, varDisplayY-listScrollOffset);
 
     IntDict scores;
     switch(type) {
@@ -172,7 +173,7 @@ class VariableDisplayer {
           scores = null;
       }
       
-      float blockY = varDisplayY+listScrollOffset+i*playerListUnitHeight;
+      float blockY = varDisplayY-listScrollOffset+i*playerListUnitHeight;
 
       textSize(textSize);
       textAlign(LEFT, BOTTOM);
@@ -241,7 +242,7 @@ class VariableDisplayer {
       "\n" +
       "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
       "\nPar: " + hole.par +
-      "\nWildlife: " + hole.wildlife.brief +
+      "\nWildlife: " + hole.wildlife.name +
       (hole.succblow < 0 ? "\nSucc: " : "\nBlow: ") + abs(hole.succblow) +
       "\nRoughness: " + hole.roughness +
       "\nHeterosexuality: " + hole.heterosexuality +

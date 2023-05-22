@@ -1,6 +1,10 @@
 static class Format {
   static final String DEFAULT = "---";
   
+  static String upperFirst(String s) {
+    return s.substring(0,1).toUpperCase() + s.substring(1);
+  }
+  
   static String playerToName(Player p) {
     if (p == null) return DEFAULT;
     else if (p.suffixes.size() == 0) return p.firstName + " " + p.lastName;
@@ -26,6 +30,22 @@ static class Format {
     else return "" + strokes;
   }
   static String intToScore(int score) { return "" + score; }
+  static String intToName(int num) {
+    switch(num) {
+      case 0: return "zero";
+      case 1: return "one";
+      case 2: return "two";
+      case 3: return "three";
+      case 4: return "four";
+      case 5: return "five";
+      case 6: return "six";
+      case 7: return "seven";
+      case 8: return "eight";
+      case 9: return "nine";
+      case 10: return "ten";
+      default: return "a lot of";
+    }
+  }
 
   static String strokeType(StrokeType st) {
     switch(st) {

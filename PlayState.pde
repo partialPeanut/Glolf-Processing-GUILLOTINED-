@@ -88,20 +88,20 @@ class PlayState {
     }
     return activeBalls;
   }
-  Ball randomBallWithAutism(ArrayList<Ball> balls) {
-    if (balls.size() == 0) return null;
+  Ball randomBallWithAutism(ArrayList<Ball> theBalls) {
+    if (theBalls.size() == 0) return null;
     
     float totalAutism = 0;
-    for (Ball b : balls) {
+    for (Ball b : theBalls) {
       totalAutism += max(0, b.player.autism);
     }
     
     float choice = random(0,totalAutism);
-    for (Ball b : balls) {
+    for (Ball b : theBalls) {
       choice -= max(0, b.player.autism);
       if (choice <= 0) return b;
     }
-    return balls.get(0);
+    return null;
   }
   Ball randomActiveBall() {
     ArrayList<Ball> activeBalls = activeBalls();

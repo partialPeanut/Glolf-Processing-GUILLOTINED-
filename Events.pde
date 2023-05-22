@@ -16,6 +16,12 @@ class EventVoid implements GlolfEvent {
 }
 
 
+class EventNoEvent implements GlolfEvent {
+  PlayState playState() { return new PlayState(); }
+  EventPhase nextPhase() { return EventPhase.TOURNEY_START; }
+  String toText() { return "WARPED CONDITIONS COLLIDE. PLAY MUST STOP. NO EVENT POSSIBLE."; }
+}
+
 
 class EventPlayerReplace implements GlolfEvent {
   PlayState playState;
@@ -276,6 +282,7 @@ class EventStrokeOutcome implements GlolfEvent {
       case NOTHING: default: text += "Nothing happens."; break;
     }
     if (playerManager.poisonCounters.hasKey(player.id)) {
+      int turnsTilDeath = playerManager.poisonCounters.get(player.id) + 1;
       switch(outcome.type) {
         case ACE:
         case SINK:
@@ -285,7 +292,8 @@ class EventStrokeOutcome implements GlolfEvent {
         case WHIFF:
         case NOTHING:
         default:
-          text += " Shapes stalk closer in the shadows.";
+          if (turnsTilDeath == 0) text += " Lizards hiss.";
+          else text += " " + Format.upperFirst(Format.intToName(turnsTilDeath)) + " stroke" + (turnsTilDeath == 1 ? "" : "s") + " until the predators strike.";
           break;
       }
     }
@@ -323,7 +331,7 @@ class EventKomodoKill implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return "They were too slow. The komodos feast on " + Format.playerToName(player) + ".";
+    return "Too slow. The komodos feast on " + Format.playerToName(player) + ".";
   }
 }
 
@@ -417,19 +425,21 @@ class EventTourneyReward implements GlolfEvent {
   ArrayList<Player> winners;
   int place;
   int prize;
-  boolean end;
+  boolean end, memoriam;
 
-  EventTourneyReward(PlayState ps, ArrayList<Player> w, int pl, int p, boolean e) {
+  EventTourneyReward(PlayState ps, ArrayList<Player> w, int pl, int p, boolean e, boolean m) {
     playState = ps; 
     winners = w;
     place = pl;
     prize = p;
     end = e;
+    memoriam = m;
   }
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() {
     if (!end) return EventPhase.TOURNEY_REWARD;
+    else if (memoriam) return EventPhase.MEMORIAM;
     else return EventPhase.TOURNEY_CONCLUDE;
   }
   String toText() {
@@ -451,6 +461,30 @@ class EventTourneyReward implements GlolfEvent {
         case 3: return "3rd";
         default: return "Nth";
       }
+  }
+}
+
+class EventMemoriam implements GlolfEvent {
+  PlayState playState = new PlayState();
+  ArrayList<Player> theDead;
+
+  EventMemoriam(PlayState ps, ArrayList<Player> d) {
+    playState = ps;
+    theDead = new ArrayList<Player>(d);
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return EventPhase.TOURNEY_CONCLUDE; }
+  String toText() {
+    String text = "We dedicate this tournament to those lost to Death's clutches. Rest in Violence: ";
+    for (int i = 0; i < theDead.size(); i++) {
+      if (i > 0) {
+        text += (theDead.size() > 2 ? "," : "") + " " + (i == theDead.size()-1 ? "and " : "");
+      }
+      text += Format.playerToName(theDead.get(i));
+    }
+    text += ". May they ace forever in the All Holes Halls.";
+    return text;
   }
 }
 

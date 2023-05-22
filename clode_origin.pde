@@ -146,8 +146,13 @@ void resumeTime() {
 
 GlolfEvent nextEvent() {
   GlolfEvent lastEvent = leagueManager.nextEvent();
-  timePassed += speedValue;
+  for (int i = 0; i < 100; i++) {
+    if (lastEvent != null) break;
+    else lastEvent = leagueManager.nextEvent();
+  }
+  if (lastEvent == null) lastEvent = new EventNoEvent();
   
+  timePassed += speedValue;
   feed.addEvent(lastEvent);
   println(lastEvent.toText());
   return lastEvent;

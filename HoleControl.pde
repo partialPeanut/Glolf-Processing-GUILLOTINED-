@@ -78,12 +78,12 @@ class HoleControl {
         
         if (hole.wildlife == Wildlife.KOMODOS && !ball.sunk) {
           if (ball.player.mods.contains(Mod.POISONED)) {
-            if (playerManager.poisonCounters.get(ball.player.id) <= 0)
+            int turnsTilDeath = playerManager.poisonCounters.get(ball.player.id);
+            playerManager.poisonCounters.sub(ball.player.id, 1);
+            if (turnsTilDeath <= 0)
               leagueManager.interruptWith(new EventKomodoKill(ball.player));
-            else
-              playerManager.poisonCounters.sub(ball.player.id, 1);
           }
-          else if (random(1) < 0.20) {
+          else if (random(1) < Wildlife.KOMODOS.procChance) {
             leagueManager.interruptWith(new EventKomodoAttack(ball.player));
           }
         }
