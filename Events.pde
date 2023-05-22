@@ -168,8 +168,24 @@ class EventHoleSetup implements GlolfEvent {
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.UP_TOP; }
+  EventPhase nextPhase() { return EventPhase.WILDLIFE_REPORT; }
   String toText() { return "Next up: Hole Number " + holeNumber + "."; }
+}
+
+
+
+class EventWildlifeReport implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Wildlife wildlife;
+
+  EventWildlifeReport(PlayState ps, Wildlife wl) {
+    playState = ps;
+    wildlife = wl;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return EventPhase.UP_TOP; }
+  String toText() { return "Wildlife Report: " + wildlife.reportText; }
 }
 
 
@@ -249,7 +265,7 @@ class EventStrokeOutcome implements GlolfEvent {
     distance = out.distance;
     fromDistance = in.currentBall.distance;
     toDistance = td;
-    strokesOverPar = in.currentBall.stroke+1 - in.hole.par;
+    strokesOverPar = in.currentBall.stroke - in.hole.par;
     last = end;
   }
   
@@ -274,6 +290,26 @@ class EventStrokeOutcome implements GlolfEvent {
       case NOTHING: default: text += "Nothing happens."; break;
     }
     return text;
+  }
+}
+
+
+class EventWormBattle implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Ball ball;
+  boolean won;
+  EventPhase nextPhase;
+
+  EventWormBattle(Ball b) {
+    ball = b;
+    won = false;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    if (won) return Format.playerToName(ball.player) + " scrappily knocks the worm unconscious! With the worm gone, the ball rolls into the wormhole for a " + (ball.stroke == 1 ? "hole in one!" : Format.intToBird(ball.stroke - playState.hole.par)) + "!";
+    else return Format.playerToName(ball.player) + "'s ball is eaten by the worm! They'll have to start at the beginning.";
   }
 }
 

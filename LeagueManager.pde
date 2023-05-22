@@ -9,9 +9,10 @@ class LeagueManager {
       lastEvent = interruptions.get(0);
       interruptions.remove(0);
       
-      if (lastEvent instanceof EventAggression) { lastEvent = doEventAggression(lastEvent); }
+      if (lastEvent instanceof EventAggression)         { lastEvent = doEventAggression(lastEvent); }
+      else if (lastEvent instanceof EventGuillotine)    { lastEvent = doEventGuillotine(lastEvent); }
       else if (lastEvent instanceof EventPlayerReplace) { lastEvent = doEventPlayerReplace(lastEvent); }
-      else if (lastEvent instanceof EventGuillotine) { lastEvent = doEventGuillotine(lastEvent); }
+      else if (lastEvent instanceof EventWormBattle)    { lastEvent = doEventWormBattle(lastEvent); }
     }
     else {
       GlolfEvent le = feed.lastEvent();
@@ -45,23 +46,6 @@ class LeagueManager {
     return ea;
   }
   
-  EventPlayerReplace doEventPlayerReplace(GlolfEvent le) {
-    EventPlayerReplace epr = (EventPlayerReplace)le;
-    PlayState lastPS = feed.lastEvent().playState();
-    epr.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
-    epr.nextPhase = feed.lastEvent().nextPhase();
-    
-    playerManager.killPlayer(epr.playerA);
-    tourneyManager.replacePlayer(epr.playerA, epr.playerB);
-    for (Ball b : epr.playState.balls) {
-      if (b.player == epr.playerA) {
-        b.player = epr.playerB;
-      }
-    }
-    
-    return epr;
-  }
-  
   EventGuillotine doEventGuillotine(GlolfEvent le) {
     EventGuillotine eg = (EventGuillotine)le;
     PlayState lastPS = feed.lastEvent().playState();
@@ -84,6 +68,42 @@ class LeagueManager {
     }
     
     return eg;
+  }
+  
+  EventPlayerReplace doEventPlayerReplace(GlolfEvent le) {
+    EventPlayerReplace epr = (EventPlayerReplace)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    epr.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    epr.nextPhase = feed.lastEvent().nextPhase();
+    
+    playerManager.killPlayer(epr.playerA);
+    tourneyManager.replacePlayer(epr.playerA, epr.playerB);
+    for (Ball b : epr.playState.balls) {
+      if (b.player == epr.playerA) {
+        b.player = epr.playerB;
+      }
+    }
+    
+    return epr;
+  }
+  
+  EventWormBattle doEventWormBattle(GlolfEvent le) {
+    EventWormBattle wb = (EventWormBattle)le;
+    PlayState lastPS = feed.lastEvent().playState();
+    wb.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+    wb.nextPhase = feed.lastEvent().nextPhase();
+    
+    float winChance = Slope.loggy(0, 1, wb.ball.player.scrappiness);
+    if (random(1) < winChance) {
+      wb.won = true;
+      tourneyManager.holeControl.orgasm(wb.playState, wb.ball);
+    }
+    else {
+      wb.won = false;
+      wb.ball.reset(wb.playState.hole.realLength);
+    }
+    
+    return wb;
   }
   
   void quantumSquid(Ball ball) {

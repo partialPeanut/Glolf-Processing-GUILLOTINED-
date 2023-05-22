@@ -75,6 +75,10 @@ class HoleControl {
           case NOTHING: break;
         }
         
+        if (ball.terrain == Terrain.WORM_PIT) {
+          leagueManager.interruptWith(new EventWormBattle(ball));
+        }
+        
         if (ball.player.mods.contains(Mod.AGGRESSIVE) && random(1) <= Mod.AGGRESSIVE.procChance) {
           Ball closeBall = newPlayState.getClosestActiveBallTo(ball);
           if (closeBall != null && playState.distanceBetweenBalls(ball, closeBall) <= ball.player.yeetness) {

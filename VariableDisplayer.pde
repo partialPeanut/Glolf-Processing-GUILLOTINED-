@@ -232,7 +232,7 @@ class VariableDisplayer {
       "\nAutism: " + player.autism;
   }
 
-  String courseToText(Tourney tourney,Hole hole) {
+  String courseToText(Tourney tourney, Hole hole) {
     if (tourney == null || hole == null) return statsPlaceholder;
     else return
       tourney.tourneyName +
@@ -241,6 +241,7 @@ class VariableDisplayer {
       "\n" +
       "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
       "\nPar: " + hole.par +
+      "\nWildlife: " + hole.wildlife.brief +
       (hole.succblow < 0 ? "\nSucc: " : "\nBlow: ") + abs(hole.succblow) +
       "\nRoughness: " + hole.roughness +
       "\nHeterosexuality: " + hole.heterosexuality +

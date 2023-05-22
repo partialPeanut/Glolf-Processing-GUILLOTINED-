@@ -17,19 +17,17 @@
 
 // Potential future mechanics
 //
+// Birds and bogeys
 // Shadow games
 // Giant turtle (the course is on a giant turtle)
 // Balls
 // Clubs (both the sticks and the bougie places)
 // Tourny of the Damned (Revive player?)
 // Charity Match: Atone
-// Resdistribute Wealth: "The League has been weighed down by their sins."
 // Sainthood -100000 $ins
 // Strikes
-// Wild animals - Wildlife report every hole
 // Birds carry balls away
 // Komodo dragons eat players
-// Sand worms - either knock the worm unconscious, counting as a hole, or the worm digests the ball and the player must start over
 // PvP
 
 // Bugs
@@ -71,7 +69,7 @@ HoleVisualizer holeVisualizer;
 // Setup
 void setup() {
   surface.setTitle("Glolf!");
-  size(1800, 800);
+  size(1800, 900);
   
   boldFont = loadFont("data/PixelOperator-48.vlw");
   font = loadFont("data/PixelOperator-48.vlw");

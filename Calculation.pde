@@ -224,7 +224,10 @@ static class Calculation {
           return waterType;
         }
         float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
-        if (sRandom(1) <= sandBunkerChance) return Terrain.BUNKER;
+        if (sRandom(1) <= sandBunkerChance) {
+          if (ps.hole.wildlife == Wildlife.WORMS && sRandom(1) <= 0.33) return Terrain.WORM_PIT;
+          return Terrain.BUNKER;
+        }
         
         return Terrain.ROUGH;
     }

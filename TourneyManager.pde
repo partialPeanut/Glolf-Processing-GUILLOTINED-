@@ -56,6 +56,10 @@ class TourneyManager {
         generateNewHole();
         break;
         
+      case WILDLIFE_REPORT:
+        lastEvent = new EventWildlifeReport(le.playState(), currentHole().wildlife);
+        break;
+        
       case HOLE_FINISH:
         for (Ball b : le.playState().balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);

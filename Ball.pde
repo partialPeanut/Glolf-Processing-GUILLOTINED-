@@ -26,6 +26,13 @@ class Ball {
     terrain = b.terrain;
   }
   
+  void reset(float dist) {
+    sunk = false;
+    past = false;
+    distance = dist;
+    terrain = Terrain.TEE;
+  }
+  
   Ball(Ball b, Player p) {
     set(b);
     player = p;

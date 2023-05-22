@@ -5,6 +5,7 @@ class Hole {
   float realLength, realWidth, greenLength;
   int par;
   float succblow, roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
+  Wildlife wildlife;
   ArrayList<Mod> mods = new ArrayList<Mod>();
 
   // Generates random course
@@ -18,6 +19,9 @@ class Hole {
     obedience = generateRandomQuality();
     quench = generateHazardousQuality();
     thirst = generateHazardousQuality();
+    
+    //wildlife = generateRandomWildlife();
+    wildlife = Wildlife.WORMS;
     
     realLength = generateRealLength();
     realWidth = generateRealWidth();
@@ -93,5 +97,10 @@ class Hole {
   // Generates a random hazard chance
   float generateHazardousQuality() {
     return 0.06 + randomGaussian() * 0.02;
+  }
+  
+  Wildlife generateRandomWildlife() {
+    Wildlife[] lives = Wildlife.values();
+    return lives[floor(random(lives.length))];
   }
 }

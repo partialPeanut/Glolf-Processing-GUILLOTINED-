@@ -11,6 +11,7 @@ enum EventPhase {
   PLAYER_BIRTH,
   TOURNEY_START,
   HOLE_SETUP,
+  WILDLIFE_REPORT,
   UP_TOP,
   STROKE_TYPE,
   STROKE_OUTCOME,
@@ -57,6 +58,7 @@ enum Terrain {
   // In order: tee, drive, approach, chip, putt
   // The ball [leaves the sand bunker] and flies X gallons, landing [in a water hazard.]
   OUT_OF_BOUNDS ("goes back in bounds",    "out of bounds.",            0xFF005000, new double[]{ 0,0,0,0,0 }, true),
+  WORM_PIT      ("escapes the worm pit",   "in a sand worm's pit!",     0xFFFFC107, new double[]{ 0,0,0,0,0 }, false),
   WATER_HAZARD  ("goes back in bounds",    "in a water hazard.",        0xFF03A9F4, new double[]{ 0,0,0,0,0 }, true),
   HOLE          ("jumps out of the hole",  "in the hole.",              0xFFA0A0A0, new double[]{ 0,0,0,0,0 }, false),
   TEE           ("leaves the tee",         "perfectly on a tee.",       0xFFA0A0A0, new double[]{ 1.2, 1.0, 0.8, 0.6, 0.1 }, false),
@@ -77,5 +79,20 @@ enum Terrain {
     tColor = c;
     smoothness = s;
     outOfBounds = o;
+  }
+}
+
+
+enum Wildlife {
+  BIRDS   ("BIRD", "Birds in the sky! Keep your balls covered!"),
+  KOMODOS ("KOMO", "Komodo dragons in the shadows. Keep your antivenom handy!"),
+  WORMS   ("WORM", "Worms in the sand! Be wary of those bunkers.");
+  
+  String brief;
+  String reportText;
+  
+  Wildlife(String b, String rt) {
+    brief = b;
+    reportText = rt;
   }
 }
