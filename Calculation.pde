@@ -50,7 +50,7 @@ static class Calculation {
   static float[] calculateBaseWeights(float[] projDists, PlayState ps) {
     float[] weights = new float[4];
     for (int i = 0; i < projDists.length; i++) {
-      weights[i] = 1000 * Slope.gaussy(projDists[i], abs(ps.currentBall.distance), 6 * max(ps.currentPlayer().dumbassery, 1));
+      weights[i] = 1000 * Slope.gaussy(projDists[i], abs(ps.currentBall.distance), 200 / max(ps.currentPlayer().smartassery, 1));
     }
     
     weights[0] = 0;
@@ -123,7 +123,7 @@ static class Calculation {
     }
     
     // Check whiff
-    float whiffRate = Slope.loggy(0.005, 0.015, ps.currentPlayer().cringe);
+    float whiffRate = Slope.loggy(0.015, 0.005, ps.currentPlayer().competence);
     if (sRandom(1) <= whiffRate) return StrokeOutcomeType.WHIFF;
     
     // Check sink
@@ -225,7 +225,7 @@ static class Calculation {
         }
         float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
         if (sRandom(1) <= sandBunkerChance) {
-          if (ps.hole.wildlife == Wildlife.WORMS && sRandom(1) <= Wildlife.WORMS.procChance) return Terrain.WORM_PIT;
+          if (ps.hole.wildlife == Wildlife.WORM && sRandom(1) <= Wildlife.WORM.procChance) return Terrain.WORM_PIT;
           return Terrain.BUNKER;
         }
         

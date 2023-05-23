@@ -67,8 +67,7 @@ class VariableDisplayer {
   Player getCurrentPlayer() { return tourneyManager.currentPlayer(); }
 
   void scroll(float amount) {
-    if (getPlayerListHeight() < 0) listScrollOffset = 0;
-    else listScrollOffset = constrain(listScrollOffset+amount*scrollSpeed, 0, getPlayerListHeight());
+    listScrollOffset = constrain(listScrollOffset+amount*scrollSpeed, 0, max(0,getPlayerListHeight()));
   }
 
   void display() {
@@ -222,8 +221,8 @@ class VariableDisplayer {
       "\nGender: " + player.gender +
       "\nMods: " + Format.modsToBrief(player.mods) + 
       "\nNet Worth: " + nfc(player.networth) + " $ins" +
-      "\nCringe: " + player.cringe +
-      "\nDumbassery: " + player.dumbassery +
+      "\nCompetence: " + player.competence +
+      "\nSmartassery: " + player.smartassery +
       "\nYeetness: " + player.yeetness +
       "\nTrigonometry: " + player.trigonometry +
       "\nBisexuality: " + player.bisexuality +

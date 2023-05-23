@@ -86,8 +86,8 @@ enum Terrain {
 }
 
 enum Weather {
-  MIRAGE  ("Mirage",  "Irrelevance and Falsehoods", 0xFFEA6BE6, 0.1),
-  TEMPEST ("Tempest", "Progression and Regression", 0xFF1281C3, 0.1);
+  MIRAGE  ("Mirage",  "Irrelevance and Falsehoods.", 0xFFEA6BE6, 0.04),
+  TEMPEST ("Tempest", "Progression and Regression.", 0xFF1281C3, 0.04);
   
   String name;
   String report;
@@ -105,9 +105,9 @@ enum Weather {
 }
 
 enum Wildlife {
-  BIRDS   ("Birds",          "Birds in the sky! Keep your balls covered!",                  1.000),
-  KOMODOS ("Komodo Dragons", "Komodo dragons in the shadows. Keep your antibiotics handy!", 0.015),
-  WORMS   ("Sand Worms",     "Worms in the sand! Be wary of those bunkers.",                0.100);
+  MOSQUITO ("Mosquitoes",     "Mosquitoes in the skies! Players, hope you brought bug spray.",        1.000),
+  KOMODO   ("Komodo Dragons", "Komodo dragons in the shadows. Players, keep your antibiotics handy!", 0.015),
+  WORM     ("Sand Worms",     "Worms in the sand! Players, be wary of those bunkers.",                0.100);
   
   String name;
   String reportText;

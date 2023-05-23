@@ -22,6 +22,13 @@ class HoleControl {
     PlayState playState = lastEvent.playState();
     PlayState newPlayState;
     
+    if (hole.wildlife == Wildlife.MOSQUITO) {
+      if (random(1) < hole.quench * Wildlife.MOSQUITO.procChance) {
+        Player bittenPlayer = playState.randomBall().player;
+        leagueManager.interruptWith(new EventMosquitoBite(bittenPlayer, bittenPlayer.randomStat()));
+      }
+    }
+    
     switch(lastEvent.nextPhase()) {
       case UP_TOP:
         currentBall = 0;
@@ -76,14 +83,14 @@ class HoleControl {
           case NOTHING: break;
         }
         
-        if (hole.wildlife == Wildlife.KOMODOS && !ball.sunk) {
+        if (hole.wildlife == Wildlife.KOMODO && !ball.sunk) {
           if (ball.player.mods.contains(Mod.POISONED)) {
             int turnsTilDeath = playerManager.poisonCounters.get(ball.player.id);
             playerManager.poisonCounters.sub(ball.player.id, 1);
             if (turnsTilDeath <= 0)
               leagueManager.interruptWith(new EventKomodoKill(ball.player));
           }
-          else if (random(1) < Wildlife.KOMODOS.procChance) {
+          else if (random(1) < Wildlife.KOMODO.procChance) {
             leagueManager.interruptWith(new EventKomodoAttack(ball.player));
           }
         }

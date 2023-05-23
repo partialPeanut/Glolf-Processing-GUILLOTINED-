@@ -81,6 +81,17 @@ EventMirageSwap doEventMirageSwap(GlolfEvent le) {
   return ms;
 }
 
+EventMosquitoBite doEventMosquitoBite(GlolfEvent le) {
+  EventMosquitoBite mb = (EventMosquitoBite)le;
+  PlayState lastPS = feed.lastEvent().playState();
+  mb.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+  mb.nextPhase = feed.lastEvent().nextPhase();
+  
+  playerManager.changePlayerStat(mb.player, mb.stat, -0.01);
+  
+  return mb;
+}
+
 EventPlayerReplace doEventPlayerReplace(GlolfEvent le) {
   EventPlayerReplace epr = (EventPlayerReplace)le;
   PlayState lastPS = feed.lastEvent().playState();

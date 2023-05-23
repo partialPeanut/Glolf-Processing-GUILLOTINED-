@@ -73,6 +73,21 @@ class PlayerManager {
     }
   }
   
+  void changePlayerStat(Player p, String s, float d) {
+    switch(s) {
+      case "competence":   p.competence += d;   return;
+      case "smartassery":  p.smartassery += d;  return;
+      case "yeetness":     p.yeetness += d;     return;
+      case "trigonometry": p.trigonometry += d; return;
+      case "bisexuality":  p.bisexuality += d;  return;
+      case "asexuality":   p.asexuality += d;   return;
+      case "scrappiness":  p.scrappiness += d;  return;
+      case "charisma":     p.charisma += d;     return;
+      case "autism":       p.autism += d;       return;
+      default: return;
+    }
+  }
+  
   void applyMod(Player p, Mod m) { p.mods.add(m); }
   void removeMod(Player p, Mod m) { p.mods.remove(m); }
   
@@ -150,14 +165,14 @@ class PlayerManager {
   }
   
   void poisonPlayer(Player p, int c) {
-    p.cringe += 2;
+    p.competence -= 4;
     p.yeetness -= 2;
     p.trigonometry -= 2;
     poisonCounters.set(p.id, c);
     p.mods.add(Mod.POISONED);
   }
   void unpoisonPlayer(Player p) {
-    p.cringe -= 2;
+    p.competence += 4;
     p.yeetness += 2;
     p.trigonometry += 2;
     p.mods.remove(Mod.POISONED);

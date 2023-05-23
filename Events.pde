@@ -161,7 +161,7 @@ class EventWeatherReport implements GlolfEvent {
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return EventPhase.HOLE_SETUP; }
-  String toText() { return "This tournament's forecast predicts: " + weather.report + "."; }
+  String toText() { return "This tournament's forecast predicts: " + weather.report; }
 }
 
 
@@ -351,6 +351,24 @@ class EventKomodoKill implements GlolfEvent {
   }
 }
 
+
+class EventMosquitoBite implements GlolfEvent {
+  PlayState playState = new PlayState();
+  Player player;
+  String stat;
+  EventPhase nextPhase;
+
+  EventMosquitoBite(Player p, String s) {
+    player = p;
+    stat = s;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return Format.playerToName(player) + " is bitten by mosquitoes and loses 0.01 " + stat + ".";
+  }
+}
 
 class EventWormBattle implements GlolfEvent {
   PlayState playState = new PlayState();

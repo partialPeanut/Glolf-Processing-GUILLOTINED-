@@ -14,6 +14,7 @@ class LeagueManager {
       else if (lastEvent instanceof EventKomodoAttack)   { lastEvent = doEventKomodoAttack(lastEvent); }
       else if (lastEvent instanceof EventKomodoKill)     { lastEvent = doEventKomodoKill(lastEvent); }
       else if (lastEvent instanceof EventMirageSwap)     { lastEvent = doEventMirageSwap(lastEvent); }
+      else if (lastEvent instanceof EventMosquitoBite)   { lastEvent = doEventMosquitoBite(lastEvent); }
       else if (lastEvent instanceof EventPlayerReplace)  { lastEvent = doEventPlayerReplace(lastEvent); }
       else if (lastEvent instanceof EventQuantumSquid)   { lastEvent = doEventQuantumSquid(lastEvent); }
       else if (lastEvent instanceof EventQuantumUnsquid) { lastEvent = doEventQuantumUnsquid(lastEvent); }
@@ -53,6 +54,7 @@ class LeagueManager {
     playerManager.erasePlayer(p);
     return removeFromPlay(p, ps);
   }
+  
   void killPlayerDuringTourney() {
     Player playerToKill = tourneyManager.tourney.randomPlayer();
     Player newPlayer = playerManager.addNewPlayer();

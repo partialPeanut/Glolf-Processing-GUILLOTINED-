@@ -17,6 +17,7 @@
 
 // Potential future mechanics
 //
+// Cringe
 // Birds and Bogeys
 // Shadow games
 // Giant turtle (the course is on a giant turtle)

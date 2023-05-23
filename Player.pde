@@ -4,7 +4,7 @@
 class Player {
   String id, firstName, lastName, gender;
   StringList suffixes;
-  float cringe, dumbassery, yeetness, trigonometry, bisexuality, asexuality, scrappiness, charisma, autism;
+  float competence, smartassery, yeetness, trigonometry, bisexuality, asexuality, scrappiness, charisma, autism;
   int networth;
   ArrayList<Mod> mods = new ArrayList<Mod>();
 
@@ -16,8 +16,8 @@ class Player {
     suffixes = new StringList();
     gender = generateRandomFromList("data/genders.txt");
     mods = generateRandomMods();
-    cringe = generateRandomStat();
-    dumbassery = generateRandomStat();
+    competence = generateRandomStat();
+    smartassery = generateRandomStat();
     yeetness = generateRandomStat();
     trigonometry = generateRandomStat();
     bisexuality = generateRandomStat();
@@ -34,8 +34,8 @@ class Player {
     firstName = json.getString("firstName");
     lastName = json.getString("lastName");
     gender = json.getString("gender");
-    cringe = json.getFloat("cringe");
-    dumbassery = json.getFloat("dumbassery");
+    competence = json.getFloat("competence");
+    smartassery = json.getFloat("smartassery");
     yeetness = json.getFloat("yeetness");
     trigonometry = json.getFloat("trigonometry");
     bisexuality = json.getFloat("bisexuality");
@@ -53,8 +53,8 @@ class Player {
     lastName = p.lastName;
     suffixes = new StringList(p.suffixes);
     gender = p.gender;
-    cringe = p.cringe;
-    dumbassery = p.dumbassery;
+    competence = p.competence;
+    smartassery = p.smartassery;
     yeetness = p.yeetness;
     trigonometry = p.trigonometry;
     bisexuality = p.bisexuality;
@@ -72,8 +72,8 @@ class Player {
     json.setString("firstName", firstName);
     json.setString("lastName", lastName);
     json.setString("gender", gender);
-    json.setFloat("cringe", cringe);
-    json.setFloat("dumbassery", dumbassery);
+    json.setFloat("competence", competence);
+    json.setFloat("smartassery", smartassery);
     json.setFloat("yeetness", yeetness);
     json.setFloat("trigonometry", trigonometry);
     json.setFloat("bisexuality", bisexuality);
@@ -111,5 +111,11 @@ class Player {
     else {
       return int(random(300000,600000));
     }
+  }
+  
+  // Returns a string with the name of a random player stat
+  String randomStat() {
+    String[] stats = { "competence", "smartassery", "yeetness", "trigonometry", "bisexuality", "asexuality", "scrappiness", "charisma", "autism" };
+    return stats[floor(random(9))];
   }
 }

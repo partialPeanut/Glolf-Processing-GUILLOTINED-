@@ -88,6 +88,10 @@ class PlayState {
     }
     return activeBalls;
   }
+  Ball randomBall() {
+    if (balls.size() == 0) return null;
+    else return balls.get(int(random(balls.size())));
+  }
   Ball randomBallWithAutism(ArrayList<Ball> theBalls) {
     if (theBalls.size() == 0) return null;
     
