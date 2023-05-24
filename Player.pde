@@ -11,10 +11,10 @@ class Player {
   // Full random player gen
   Player(String _id) {
     id = _id;
-    firstName = generateRandomFromList("data/firstnames.txt");
-    lastName = generateRandomFromList("data/lastnames.txt");
+    firstName = generateRandomFromList("data/lists/p_namesfirst.txt");
+    lastName = generateRandomFromList("data/lists/p_nameslast.txt");
     suffixes = new StringList();
-    gender = generateRandomFromList("data/genders.txt");
+    gender = generateRandomFromList("data/lists/p_genders.txt");
     mods = generateRandomMods();
     competence = generateRandomStat();
     smartassery = generateRandomStat();

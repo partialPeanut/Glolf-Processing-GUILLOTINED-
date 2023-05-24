@@ -34,7 +34,7 @@ class Tourney {
   
   // Generate Tourney name
   String generateTourneyName() {
-    String tourneyNoun = generateRandomFromList("data/tournouns.txt");
+    String tourneyNoun = generateRandomFromList("data/lists/t_nouns.txt");
     int r = int(random(1,9));
     switch(r) {
       case 1: return tourneyNoun + " Open";

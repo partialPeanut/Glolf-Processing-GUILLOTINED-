@@ -61,7 +61,7 @@ class PlayerManager {
       players.setJSONObject(i, p.toJSON());
       i++;
     }
-    saveJSONArray(players, "data/players.json");
+    saveJSONArray(players, "data/database/players.json");
   }
 
   void loadPlayersFromJSON(String filename) {

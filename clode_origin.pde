@@ -69,10 +69,11 @@ HoleVisualizer holeVisualizer;
 // Setup
 void setup() {
   surface.setTitle("Glolf!");
+  surface.setIcon(loadImage("assets/icons/glolf.png"));
   size(1800, 960);
   
-  boldFont = loadFont("data/PixelOperator-48.vlw");
-  font = loadFont("data/PixelOperator-48.vlw");
+  boldFont = loadFont("assets/fonts/PixelOperator-48.vlw");
+  font = loadFont("assets/fonts/PixelOperator-48.vlw");
   
   // Initialize Buttons
   timeButtonWidth = buttonSetHeight-2*margin;
@@ -210,7 +211,7 @@ void mousePressed() {
         case "show_feed": break;
         case "debug_menu": break;
         case "girl":
-          println("Happy Belated Valentine's Day!!!");
+          println("*kisskisskisskisskisskisskisskisskisskiss*");
           break;
         case "save_players":
           playerManager.savePlayersToJSON();
