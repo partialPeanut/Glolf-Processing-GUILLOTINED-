@@ -117,7 +117,7 @@ class VariableDisplayer {
     if (type == DisplayType.COURSE_STATS) {
       text = courseToText(tourneyManager.tourney,getHoleControl().hole);
       stroke(textCol);
-      line(x+margin*2, varDisplayY+142, x+w-margin*2, varDisplayY+142);
+      line(x+margin*2, varDisplayY+182, x+w-margin*2, varDisplayY+182);
     }
 
     fill(textCol);
@@ -238,10 +238,12 @@ class VariableDisplayer {
       tourney.tourneyName +
       "\nPrize: " + nfc(tourney.prizeMoney) + " $ins" +
       "\nWeather: " + tourney.weather.name +
+      "\nMods: " + Format.modsToBrief(tourney.mods) +
       "\n" +
       "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
       "\nPar: " + hole.par +
       "\nWildlife: " + hole.wildlife.name +
+      "\nMods: " + Format.modsToBrief(hole.mods) +
       (hole.succblow < 0 ? "\nSucc: " : "\nBlow: ") + abs(hole.succblow) +
       "\nRoughness: " + hole.roughness +
       "\nHeterosexuality: " + hole.heterosexuality +

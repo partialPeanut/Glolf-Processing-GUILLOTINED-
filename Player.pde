@@ -94,7 +94,7 @@ class Player {
   ArrayList<Mod> generateRandomMods() {
     ArrayList<Mod> _mods = new ArrayList<Mod>();
     for (Mod m : Mod.values()) {
-      if (random(1) < m.pickChance) _mods.add(m);
+      if (m.modType.playerAllowed && random(1) < m.pickChance) _mods.add(m);
     }
     return _mods;
   }

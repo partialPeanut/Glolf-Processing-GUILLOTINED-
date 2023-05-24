@@ -291,8 +291,8 @@ class EventStrokeOutcome implements GlolfEvent {
       case ACE: text += "Hole in one!!"; break;
       case SINK: text += "They sink it for a " + Format.intToBird(strokesOverPar) + "."; break;
       case FLY:
-        if (fromTerrain != toTerrain) text += "The ball " + fromTerrain.leavingText + " and flies " + distance + " gallons, landing " + toTerrain.arrivingText;
-        else text += "The ball flies " + distance + " gallons, staying " + toTerrain.arrivingText;
+        if (fromTerrain != toTerrain) text += "The ball " + fromTerrain.leavingText + " and flies " + round(distance) + " gallons, landing " + toTerrain.arrivingText;
+        else text += "The ball flies " + round(distance) + " gallons, staying " + toTerrain.arrivingText;
         break;
       case WHIFF: text += "They barely tap the ball!"; break;
       case NOTHING: default: text += "Nothing happens."; break;
@@ -355,6 +355,7 @@ class EventKomodoKill implements GlolfEvent {
 class EventMosquitoBite implements GlolfEvent {
   PlayState playState = new PlayState();
   Player player;
+  float damage;
   String stat;
   EventPhase nextPhase;
 
@@ -366,7 +367,7 @@ class EventMosquitoBite implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return nextPhase; }
   String toText() {
-    return Format.playerToName(player) + " is bitten by mosquitoes and loses 0.01 " + stat + ".";
+    return Format.playerToName(player) + " is bitten by mosquitoes and loses " + nfc(damage,2) + " " + stat + ".";
   }
 }
 

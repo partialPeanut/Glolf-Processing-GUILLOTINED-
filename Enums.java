@@ -40,20 +40,48 @@ enum StrokeOutcomeType {
   NOTHING
 }
 
+enum ModType {
+  PLAYER_ONLY     (true,  false, false),
+  HOLE_ONLY       (false, true,  false),
+  TOURNEY_ONLY    (false, false, true),
+  HOLE_OR_TOURNEY (false, true,  true);
+  
+  boolean playerAllowed, holeAllowed, tourneyAllowed;
+  ModType(boolean pa, boolean ha, boolean ta) {
+    playerAllowed = pa;
+    holeAllowed = ha;
+    tourneyAllowed = ta;
+  }
+}
+
 enum Mod {
-  AGGRESSIVE ("AGRO", 0.20, 1.0),
-  AQUATIC    ("AQUA", 0.20, 1.0),
-  ENTANGLED  ("ETNG", 0.00, 1.0),
-  HARMONIZED ("HRMZ", 0.00, 1.0),
-  POISONED   ("POSN", 0.00, 1.0);
+  AGGRESSIVE ("AGRO", 0.20, 1.0, ModType.PLAYER_ONLY),
+  AQUATIC    ("AQUA", 0.20, 1.0, ModType.PLAYER_ONLY),
+  ENTANGLED  ("ETNG", 0.00, 1.0, ModType.PLAYER_ONLY),
+  HARMONIZED ("HRMZ", 0.00, 1.0, ModType.PLAYER_ONLY),
+  POISONED   ("POSN", 0.00, 1.0, ModType.PLAYER_ONLY),
+  
+  SWAMPLAND  ("SWMP", 0.50, 0.5, 2.0, 5.0, ModType.HOLE_OR_TOURNEY);
   
   String brief;
-  double pickChance;
-  double procChance;
-  Mod(String b, double k, double r) {
+  double pickChance, procChance, val1, val2;
+  ModType modType;
+  Mod(String b, double k, ModType mt) {
     brief = b;
     pickChance = k;
+    modType = mt;
+  }
+  Mod(String b, double k, double r, ModType mt) {
+    this(b,k,mt);
     procChance = r;
+  }
+  Mod(String b, double k, double r, double v1, ModType mt) {
+    this(b,k,r,mt);
+    val1 = v1;
+  }
+  Mod(String b, double k, double r, double v1, double v2, ModType mt) {
+    this(b,k,r,v1,mt);
+    val2 = v2;
   }
 }
 
@@ -105,17 +133,21 @@ enum Weather {
 }
 
 enum Wildlife {
-  MOSQUITO ("Mosquitoes",     "Mosquitoes in the skies! Players, hope you brought bug spray.",        1.000),
+  MOSQUITO ("Mosquitoes",     "Mosquitoes in the skies! Players, hope you brought bug spray.",        1.000, 0.01),
   KOMODO   ("Komodo Dragons", "Komodo dragons in the shadows. Players, keep your antibiotics handy!", 0.015),
   WORM     ("Sand Worms",     "Worms in the sand! Players, be wary of those bunkers.",                0.100);
   
   String name;
   String reportText;
-  double procChance;
+  double procChance, val1;
   
   Wildlife(String n, String rt, double pc) {
     name = n;
     reportText = rt;
     procChance = pc;
+  }
+  Wildlife(String n, String rt, double pc, double v1) {
+    this(n,rt,pc);
+    val1 = v1;
   }
 }

@@ -6,10 +6,11 @@ class Hole {
   int par;
   float succblow, roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
   Wildlife wildlife;
-  ArrayList<Mod> mods = new ArrayList<Mod>();
+  ArrayList<Mod> tourneyMods;
+  ArrayList<Mod> mods;
 
   // Generates random course
-  Hole() {
+  Hole(ArrayList<Mod> tm) {
     succblow = generateRandomSuccblow();
     
     roughness = generateRandomQuality();
@@ -20,7 +21,9 @@ class Hole {
     quench = generateHazardousQuality();
     thirst = generateHazardousQuality();
     
-    wildlife = generateRandomWildlife();
+    tourneyMods = tm;
+    mods = generateMods();
+    wildlife = generateWildlife();
     
     realLength = generateRealLength();
     realWidth = generateRealWidth();
@@ -98,6 +101,28 @@ class Hole {
     return 0.06 + randomGaussian() * 0.02;
   }
   
+  ArrayList<Mod> generateMods() {
+    ArrayList<Mod> _mods = new ArrayList<Mod>();
+    for (Mod m : tourneyMods) {
+      if (m.modType == ModType.HOLE_OR_TOURNEY) _mods.add(m);
+    }
+    for (Mod m : generateRandomMods()) {
+      if (!_mods.contains(m)) _mods.add(m);
+    }
+    return _mods;
+  }
+  ArrayList<Mod> generateRandomMods() {
+    ArrayList<Mod> _mods = new ArrayList<Mod>();
+    for (Mod m : Mod.values()) {
+      if (m.modType.holeAllowed && random(1) < m.pickChance) _mods.add(m);
+    }
+    return _mods;
+  }
+  
+  Wildlife generateWildlife() {
+    if (mods.contains(Mod.SWAMPLAND) && random(1) < Mod.SWAMPLAND.procChance) return Wildlife.MOSQUITO;
+    else return generateRandomWildlife();
+  }
   Wildlife generateRandomWildlife() {
     Wildlife[] lives = Wildlife.values();
     return lives[floor(random(lives.length))];

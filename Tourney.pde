@@ -4,13 +4,14 @@ class Tourney {
   ArrayList<Mod> mods = new ArrayList<Mod>();
   Weather weather;
   
-  int prizeMoney;
   String tourneyName;
+  int prizeMoney;
   
   // Open / Cup / Challenge / Invitational / Tour / Tournament
 
   Tourney(ArrayList<Player> ps, int holes) {
     players = ps;
+    mods = generateRandomMods();
     generateNewHoles(holes);
     weather = generateRandomWeather();
     tourneyName = generateTourneyName();
@@ -21,7 +22,7 @@ class Tourney {
   void generateNewHoles(int num) {
     holes.clear();
     for (int i = 0; i < num; i++) {
-      holes.add(new Hole());
+      holes.add(new Hole(mods));
     }
   }
   
@@ -46,6 +47,14 @@ class Tourney {
       case 8: return "The Hole " + tourneyNoun;
       default: return "Undefined";
     }   
+  }
+  
+  ArrayList<Mod> generateRandomMods() {
+    ArrayList<Mod> _mods = new ArrayList<Mod>();
+    for (Mod m : Mod.values()) {
+      if (m.modType.tourneyAllowed && random(1) < m.pickChance) _mods.add(m);
+    }
+    return _mods;
   }
   
   // Determine prize money

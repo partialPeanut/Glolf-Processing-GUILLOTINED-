@@ -17,6 +17,7 @@
 
 // Potential future mechanics
 //
+// Coastal (Everything is sand or water)
 // Cringe
 // Birds and Bogeys
 // Shadow games
@@ -27,7 +28,6 @@
 // Charity Match: Atone
 // Sainthood -100000 $ins
 // Strikes
-// Birds carry balls away
 // PvP
 
 // Bugs
@@ -69,7 +69,7 @@ HoleVisualizer holeVisualizer;
 // Setup
 void setup() {
   surface.setTitle("Glolf!");
-  size(1800, 900);
+  size(1800, 960);
   
   boldFont = loadFont("data/PixelOperator-48.vlw");
   font = loadFont("data/PixelOperator-48.vlw");

@@ -23,7 +23,8 @@ class HoleControl {
     PlayState newPlayState;
     
     if (hole.wildlife == Wildlife.MOSQUITO) {
-      if (random(1) < hole.quench * Wildlife.MOSQUITO.procChance) {
+      float swampMulti = hole.mods.contains(Mod.SWAMPLAND) ? (float)Mod.SWAMPLAND.val1 : 1;
+      if (random(1) < hole.quench * Wildlife.MOSQUITO.procChance * swampMulti) {
         Player bittenPlayer = playState.randomBall().player;
         leagueManager.interruptWith(new EventMosquitoBite(bittenPlayer, bittenPlayer.randomStat()));
       }
