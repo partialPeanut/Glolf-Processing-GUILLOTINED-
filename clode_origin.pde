@@ -64,7 +64,7 @@ Button[] timeButtons = new Button[5];
 Button[] headButtons = new Button[4];
 VariableDisplayer variableDisplayer;
 EventDisplayer eventDisplayer;
-HoleVisualizer holeVisualizer;
+HoleDisplayer holeVisualizer;
 
 // Setup
 void setup() {
@@ -99,7 +99,7 @@ void setup() {
     
   // Initialize Displays
   eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
-  holeVisualizer = new HoleVisualizer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
+  holeVisualizer = new HoleDisplayer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
   variableDisplayer = new VariableDisplayer(tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);
 }
 
