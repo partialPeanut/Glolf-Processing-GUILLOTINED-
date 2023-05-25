@@ -82,3 +82,52 @@ class ButtonChangeVarDisplay extends Button {
     textCol = inactiveTextCol;
   }
 }
+
+class Feed {
+  ArrayList<GlolfEvent> everyEvent = new ArrayList<GlolfEvent>();
+  
+  Feed() {
+    everyEvent.add(new EventVoid());
+  }
+  
+  void addEvent(GlolfEvent e) { everyEvent.add(e); }
+  GlolfEvent lastEvent() { return everyEvent.get(everyEvent.size()-1); }
+  GlolfEvent lastLastEvent() { return everyEvent.get(everyEvent.size()-2); }
+  void removeLastEvent() { everyEvent.remove(lastEvent()); }
+}
+
+class Gradient {
+  float x, y, w, h, r1, r2, p1, p2;
+  Boolean linear = false;
+  Boolean radial = false;
+  color c;
+  int n;
+  
+  Gradient(float _x, float _y, float _w, float _h, color _c) {
+    x = _x;
+    y = _y;
+    w = _w;
+    h = _h;
+    c = _c;
+    linear = true;
+  }
+  
+  Gradient(float _x, float _y, float _r1, float _r2, float _p1, float _p2, color _c) {
+    x = _x;
+    y = _y;
+    r1 = _r1;
+    r2 = _r2;
+    p1 = _p1;
+    p2 = _p2;
+    c = _c;
+    radial = true;
+  }
+  
+  void display() {
+    fill(c);
+    noStroke();
+    if (linear) rect(x, y, w, h);
+    if (radial && p1 == 0 && p2 == TWO_PI) ellipse(x, y, r1, r2);
+    if (radial && (p1 != 0 || p2 != TWO_PI)) arc(x, y, r1, r2, p1, p2);
+  }
+}
