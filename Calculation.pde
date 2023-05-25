@@ -220,7 +220,7 @@ static class Calculation {
         // Probabilities of landing in hazards
         float waterHazardChance = ps.hole.quench * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
         if (sRandom(1) <= waterHazardChance) {
-          Terrain waterType = ps.currentBall.player.mods.contains(Mod.AQUATIC) ? Terrain.WATER_FLOAT : Terrain.WATER_HAZARD;
+          Terrain waterType = ps.currentBall.player.mods.contains(Mod.SEMI_AQUATIC) ? Terrain.WATER_FLOAT : Terrain.WATER_HAZARD;
           return waterType;
         }
         float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);

@@ -69,7 +69,7 @@ HoleVisualizer holeVisualizer;
 // Setup
 void setup() {
   surface.setTitle("Glolf!");
-  surface.setIcon(loadImage("assets/icons/boogie2.png"));
+  surface.setIcon(loadImage("assets/icons/game_icon/boogie2.png"));
   size(1800, 960);
   
   boldFont = loadFont("assets/fonts/PixelOperator-48.vlw");

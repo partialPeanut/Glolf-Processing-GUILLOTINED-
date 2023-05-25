@@ -55,13 +55,13 @@ enum ModType {
 }
 
 enum Mod {
-  AGGRESSIVE ("AGRO", 0.20, 1.0, ModType.PLAYER_ONLY),
-  AQUATIC    ("AQUA", 0.20, 1.0, ModType.PLAYER_ONLY),
-  ENTANGLED  ("ETNG", 0.00, 1.0, ModType.PLAYER_ONLY),
-  HARMONIZED ("HRMZ", 0.00, 1.0, ModType.PLAYER_ONLY),
-  POISONED   ("POSN", 0.00, 1.0, ModType.PLAYER_ONLY),
+  AGGRESSIVE   ("AGRO", 0.20, 1.0, ModType.PLAYER_ONLY),
+  SEMI_AQUATIC ("AQUA", 0.20, 1.0, ModType.PLAYER_ONLY),
+  ENTANGLED    ("ETNG", 0.00, 1.0, ModType.PLAYER_ONLY),
+  HARMONIZED   ("HRMZ", 0.00, 1.0, ModType.PLAYER_ONLY),
+  POISONED     ("POSN", 0.00, 1.0, ModType.PLAYER_ONLY),
   
-  SWAMPLAND  ("SWMP", 0.50, 0.5, 2.0, 5.0, ModType.HOLE_OR_TOURNEY);
+  SWAMPLAND    ("SWMP", 0.50, 0.5, 2.0, 5.0, ModType.HOLE_OR_TOURNEY);
   
   String brief;
   double pickChance, procChance, val1, val2;
