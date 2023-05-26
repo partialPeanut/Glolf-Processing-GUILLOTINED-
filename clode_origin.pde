@@ -1,43 +1,86 @@
-// GLOLF TO DO LIST
-// No. of players - no set amount (start w 12)
-// Players: name, gender (random adjectives), cringe (chance of total beefitude), dumbassery (choice of stroke type), yeetness (strength), trigonometry (accuracy),
-//          bisexuality (curve skill), asexuality (hole-in-one chance), scrappiness (skill in rough areas), charisma (get it in the hole ;3), autism (magic)
-// Strokes: drive (max length min accuracy), approach (medium to long range + more accuracy), chip (med-short range), putt (short range)
-// Holes: par, roughness, heterosexuality (straightness), thicc (likelihood to go oob), verdancy (easiness to get on the green),
-//          obedience (green tameness), quench (water hazards), thirst (sand bunkers)
-// Tourney: 18 courses of stroke play, sudden death on tie
+//==================================================================================================
+//   ____  __     __     _____    _   _  __     __    __  __   ______    _____    _   _    _____   |
+//  |  _ \ \ \   / /    / ___ \  | \ | | \ \   / /   |  \/  | |  ____|  / ___ \  | \ | |  / ____|  |
+//  | |_) | \ \_/ /    | |___| | |  \| |  \ \_/ /    | \  / | | |__    | |___| | |  \| | | (___    |
+//  |  _ <   \   /     |  ___  | | . ` |   \   /     | |\/| | |  __|   |  ___  | | . ` |  \___ \   |
+//  | |_) |   | |      | |   | | | |\  |    | |      | |  | | | |____  | |   | | | |\  |  ____) |  |
+//  |____/    |_|      |_|   |_| |_| \_|    |_|      |_|  |_| |______| |_|   |_| |_| \_| |_____/   |
+//                                                                                                 |
+//==================================================================================================
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN0dll:;;;;;;;;;cllldxOKNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWN0kd:..   ..''',;;,;:;'';;;cdOKWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNOd:,,;;'     ,;;;,,::;:c:;::,,,;:okKWMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMWXkc;;;;;:c:'    ;:::;,;cc::cc:c:;;:;,;co0WMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMWKdc:::ccc::lc,  ,;:cccc:;:c:;:lc:c:;::;;;;;o0WMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMWXkl;;:::cclc:cl; 'colcclll:;cc;,::;cc::c:,;;,,:kWMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMNk:;:;;:c::ccc::c:,':lolcllol:::'.,,,,::;cc;;;,,,;dXMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMXd;',:;;;;:;,:ll:cll::ldoc:clc,,      ;;;,:c:;:,';;:xNMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMKl,,,,;c:;clc::cllc:clccolcccc;;        '',;:;;c:,,;;ckWMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMNd,',::clcc::loc:lddolllodc:::;;         :'',:;;:;,;,;:o0WMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMNd;::c:cc:ll:codddlclolclllllooc,         ,;;;:,;c:',,,;:xNMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMWO::c:;:c;'''',:clddlllodddlcccc:;';      ;,';cl;;;,,;,,::l0MMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMXoc:cl:;'       .;oxkxollooooodo:;:;';;;;;;::;::;c:,,;,,,,;kMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMOccllc,          .:ooodxxolllooolll:,:llc:c:;cl;,:;;;,';;;:kMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMxclc:;.          .;ddlloddoodoccclol:cl:;co:,::,:c;::,,',;:kMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMl::cc;.         ..;odooolcldxdolcll:coo;',,..,'':::c;,;',;c0MMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMo:ccc:'.       .',coloddoccoolclodl,''.        .,';c:;,,',oXMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMx::cclc,......',cdxdoloolcoxdlccc;'             .,;;:,',,:kWMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMO:clcloc:;;ccccoddxdooddc:cc;...                .':;;;',,oXMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMXo::cccoolldxdoooddodxdl,.                     ..';;;;,'cKMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMWOc::llclloollodxxxddl'                 ......''.,:;;;,:OWMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMWk:;::ccclodddloddoc.              ...','',,,;;';;;;,:0WMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMNd;:cclllccclodxxo.             .',,,;;,;:,,:;,;,,,c0WMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMNk:;:::clccclooo:.           .',,'';:,,cc;;;,,'.;dXMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMW0ollcclc;;codo:.     ....''',,,',c:;:c;,:,,''l0WMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMNOl;,:c::cclllc'....'',,;,,:c;,;;''::,;,';o0WMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMNOocc::::clolc:lc:,;::;,;:;',;,',,',,ckXWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMWKxlc:::::ccclc:cc;,,;:;,;;,,,,:lxKNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWXOxolc:;,;:;;,',,''',;:ldx0XWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWN0dccc:,',;;,,:ldOXWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//==================================================================================================
+//          _   _   ______    _____   ______    _____    _____    _____    _____   __     __       |
+//         | \ | | |  ____|  / ____| |  ____|  / ____|  / ____|  / ___ \  |  __ \  \ \   / /       |
+//         |  \| | | |__    | |      | |__    | (___   | (___   | |___| | | |__) |  \ \_/ /        |
+//         | . ` | |  __|   | |      |  __|    \___ \   \___ \  |  ___  | |  _  /    \   /         |
+//         | |\  | | |____  | |____  | |____   ____) |  ____) | | |   | | | | \ \     | |          |
+//         |_| \_| |______|  \_____| |______| |_____/  |_____/  |_|   |_| |_|  \_\    |_|          |
+//                                                                                                 |
+//==================================================================================================                                                                              
 
-// Main Features
-//
-// Main menu
-// Debug Menu
-// Feed
-// Different gamemodes
-// Simultaneous Games: 
-// 4 courses > 1 tourney
-// 4 different rankings
-// Top scoring players in each section + top scoring players overall go on to final match
-// Course Mods and Hole Mods are interchangable
+// ------------------------------------------Main Features------------------------------------------
+// > Main menu
+// > Debug Menu
+// > Feed
+// > Different gamemodes
+// > Simultaneous Games: 
+// > 4 courses > 1 tourney
+// > 4 different rankings
+// > Top scoring players in each section + top scoring players overall go on to final match
+// > Course Mods and Hole Mods are interchangable
 
-// Potential future mechanics
-//
-// Cringe
-// Birds
-// Boogey Tournies // High scores win // Boons + Curses
-// Shadow games
-// Giant turtle (the course is on a giant turtle)
-// Balls
-// Clubs (both the sticks and the bougie places)
-// Tourny of the Damned (Revive player?)
-// Charity Match: Atone
-// Sainthood -100000 $ins
-// Strikes
-// PvP
+// -----------------------------------Potential future mechanics------------------------------------
+// > Cringe
+// > Birds
+// > Boogey Tournies // High scores win // Boons + Curses
+// > Shadow games
+// > Giant turtle (the course is on a giant turtle)
+// > Balls
+// > Clubs (both the sticks and the bougie places)
+// > Tourny of the Damned (Revive player?)
+// > Charity Match: Atone
+// > Sainthood -100000 $ins
+// > Strikes
 
-// Bugs
-//
+// ----------------------------------------------Bugs-----------------------------------------------
 // Fix rewinding
 // Hole scale sometimes breaks? No clue why lmao
+//
+//==================================================================================================
+
+
+
 
 LeagueManager leagueManager = new LeagueManager();
 PlayerManager playerManager = new PlayerManager();
@@ -70,6 +113,7 @@ HoleDisplayer holeDisplayer;
 void setup() {
   //Application Settings
   surface.setTitle("Glolf!");
+  surface.setResizable(true);
   surface.setIcon(loadImage("assets/icons/game_icon/bogey2.png"));
   size(1800, 960);
   
@@ -277,3 +321,13 @@ void mouseDragged() {
 void mouseWheel(MouseEvent e) {
   variableDisplayer.scroll(e.getCount());
 }
+
+// saved for posterity
+// GLOLF TO DO LIST
+// No. of players - no set amount (start w 12)
+// Players: name, gender (random adjectives), cringe (chance of total beefitude), dumbassery (choice of stroke type), yeetness (strength), trigonometry (accuracy),
+//          bisexuality (curve skill), asexuality (hole-in-one chance), scrappiness (skill in rough areas), charisma (get it in the hole ;3), autism (magic)
+// Strokes: drive (max length min accuracy), approach (medium to long range + more accuracy), chip (med-short range), putt (short range)
+// Holes: par, roughness, heterosexuality (straightness), thicc (likelihood to go oob), verdancy (easiness to get on the green),
+//          obedience (green tameness), quench (water hazards), thirst (sand bunkers)
+// Tourney: 18 courses of stroke play, sudden death on tie
