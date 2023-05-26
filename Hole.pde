@@ -11,6 +11,16 @@ class Hole {
 
   // Generates random course
   Hole(ArrayList<Mod> cm) {
+    courseMods = cm;
+    mods = generateMods();
+    
+    float quenchMult = 1;
+    float thirstMult = 1;
+    if (mods.contains(Mod.COASTAL)) {
+      quenchMult = (float)Mod.COASTAL.val1;
+      thirstMult = (float)Mod.COASTAL.val2;
+    }
+    
     succblow = generateRandomSuccblow();
     
     roughness = generateRandomQuality();
@@ -18,11 +28,9 @@ class Hole {
     thicc = generateRandomQuality();
     verdancy = generateRandomQuality();
     obedience = generateRandomQuality();
-    quench = generateHazardousQuality();
-    thirst = generateHazardousQuality();
+    quench = generateHazardousQuality() * quenchMult;
+    thirst = generateHazardousQuality() * thirstMult;
     
-    courseMods = cm;
-    mods = generateMods();
     wildlife = generateWildlife();
     
     realLength = generateRealLength();

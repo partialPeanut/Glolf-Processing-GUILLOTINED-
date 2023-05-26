@@ -521,7 +521,8 @@ class HoleDisplayer implements UIComponent {
     int iT = 0;
     noFill();
     
-    stroke(Terrain.ROUGH.tColor);
+    color roughColor = hole.mods.contains(Mod.COASTAL) ? Terrain.BUNKER.tColor : Terrain.ROUGH.tColor;
+    stroke(roughColor);
     beginShape();
     for (float f : roughHeights) {
       curveVertex(x+margin+iT, y+terrainY+f);
@@ -537,7 +538,7 @@ class HoleDisplayer implements UIComponent {
     }
     endShape();
     
-    stroke(Terrain.ROUGH.tColor);
+    stroke(roughColor);
     beginShape();
     for (float f : pastHeights) {
       curveVertex(x+margin+iT, y+terrainY+f);

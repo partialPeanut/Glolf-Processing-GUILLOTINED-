@@ -57,13 +57,14 @@ enum ModType {
 }
 
 enum Mod {
-  AGGRESSIVE   ("AGRO", 0.20, 1.0, ModType.PLAYER_ONLY),
-  SEMI_AQUATIC ("AQUA", 0.20, 1.0, ModType.PLAYER_ONLY),
+  AGGRESSIVE   ("AGRO", 0.20, 0.8, ModType.PLAYER_ONLY),
+  SEMI_AQUATIC ("AQUA", 0.20, 0.8, ModType.PLAYER_ONLY),
   ENTANGLED    ("ETNG", 0.00, 1.0, ModType.PLAYER_ONLY),
   HARMONIZED   ("HRMZ", 0.00, 1.0, ModType.PLAYER_ONLY),
   POISONED     ("POSN", 0.00, 1.0, ModType.PLAYER_ONLY),
   
-  SWAMPLAND    ("SWMP", 0.50, 0.5, 2.0, 5.0, ModType.HOLE_OR_COURSE);
+  SWAMPLAND    ("SWMP", 0.10, 0.5, 2.0, 5.0, ModType.HOLE_OR_COURSE),
+  COASTAL      ("CSTL", 0.10, 1.0, 4.0, 6.0, ModType.HOLE_OR_COURSE);
   
   String brief;
   double pickChance, procChance, val1, val2;
@@ -131,7 +132,7 @@ enum Weather {
     procChance = pc;
   }
   
-  boolean procCheck(clode_origin.GlolfEvent le) { return clode_origin.Calculation.sRandom(0,1) < procChance; }
+  boolean procCheck() { return clode_origin.Calculation.sRandom(0,1) < procChance; }
 }
 
 enum Wildlife {

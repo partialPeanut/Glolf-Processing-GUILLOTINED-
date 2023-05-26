@@ -139,7 +139,7 @@ class TourneyManager {
         
       default:
         lastEvent = holeControl.nextEvent();
-        if (currentCourse().weather.procCheck(lastEvent)) {
+        if (currentCourse().weather.procCheck()) {
           GlolfEvent weatherEvent = null;
           switch (currentCourse().weather) {
             case MIRAGE:  weatherEvent = new EventMirageSwap(); break;

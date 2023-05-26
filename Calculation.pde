@@ -217,16 +217,35 @@ static class Calculation {
         float wiggleRoom = ps.hole.realWidth * (1 + Slope.loggy(-1, 1, ps.currentPlayer().bisexuality) * pow(2,-ps.hole.heterosexuality)/6);
         if (sideways > wiggleRoom) return Terrain.OUT_OF_BOUNDS;
         
+        // Determines if mods affect hazard terrain
+        boolean semiAquaticProcs = ps.currentBall.player.mods.contains(Mod.SEMI_AQUATIC) && sRandom(0,1) < Mod.SEMI_AQUATIC.procChance;
+        boolean wormPitProcs = ps.hole.wildlife == Wildlife.WORM && sRandom(1) <= Wildlife.WORM.procChance;
+        
+        // Accounts for the Coastal mod (only sand or sea)
+        if (ps.hole.mods.contains(Mod.COASTAL)) {
+          float coastalSBC = ps.hole.thirst * Slope.loggy(0.75, 1.25, ps.currentPlayer().trigonometry);
+          float coastalWHC = ps.hole.quench;
+          
+          if (sRandom(1) <= coastalSBC/(coastalSBC+coastalWHC)) {
+            Terrain sandType = wormPitProcs ? Terrain.WORM_PIT : Terrain.BUNKER;
+            return sandType;
+          }
+          else {
+            Terrain waterType = semiAquaticProcs ? Terrain.WATER_FLOAT : Terrain.WATER_HAZARD;
+            return waterType;
+          }
+        }
+        
         // Probabilities of landing in hazards
         float waterHazardChance = ps.hole.quench * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
         if (sRandom(1) <= waterHazardChance) {
-          Terrain waterType = ps.currentBall.player.mods.contains(Mod.SEMI_AQUATIC) ? Terrain.WATER_FLOAT : Terrain.WATER_HAZARD;
+          Terrain waterType = semiAquaticProcs ? Terrain.WATER_FLOAT : Terrain.WATER_HAZARD;
           return waterType;
         }
         float sandBunkerChance = ps.hole.thirst * Slope.loggy(1.75, 0.25, ps.currentPlayer().trigonometry);
         if (sRandom(1) <= sandBunkerChance) {
-          if (ps.hole.wildlife == Wildlife.WORM && sRandom(1) <= Wildlife.WORM.procChance) return Terrain.WORM_PIT;
-          return Terrain.BUNKER;
+          Terrain sandType = wormPitProcs ? Terrain.WORM_PIT : Terrain.BUNKER;
+          return sandType;
         }
         
         return Terrain.ROUGH;
