@@ -1,21 +1,23 @@
 class PlayState {
   ArrayList<Ball> balls = null;
   Ball currentBall = null;
+  Course course = null;
   Hole hole = null;
   Tourney tourney = null;
   
   PlayState() {}
-  PlayState(ArrayList<Ball> bs, int cbi, Hole h, Tourney t) {
+  PlayState(ArrayList<Ball> bs, int cbi, Hole h, Course c, Tourney t) {
     balls = new ArrayList<Ball>();
     for (Ball b : bs) balls.add(new Ball(b));
     
     if (cbi >= 0) currentBall = balls.get(cbi);
     else currentBall = balls.get(0);
     hole = h;
+    course = c;
     tourney = t;
   }
-  PlayState(PlayState ps) { this(ps.balls, ps.balls.indexOf(ps.currentBall), ps.hole, ps.tourney); }
-  PlayState(PlayState ps, int cbi) { this(ps.balls, cbi, ps.hole, ps.tourney); }
+  PlayState(PlayState ps) { this(ps.balls, ps.balls.indexOf(ps.currentBall), ps.hole, ps.course, ps.tourney); }
+  PlayState(PlayState ps, int cbi) { this(ps.balls, cbi, ps.hole, ps.course, ps.tourney); }
   
   Player currentPlayer() {
     if (currentBall == null) return null;

@@ -17,7 +17,7 @@ static class Calculation {
   }
   
   static float generateRealWidth(Hole h) {
-    float ranFactor = sRandom(120,160);
+    float ranFactor = sRandom(80,120);
     float len = ranFactor * h.thicc;
     return len;
   }
@@ -222,7 +222,7 @@ static class Calculation {
         boolean wormPitProcs = ps.hole.wildlife == Wildlife.WORM && sRandom(1) <= Wildlife.WORM.procChance;
         
         // Accounts for the Coastal mod (only sand or sea)
-        if (ps.hole.mods.contains(Mod.COASTAL)) {
+        if (ps.hole.mods.contains(Mod.COASTAL) && sRandom(1) <= Mod.COASTAL.procChance) {
           float coastalSBC = ps.hole.thirst * Slope.loggy(0.75, 1.25, ps.currentPlayer().trigonometry);
           float coastalWHC = ps.hole.quench;
           

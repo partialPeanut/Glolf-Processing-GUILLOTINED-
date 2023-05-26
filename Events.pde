@@ -185,14 +185,16 @@ class EventWeatherReport implements GlolfEvent {
 class EventHoleSetup implements GlolfEvent {
   PlayState playState = new PlayState();
   int holeNumber;
+  boolean hasWildlife;
 
-  EventHoleSetup(PlayState ps, int hn) {
+  EventHoleSetup(PlayState ps, int hn, boolean hw) {
     playState = ps;
     holeNumber = hn+1;
+    hasWildlife = hw;
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.WILDLIFE_REPORT; }
+  EventPhase nextPhase() { return hasWildlife ? EventPhase.WILDLIFE_REPORT : EventPhase.UP_TOP; }
   String toText() { return "Next up: Hole Number " + holeNumber + "."; }
 }
 

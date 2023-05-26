@@ -63,7 +63,7 @@ class TourneyManager {
         ArrayList<Ball> balls = new ArrayList<Ball>();
         for (Player p : tourney.players) { balls.add(new Ball(p, currentHole().realLength)); }
         
-        lastEvent = new EventHoleSetup(new PlayState(balls, 0, currentHole(), tourneyManager.tourney), currentHole);
+        lastEvent = new EventHoleSetup(new PlayState(balls, 0, currentHole(), currentCourse(), tourneyManager.tourney), currentHole, currentHole().wildlife != Wildlife.NONE);
         holeDisplayer.setHole(currentHole());
         generateNewHole();
         break;

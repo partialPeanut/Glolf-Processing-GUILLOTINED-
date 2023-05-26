@@ -57,33 +57,35 @@ enum ModType {
 }
 
 enum Mod {
-  AGGRESSIVE   ("AGRO", 0.20, 0.8, ModType.PLAYER_ONLY),
-  SEMI_AQUATIC ("AQUA", 0.20, 0.8, ModType.PLAYER_ONLY),
-  ENTANGLED    ("ETNG", 0.00, 1.0, ModType.PLAYER_ONLY),
-  HARMONIZED   ("HRMZ", 0.00, 1.0, ModType.PLAYER_ONLY),
-  POISONED     ("POSN", 0.00, 1.0, ModType.PLAYER_ONLY),
+  AGGRESSIVE   ("AGRO", ModType.PLAYER_ONLY,    0.20, 0.8),
+  SEMI_AQUATIC ("AQUA", ModType.PLAYER_ONLY,    0.20, 0.8),
   
-  SWAMPLAND    ("SWMP", 0.10, 0.5, 2.0, 5.0, ModType.HOLE_OR_COURSE),
-  COASTAL      ("CSTL", 0.10, 1.0, 4.0, 6.0, ModType.HOLE_OR_COURSE);
+  ENTANGLED    ("ETNG", ModType.PLAYER_ONLY,    0.00, 1.0),
+  HARMONIZED   ("HRMZ", ModType.PLAYER_ONLY,    0.00, 1.0),
+  POISONED     ("PSND", ModType.PLAYER_ONLY,    0.00, 1.0),
+  
+  COASTAL      ("CSTL", ModType.HOLE_OR_COURSE, 0.00, 1.0),
+  SWAMPLAND    ("SWMP", ModType.HOLE_OR_COURSE, 0.10, 0.5, 1.5, 5.0);
   
   String brief;
-  double pickChance, procChance, val1, val2;
   ModType modType;
-  Mod(String b, double k, ModType mt) {
+  double pickChance, procChance, val1, val2;
+  
+  Mod(String b, ModType mt, double k) {
     brief = b;
-    pickChance = k;
     modType = mt;
+    pickChance = k;
   }
-  Mod(String b, double k, double r, ModType mt) {
-    this(b,k,mt);
+  Mod(String b, ModType mt, double k, double r) {
+    this(b,mt,k);
     procChance = r;
   }
-  Mod(String b, double k, double r, double v1, ModType mt) {
-    this(b,k,r,mt);
+  Mod(String b, ModType mt, double k, double r, double v1) {
+    this(b,mt,k,r);
     val1 = v1;
   }
-  Mod(String b, double k, double r, double v1, double v2, ModType mt) {
-    this(b,k,r,v1,mt);
+  Mod(String b, ModType mt, double k, double r, double v1, double v2) {
+    this(b,mt,k,r,v1);
     val2 = v2;
   }
 }
@@ -136,21 +138,23 @@ enum Weather {
 }
 
 enum Wildlife {
-  MOSQUITO ("Mosquitoes",     "Mosquitoes in the skies! Players, hope you brought bug spray.",        1.000, 0.01),
-  KOMODO   ("Komodo Dragons", "Komodo dragons in the shadows. Players, keep your antibiotics handy!", 0.015),
-  WORM     ("Sand Worms",     "Worms in the sand! Players, be wary of those bunkers.",                0.100);
+  NONE     ("None",           "No critters on this hole.",                                            6, 1.00),
+  MOSQUITO ("Mosquitoes",     "Mosquitoes in the skies! Players, hope you brought bug spray.",        1, 0.50, 0.01),
+  KOMODO   ("Komodo Dragons", "Komodo dragons in the shadows. Players, keep your antibiotics handy!", 1, 0.04),
+  WORM     ("Sand Worms",     "Worms in the sand! Players, be wary of those bunkers.",                2, 0.40);
   
   String name;
   String reportText;
-  double procChance, val1;
+  double pickWeight, procChance, val1;
   
-  Wildlife(String n, String rt, double pc) {
+  Wildlife(String n, String rt, double pw, double pc) {
     name = n;
     reportText = rt;
+    pickWeight = pw;
     procChance = pc;
   }
-  Wildlife(String n, String rt, double pc, double v1) {
-    this(n,rt,pc);
+  Wildlife(String n, String rt, double pw, double pc, double v1) {
+    this(n,rt,pw,pc);
     val1 = v1;
   }
 }

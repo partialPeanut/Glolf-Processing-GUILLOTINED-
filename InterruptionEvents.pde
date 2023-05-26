@@ -205,6 +205,7 @@ EventWormBattle doEventWormBattle(GlolfEvent le) {
   PlayState lastPS = feed.lastEvent().playState();
   wb.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
   wb.nextPhase = feed.lastEvent().nextPhase();
+  wb.ball = wb.playState.ballOf(wb.ball.player);
   
   float winChance = Slope.loggy(0, 1, wb.ball.player.scrappiness);
   if (random(1) < winChance) {

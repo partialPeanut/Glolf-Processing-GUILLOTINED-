@@ -14,13 +14,6 @@ class Hole {
     courseMods = cm;
     mods = generateMods();
     
-    float quenchMult = 1;
-    float thirstMult = 1;
-    if (mods.contains(Mod.COASTAL)) {
-      quenchMult = (float)Mod.COASTAL.val1;
-      thirstMult = (float)Mod.COASTAL.val2;
-    }
-    
     succblow = generateRandomSuccblow();
     
     roughness = generateRandomQuality();
@@ -28,8 +21,8 @@ class Hole {
     thicc = generateRandomQuality();
     verdancy = generateRandomQuality();
     obedience = generateRandomQuality();
-    quench = generateHazardousQuality() * quenchMult;
-    thirst = generateHazardousQuality() * thirstMult;
+    quench = generateHazardousQuality();
+    thirst = generateHazardousQuality();
     
     wildlife = generateWildlife();
     
@@ -133,6 +126,15 @@ class Hole {
   }
   Wildlife generateRandomWildlife() {
     Wildlife[] lives = Wildlife.values();
-    return lives[floor(random(lives.length))];
+    float totalWeight = 0;
+    for (Wildlife w : lives) {
+      totalWeight += w.pickWeight;
+    }
+    float choice = random(totalWeight);
+    for (Wildlife w : lives) {
+      choice -= w.pickWeight;
+      if (choice < 0) return w;
+    }
+    return Wildlife.NONE;
   }
 }

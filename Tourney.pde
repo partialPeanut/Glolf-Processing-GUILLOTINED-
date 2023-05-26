@@ -50,7 +50,7 @@ class Tourney {
   
   // Determine prize money
   int generatePrizeMoney() {
-    return int(random(25000,50000));
+    return int(random(100000,200000));
   }
   
   Player randomPlayer() {

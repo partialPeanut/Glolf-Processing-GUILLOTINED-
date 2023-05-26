@@ -20,7 +20,6 @@
 
 // Potential future mechanics
 //
-// Coastal (Everything is sand or water)
 // Cringe
 // Birds
 // Boogey Tournies // High scores win // Boons + Curses

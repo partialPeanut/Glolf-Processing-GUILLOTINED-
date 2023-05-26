@@ -498,6 +498,12 @@ class HoleDisplayer implements UIComponent {
       currDist += 100;
       currPoint = teePoint + int((w-2*margin)*currDist/totalLength);
     }
+    currPoint = teePoint;
+    while (currPoint > 2*margin) {
+      line(x+margin+currPoint, y+scaleY, x+margin+currPoint, y+scaleY-scaleHeight);
+      currDist -= 100;
+      currPoint = teePoint + int((w-2*margin)*currDist/totalLength);
+    }
     
     // Draw wind
     int numArrows = int(hole.succblow * 100);
