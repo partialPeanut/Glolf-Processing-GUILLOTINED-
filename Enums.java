@@ -65,11 +65,13 @@ enum Mod {
   POISONED     ("PSND", ModType.PLAYER_ONLY,    0.00, 1.0),
   
   COASTAL      ("CSTL", ModType.HOLE_OR_COURSE, 0.00, 1.0),
+  // Proc chance - chance to autosummon mosquitoes // Val0 - Multiplier to mosquito frequency // Val1 - Multiplier to mosquito damage
   SWAMPLAND    ("SWMP", ModType.HOLE_OR_COURSE, 0.10, 0.5, 1.5, 5.0);
   
   String brief;
   ModType modType;
-  double pickChance, procChance, val1, val2;
+  double pickChance, procChance;
+  double[] vals;
   
   Mod(String b, ModType mt, double k) {
     brief = b;
@@ -80,13 +82,9 @@ enum Mod {
     this(b,mt,k);
     procChance = r;
   }
-  Mod(String b, ModType mt, double k, double r, double v1) {
+  Mod(String b, ModType mt, double k, double r, double... vs) {
     this(b,mt,k,r);
-    val1 = v1;
-  }
-  Mod(String b, ModType mt, double k, double r, double v1, double v2) {
-    this(b,mt,k,r,v1);
-    val2 = v2;
+    vals = vs;
   }
 }
 

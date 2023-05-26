@@ -87,7 +87,7 @@ EventMosquitoBite doEventMosquitoBite(GlolfEvent le) {
   mb.playState = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
   mb.nextPhase = feed.lastEvent().nextPhase();
   
-  float swampMulti = mb.playState.hole.mods.contains(Mod.SWAMPLAND) ? (float)Mod.SWAMPLAND.val2 : 1;
+  float swampMulti = mb.playState.hole.mods.contains(Mod.SWAMPLAND) ? (float)Mod.SWAMPLAND.vals[1] : 1;
   float damage = (float)Wildlife.MOSQUITO.val1 * swampMulti;
   playerManager.changePlayerStat(mb.player, mb.stat, -damage);
   
