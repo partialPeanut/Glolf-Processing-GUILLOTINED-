@@ -1,4 +1,51 @@
 class UIController {
+  final int margin = 10;
+  final int buttonSetHeight = 80;
+  final int varDisplayWidth = 600;
+  final int eventDisplayHeight = 160;
+  
+  UIComponent[][] uiStartUp() {
+    int timeButtonWidth = buttonSetHeight-2*margin;
+    int headButtonWidth = int(((width - margin - varDisplayWidth) - (headButtons.length+1) * margin)/headButtons.length);
+    
+    UIComponent[][] uiComponents;    
+    
+    uiComponents = new UIComponent[6][];
+    
+    Button[] homeButton = new Button[1];
+    homeButton[0]  = new Button("Home", "home", margin, margin, varDisplayWidth-5*(timeButtonWidth+margin), buttonSetHeight-2*margin);
+    
+    Button[] timeButtons = new Button[5];
+    timeButtons[0] = new Button("II", "pause", 2*margin+varDisplayWidth-5*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+    timeButtons[1] = new Button(">", "play", 2*margin+varDisplayWidth-4*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+    timeButtons[2] = new Button("I<", "back", 2*margin+varDisplayWidth-3*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+    timeButtons[3] = new Button(">I", "next", 2*margin+varDisplayWidth-2*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+    timeButtons[4] = new Button(">>", "speed", 2*margin+varDisplayWidth-(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
+  
+    Button[] headButtons = new Button[4];
+    headButtons[0] = new Button("Murder", "kill_player", 2*margin + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+    headButtons[1] = new Button("Debugging", "debug_menu", 3*margin + headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+    headButtons[2] = new Button("Girl Button", "girl", 4*margin + 2*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+    headButtons[3] = new Button("Save Players", "save_players", 5*margin + 3*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
+  
+    EventDisplayer[] eventDisplayer = new EventDisplayer[1];
+    eventDisplayer[0] = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
+    
+    HoleDisplayer[] holeDisplayer = new HoleDisplayer[1];
+    holeDisplayer[0] = new HoleDisplayer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
+    
+    VariableDisplayer[] variableDisplayer = new VariableDisplayer[1];
+    variableDisplayer[0] = new VariableDisplayer(tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);      
+    
+    uiComponents[0] = homeButton;
+    uiComponents[1] = timeButtons;
+    uiComponents[2] = headButtons;
+    uiComponents[3] = eventDisplayer;
+    uiComponents[4] = holeDisplayer;
+    uiComponents[5] = variableDisplayer;    
+   
+    return uiComponents;
+  }
   
   // Creates a new linear gradient
   //NOTE: If n is too small and cannot be evenly divided by l-1, it can cause a NullPointerException!

@@ -1,4 +1,4 @@
-class EventDisplayer {
+class EventDisplayer implements UIComponent {
   int x, y, w, h;
   int margin = 10;
   int bgCol = 50;
@@ -12,6 +12,7 @@ class EventDisplayer {
     y = _y;
     w = _w;
     h = _h;
+    
   }
 
   void display() {
@@ -29,7 +30,7 @@ class EventDisplayer {
   }
 }
 
-class VariableDisplayer {
+class VariableDisplayer implements UIComponent {
   DisplayType type;
   TourneyManager tourneyManager;
   Player hoveredPlayer = null;
@@ -290,7 +291,7 @@ class VariableDisplayer {
   }
 }
 
-class HoleDisplayer {
+class HoleDisplayer implements UIComponent {
   Hole hole = null;
   
   int holePoint, teePoint;

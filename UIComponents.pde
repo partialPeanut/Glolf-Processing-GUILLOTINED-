@@ -1,4 +1,8 @@
-class Button {
+interface UIComponent {  
+  void display();
+}
+
+class Button implements UIComponent {
   float x, y, w, h;
   String text;
   String onClick;
@@ -83,20 +87,7 @@ class ButtonChangeVarDisplay extends Button {
   }
 }
 
-class Feed {
-  ArrayList<GlolfEvent> everyEvent = new ArrayList<GlolfEvent>();
-  
-  Feed() {
-    everyEvent.add(new EventVoid());
-  }
-  
-  void addEvent(GlolfEvent e) { everyEvent.add(e); }
-  GlolfEvent lastEvent() { return everyEvent.get(everyEvent.size()-1); }
-  GlolfEvent lastLastEvent() { return everyEvent.get(everyEvent.size()-2); }
-  void removeLastEvent() { everyEvent.remove(lastEvent()); }
-}
-
-class Gradient {
+class Gradient implements UIComponent {
   float x, y, w, h, r1, r2, p1, p2;
   Boolean linear = false;
   Boolean radial = false;

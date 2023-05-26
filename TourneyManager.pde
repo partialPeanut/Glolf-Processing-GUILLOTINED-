@@ -31,7 +31,6 @@ class TourneyManager {
     generateNewHole();
     
     feed.addEvent(new EventVoid());
-    resumeTime();
   }
   void restartTourney() { newTourney(tourney); }
   void newRandomTourney(ArrayList<Player> ps, int holes) { newTourney(new Tourney(ps,holes)); }
@@ -59,7 +58,7 @@ class TourneyManager {
         for (Player p : tourney.players) { balls.add(new Ball(p, currentHole().realLength)); }
         
         lastEvent = new EventHoleSetup(new PlayState(balls, 0, currentHole(), tourneyManager.tourney), currentHole);
-        holeVisualizer.setHole(tourney.holes.get(currentHole));
+        holeDisplayer.setHole(tourney.holes.get(currentHole));
         generateNewHole();
         break;
         
@@ -100,7 +99,7 @@ class TourneyManager {
         }
         
         lastEvent = new EventTourneyFinish(le.playState(), winners.get(0));
-        holeVisualizer.setHole(null);
+        holeDisplayer.setHole(null);
         break;
         
       case TOURNEY_REWARD:
@@ -146,7 +145,7 @@ class TourneyManager {
     if (e instanceof EventTourneyStart) {}
     else if (e instanceof EventHoleSetup) {
       currentHole = max(currentHole-1, 0);
-      holeVisualizer.setHole(feed.lastLastEvent().playState().hole);
+      holeDisplayer.setHole(feed.lastLastEvent().playState().hole);
       holeControl = new HoleControl(feed.lastLastEvent().playState().hole);
     }
     else if (e instanceof EventHoleFinish) {}

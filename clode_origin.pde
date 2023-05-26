@@ -12,14 +12,18 @@
 // Main menu
 // Debug Menu
 // Different gamemodes
-// Prize money + guillotine
-// Adding players or player death
+// Simultaneous Games: 
+// 4 courses > 1 tourney
+// 4 different rankings
+// Top scoring players in each section + top scoring players overall go on to final match
+// Course Mods and Hole Mods are interchangable
 
 // Potential future mechanics
 //
 // Coastal (Everything is sand or water)
 // Cringe
-// Birds and Bogeys
+// Birds
+// Boogey Tournies // High scores win // Boons + Curses
 // Shadow games
 // Giant turtle (the course is on a giant turtle)
 // Balls
@@ -39,6 +43,7 @@ LeagueManager leagueManager = new LeagueManager();
 PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;
 Feed feed = new Feed();
+UIController uiController = new UIController();
 
 int totalPlayers = 96;
 int playersPerTourney = 16;
@@ -46,13 +51,6 @@ int holesPerTourney = 9;
 
 PFont boldFont;
 PFont font;
-
-int margin = 10;
-int buttonSetHeight = 80;
-int varDisplayWidth = 600;
-int eventDisplayHeight = 160;
-int timeButtonWidth;
-int headButtonWidth;
 
 int timePassed = 0;
 int speedValue = 1000;
@@ -62,45 +60,36 @@ boolean timeStopped = false;
 Button homeButton;
 Button[] timeButtons = new Button[5];
 Button[] headButtons = new Button[4];
+UIComponent[][] uiComponents = new Button[6][];
 VariableDisplayer variableDisplayer;
 EventDisplayer eventDisplayer;
-HoleDisplayer holeVisualizer;
+HoleDisplayer holeDisplayer;
 
 // Setup
 void setup() {
+  //Application Settings
   surface.setTitle("Glolf!");
-  surface.setIcon(loadImage("assets/icons/game_icon/boogie2.png"));
+  surface.setIcon(loadImage("assets/icons/game_icon/bogey2.png"));
   size(1800, 960);
   
+  //Font
   boldFont = loadFont("assets/fonts/PixelOperator-48.vlw");
   font = loadFont("assets/fonts/PixelOperator-48.vlw");
   
-  // Initialize Buttons
-  timeButtonWidth = buttonSetHeight-2*margin;
-  headButtonWidth = int(((width - margin - varDisplayWidth) - (headButtons.length+1) * margin)/headButtons.length);
-  
-  homeButton = new Button("Home", "home", margin, margin, varDisplayWidth-5*(timeButtonWidth+margin), buttonSetHeight-2*margin);
- 
-  timeButtons[0] = new Button("II", "pause", 2*margin+varDisplayWidth-5*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[1] = new Button(">", "play", 2*margin+varDisplayWidth-4*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[2] = new Button("I<", "back", 2*margin+varDisplayWidth-3*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[3] = new Button(">I", "next", 2*margin+varDisplayWidth-2*(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-  timeButtons[4] = new Button(">>", "speed", 2*margin+varDisplayWidth-(timeButtonWidth+margin), margin, buttonSetHeight-2*margin, buttonSetHeight-2*margin);
-
-  headButtons[0] = new Button("Murder", "kill_player", 2*margin + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
-  headButtons[1] = new Button("Debugging", "debug_menu", 3*margin + headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
-  headButtons[2] = new Button("Girl Button", "girl", 4*margin + 2*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
-  headButtons[3] = new Button("Save Players", "save_players", 5*margin + 3*headButtonWidth + varDisplayWidth, margin, headButtonWidth, buttonSetHeight-2*margin);
-   
   //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
   playerManager.addNewPlayers(totalPlayers);
-  tourneyManager = new TourneyManager(new Tourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney));
+  tourneyManager = new TourneyManager(new Tourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney));  
     
-  // Initialize Displays
-  eventDisplayer = new EventDisplayer(2*margin+varDisplayWidth, buttonSetHeight+margin, width-3*margin-varDisplayWidth, eventDisplayHeight);
-  holeVisualizer = new HoleDisplayer(2*margin+varDisplayWidth, buttonSetHeight+eventDisplayHeight+2*margin, width-3*margin-varDisplayWidth, height-buttonSetHeight-eventDisplayHeight-3*margin);
-  variableDisplayer = new VariableDisplayer(tourneyManager, margin, buttonSetHeight + margin, varDisplayWidth, height - buttonSetHeight - 2*margin);
+  // Initialize Buttons & Displays
+  uiComponents = uiController.uiStartUp();
+  
+  homeButton        = (Button)uiComponents[0][0];
+  timeButtons       = (Button[])uiComponents[1];
+  headButtons       = (Button[])uiComponents[2];  
+  eventDisplayer    = (EventDisplayer)uiComponents[3][0];
+  holeDisplayer     = (HoleDisplayer)uiComponents[4][0];
+  variableDisplayer = (VariableDisplayer)uiComponents[5][0];
 }
 
 // Draw
@@ -108,18 +97,21 @@ void draw() {
   background(200);
   
   textFont(boldFont);
-  homeButton.display();
-  for (Button button : headButtons) button.display();
-  for (Button button : timeButtons) button.display();
+  for (int i = 0; i < 3; i++) {
+    for (UIComponent component : uiComponents[i]) component.display();
+    if (i == 2) {
+      textFont(font);
+      strokeWeight(2);
+      stroke(0);
+      line(0, uiController.buttonSetHeight, width, uiController.buttonSetHeight);
+    }
+  }
   
-  textFont(font);
-  strokeWeight(2);
-  stroke(0);
-  line(0, buttonSetHeight, width, buttonSetHeight);
+  
 
   variableDisplayer.display();
   eventDisplayer.display();
-  holeVisualizer.display();
+  holeDisplayer.display();
   
   if (playActive && !timeStopped) {
     timeButtons[0].unpress();
@@ -181,7 +173,7 @@ void keyPressed() {
 
 // When mouse is pressed
 void mousePressed() {
-  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeVisualizer.butts, homeButton));
+  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeDisplayer.butts, homeButton));
   
   for (Button button : allButtons) {
     if (button.isOver() && button.enabled) {
@@ -255,12 +247,12 @@ void mouseReleased() {
     if (button.onClick != "play" && button.onClick != "pause") button.unpress();
   }
   for (Button button : headButtons) button.unpress();
-  for (Button button : holeVisualizer.butts) button.unpress();
+  for (Button button : holeDisplayer.butts) button.unpress();
 }
 
 // When mouse is moved
 void mouseMoved() {
-  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeVisualizer.butts, homeButton));
+  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeDisplayer.butts, homeButton));
   for (Button button : allButtons) {
     if (button.isOver()) button.select();
     else button.deselect();
@@ -271,7 +263,7 @@ void mouseMoved() {
 
 // When mouse is dragged
 void mouseDragged() {
-  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeVisualizer.butts, homeButton));
+  Button[] allButtons = (Button[])concat(concat(timeButtons, headButtons), append(holeDisplayer.butts, homeButton));
   for (Button button : allButtons) {
     if (button.isOver()) button.select();
     else button.deselect();
