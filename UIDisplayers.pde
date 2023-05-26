@@ -269,10 +269,10 @@ class VariableDisplayer implements UIComponent {
     else return
       tourney.tourneyName +
       "\nPrize: " + nfc(tourney.prizeMoney) + " $ins" +
-      "\nWeather: " + tourney.weather.name +
+      "\nWeather: " + tourneyManager.currentCourse().weather.name +
       "\nMods: " + Format.modsToBrief(tourney.mods) +
       "\n" +
-      "\nHole " + (tourney.holes.indexOf(hole)+1) + " of " + tourney.holes.size() +
+      "\nHole " + (tourneyManager.currentCourse().holes.indexOf(hole)+1) + " of " + tourneyManager.currentCourse().holes.size() +
       "\nPar: " + hole.par +
       "\nWildlife: " + hole.wildlife.name +
       "\nMods: " + Format.modsToBrief(hole.mods) +

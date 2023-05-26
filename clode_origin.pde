@@ -47,7 +47,8 @@ UIController uiController = new UIController();
 
 int totalPlayers = 96;
 int playersPerTourney = 16;
-int holesPerTourney = 9;
+int coursesPerTourney = 4;
+int holesPerCourse = 9;
 
 PFont boldFont;
 PFont font;
@@ -79,7 +80,7 @@ void setup() {
   //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
   playerManager.addNewPlayers(totalPlayers);
-  tourneyManager = new TourneyManager(new Tourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney));  
+  tourneyManager = new TourneyManager(new Tourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), coursesPerTourney, holesPerCourse));  
     
   // Initialize Buttons & Displays
   uiComponents = uiController.uiStartUp();
@@ -166,7 +167,7 @@ void keyPressed() {
       playActive = !playActive;
       break;
     case 'c':
-      if (timeStopped) tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney);
+      if (timeStopped) tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), coursesPerTourney, holesPerCourse);
       break;
   }
 }
@@ -218,7 +219,7 @@ void mousePressed() {
           tourneyManager.restartTourney();
           break;
         case "continue":
-          tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), holesPerTourney);
+          tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), coursesPerTourney, holesPerCourse);
           break;
         case "exit":
           exit();

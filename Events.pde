@@ -142,13 +142,29 @@ class EventTourneyStart implements GlolfEvent {
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.WEATHER_REPORT; }
+  EventPhase nextPhase() { return EventPhase.COURSE_START; }
   String toText() {
     return "Wlecome to " + tourney.tourneyName + "!\n" +
-           tourney.players.size() + " players, " + tourney.holes.size() + " holes, and " + nfc(tourney.prizeMoney) + " $ins up for grabs!" +
+           tourney.players.size() + " players, " + tourney.courses.size() + " courses of " + tourney.courses.get(0).holes.size() + " holes, and " + nfc(tourney.prizeMoney) + " $ins up for grabs!" +
            "\nGLOLF!! BY ANY MEANS NECESSARY.";
   }
 }
+
+
+class EventCourseStart implements GlolfEvent {
+  PlayState playState = new PlayState();
+  int courseNumber;
+
+  EventCourseStart(PlayState ps, int cn) {
+    playState = ps;
+    courseNumber = cn+1;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return EventPhase.WEATHER_REPORT; }
+  String toText() { return "New course! Course Number " + courseNumber + "."; }
+}
+
 
 class EventWeatherReport implements GlolfEvent {
   PlayState playState = new PlayState();
@@ -424,9 +440,29 @@ class EventHoleFinish implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() {
     if (!last) return EventPhase.HOLE_SETUP;
-    else return EventPhase.TOURNEY_FINISH;
+    else return EventPhase.COURSE_FINISH;
   }
   String toText() { return "That was Hole Number " + holeNumber + "."; }
+}
+
+
+class EventCourseFinish implements GlolfEvent {
+  PlayState playState = new PlayState();
+  int courseNumber;
+  boolean last;
+
+  EventCourseFinish(PlayState ps, int cn, boolean end) {
+    playState = ps;
+    courseNumber = cn+1;
+    last = end;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() {
+    if (!last) return EventPhase.COURSE_START;
+    else return EventPhase.TOURNEY_FINISH;
+  }
+  String toText() { return "Course complete! That was Course Number " + courseNumber + "."; }
 }
 
 

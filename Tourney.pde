@@ -1,35 +1,26 @@
 class Tourney {
   ArrayList<Player> players = new ArrayList<Player>();
-  ArrayList<Hole> holes = new ArrayList<Hole>();
+  ArrayList<Course> courses = new ArrayList<Course>();
   ArrayList<Mod> mods = new ArrayList<Mod>();
-  Weather weather;
   
   String tourneyName;
   int prizeMoney;
-  
-  // Open / Cup / Challenge / Invitational / Tour / Tournament
 
-  Tourney(ArrayList<Player> ps, int holes) {
+  Tourney(ArrayList<Player> ps, int numCourses, int holesPerCourse) {
     players = ps;
+    courses = generateNewCourses(numCourses, holesPerCourse);
     mods = generateRandomMods();
-    generateNewHoles(holes);
-    weather = generateRandomWeather();
     tourneyName = generateTourneyName();
     prizeMoney = generatePrizeMoney();
   }
-
-  // Generate new courses
-  void generateNewHoles(int num) {
-    holes.clear();
-    for (int i = 0; i < num; i++) {
-      holes.add(new Hole(mods));
-    }
-  }
   
-  // Generate weather
-  Weather generateRandomWeather() {
-    Weather[] weathers = Weather.values();
-    return weathers[floor(random(weathers.length))];
+  // Generate new courses
+  ArrayList<Course> generateNewCourses(int num, int hpc) {
+    ArrayList<Course> _courses = new ArrayList<Course>();
+    for (int i = 0; i < num; i++) {
+      _courses.add(new Course(hpc));
+    }
+    return _courses;
   }
   
   // Generate Tourney name

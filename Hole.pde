@@ -6,11 +6,11 @@ class Hole {
   int par;
   float succblow, roughness, heterosexuality, thicc, verdancy, obedience, quench, thirst;
   Wildlife wildlife;
-  ArrayList<Mod> tourneyMods;
+  ArrayList<Mod> courseMods;
   ArrayList<Mod> mods;
 
   // Generates random course
-  Hole(ArrayList<Mod> tm) {
+  Hole(ArrayList<Mod> cm) {
     succblow = generateRandomSuccblow();
     
     roughness = generateRandomQuality();
@@ -21,7 +21,7 @@ class Hole {
     quench = generateHazardousQuality();
     thirst = generateHazardousQuality();
     
-    tourneyMods = tm;
+    courseMods = cm;
     mods = generateMods();
     wildlife = generateWildlife();
     
@@ -103,8 +103,8 @@ class Hole {
   
   ArrayList<Mod> generateMods() {
     ArrayList<Mod> _mods = new ArrayList<Mod>();
-    for (Mod m : tourneyMods) {
-      if (m.modType == ModType.HOLE_OR_TOURNEY) _mods.add(m);
+    for (Mod m : courseMods) {
+      if (m.modType == ModType.HOLE_OR_COURSE) _mods.add(m);
     }
     for (Mod m : generateRandomMods()) {
       if (!_mods.contains(m)) _mods.add(m);

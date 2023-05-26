@@ -10,6 +10,7 @@ enum EventPhase {
   PLAYER_DEATH,
   PLAYER_BIRTH,
   TOURNEY_START,
+  COURSE_START,
   WEATHER_REPORT,
   HOLE_SETUP,
   WILDLIFE_REPORT,
@@ -17,6 +18,7 @@ enum EventPhase {
   STROKE_TYPE,
   STROKE_OUTCOME,
   HOLE_FINISH,
+  COURSE_FINISH,
   TOURNEY_FINISH,
   TOURNEY_REWARD,
   MEMORIAM,
@@ -41,15 +43,15 @@ enum StrokeOutcomeType {
 }
 
 enum ModType {
-  PLAYER_ONLY     (true,  false, false),
-  HOLE_ONLY       (false, true,  false),
-  TOURNEY_ONLY    (false, false, true),
-  HOLE_OR_TOURNEY (false, true,  true);
+  PLAYER_ONLY     (true,  false, false, false),
+  HOLE_OR_COURSE  (false, true,  true,  false),
+  TOURNEY_ONLY    (false, false, false, true);
   
-  boolean playerAllowed, holeAllowed, tourneyAllowed;
-  ModType(boolean pa, boolean ha, boolean ta) {
+  boolean playerAllowed, holeAllowed, courseAllowed, tourneyAllowed;
+  ModType(boolean pa, boolean ha, boolean ca, boolean ta) {
     playerAllowed = pa;
     holeAllowed = ha;
+    courseAllowed = ca;
     tourneyAllowed = ta;
   }
 }
@@ -61,7 +63,7 @@ enum Mod {
   HARMONIZED   ("HRMZ", 0.00, 1.0, ModType.PLAYER_ONLY),
   POISONED     ("POSN", 0.00, 1.0, ModType.PLAYER_ONLY),
   
-  SWAMPLAND    ("SWMP", 0.50, 0.5, 2.0, 5.0, ModType.HOLE_OR_TOURNEY);
+  SWAMPLAND    ("SWMP", 0.50, 0.5, 2.0, 5.0, ModType.HOLE_OR_COURSE);
   
   String brief;
   double pickChance, procChance, val1, val2;

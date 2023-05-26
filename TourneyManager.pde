@@ -5,6 +5,7 @@
 
 class TourneyManager {
   Tourney tourney;
+  int currentCourse;
   int currentHole;
   HoleControl holeControl;
   GlolfEvent lastEvent;
@@ -27,13 +28,14 @@ class TourneyManager {
     currentScores.clear();
     for (Player p : t.players) currentScores.set(p.id, 0);
     winners.clear();
+    currentCourse = 0;
     currentHole = 0;
     generateNewHole();
     
     feed.addEvent(new EventVoid());
   }
   void restartTourney() { newTourney(tourney); }
-  void newRandomTourney(ArrayList<Player> ps, int holes) { newTourney(new Tourney(ps,holes)); }
+  void newRandomTourney(ArrayList<Player> ps, int courses, int hpc) { newTourney(new Tourney(ps,courses,hpc)); }
   
   // Create control for next hole
   void generateNewHole() { holeControl = new HoleControl(currentHole()); }
@@ -49,8 +51,12 @@ class TourneyManager {
         lastEvent = new EventTourneyStart(tourney);
         break;
         
+      case COURSE_START:
+        lastEvent = new EventCourseStart(le.playState(), currentCourse);
+        break;
+        
       case WEATHER_REPORT:
-        lastEvent = new EventWeatherReport(le.playState(), tourney.weather);
+        lastEvent = new EventWeatherReport(le.playState(), currentCourse().weather);
         break;
         
       case HOLE_SETUP:
@@ -58,7 +64,7 @@ class TourneyManager {
         for (Player p : tourney.players) { balls.add(new Ball(p, currentHole().realLength)); }
         
         lastEvent = new EventHoleSetup(new PlayState(balls, 0, currentHole(), tourneyManager.tourney), currentHole);
-        holeDisplayer.setHole(tourney.holes.get(currentHole));
+        holeDisplayer.setHole(currentHole());
         generateNewHole();
         break;
         
@@ -71,9 +77,16 @@ class TourneyManager {
         for (Ball b : le.playState().balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);
         }
-        boolean last = (currentHole == tourney.holes.size()-1);
-        lastEvent = new EventHoleFinish(le.playState(), currentHole, last);
+        boolean endOfCourse = (currentHole == currentCourse().holes.size()-1);
+        lastEvent = new EventHoleFinish(le.playState(), currentHole, endOfCourse);
         currentHole++;
+        break;
+        
+      case COURSE_FINISH:
+        boolean endOfTourney = (currentCourse == tourney.courses.size()-1);
+        lastEvent = new EventCourseFinish(le.playState(), currentCourse, endOfTourney);
+        currentCourse++;
+        currentHole = 0;
         break;
         
       case TOURNEY_FINISH:
@@ -126,9 +139,9 @@ class TourneyManager {
         
       default:
         lastEvent = holeControl.nextEvent();
-        if (tourney.weather.procCheck(lastEvent)) {
+        if (currentCourse().weather.procCheck(lastEvent)) {
           GlolfEvent weatherEvent = null;
-          switch (tourney.weather) {
+          switch (currentCourse().weather) {
             case MIRAGE:  weatherEvent = new EventMirageSwap(); break;
             case TEMPEST: weatherEvent = new EventTempestSwap(); break;
             default: break;
@@ -148,7 +161,11 @@ class TourneyManager {
       holeDisplayer.setHole(feed.lastLastEvent().playState().hole);
       holeControl = new HoleControl(feed.lastLastEvent().playState().hole);
     }
-    else if (e instanceof EventHoleFinish) {}
+    else if (e instanceof EventHoleFinish) { currentHole--; }
+    else if (e instanceof EventCourseFinish) {
+      currentCourse--;
+      currentHole = currentCourse().holes.size()-1;
+    }
     else holeControl.undoEvent(e);
   }
   
@@ -171,7 +188,8 @@ class TourneyManager {
     currentScores.remove(p.id);
   }
   
-  Hole currentHole() { return tourney.holes.get(currentHole); }
+  Course currentCourse() { return tourney.courses.get(currentCourse); }
+  Hole currentHole() { return currentCourse().holes.get(currentHole); }
   
   Player currentPlayer() { return feed.lastEvent().playState().currentPlayer(); }
   int currentScoreOf(Player player) { return currentScores.get(player.id); }
