@@ -58,8 +58,9 @@ static class Format {
   }
 
   static String intToBird(int strokesOverPar) {
-    if (strokesOverPar < -4) return "MegaBird";
+    if (strokesOverPar < -5) return "MegaBird";
     switch(strokesOverPar) {
+      case -5: return "Peregrine";
       case -4: return "Condor";
       case -3: return "Albatross";
       case -2: return "Eagle";
@@ -68,7 +69,20 @@ static class Format {
       case 1: return "Bogey";
       case 2: return "Double Bogey";
       case 3: return "Triple Bogey";
-      default: return "OverBogey";
+      case 4: return "OverBogey";
+      case 5: return "SuperBogey";
+      case 6: return "HyperBogey";
+      case 7: return "UltraBogey";
+      case 8: return "KiloBogey";
+      case 9: return "MegaBogey";
+      case 10: return "GigaBogey";
+      case 11: return "TeraBogey";
+      case 12: return "PetaBogey";
+      case 13: return "ExaBogey";
+      case 14: return "ZettaBogey";
+      case 15: return "YottaBogey";
+      case 16: return "FinalBogey";
+      default: return "BeyondBogey";
     }
   }
 }

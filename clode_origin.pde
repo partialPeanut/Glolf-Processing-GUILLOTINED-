@@ -61,9 +61,13 @@
 // > Course Mods and Hole Mods are interchangable
 
 // -----------------------------------Potential future mechanics------------------------------------
+// > High Score (Double Double Double Double Double Bogey)
 // > Cringe
 // > Birds
+// > Cult of the Hole
 // > Boogey Tournies // High scores win // Boons + Curses
+// > (DBB) Double bogey -> Hole in ones
+// > (DBC) For all players: Par -> double bogey
 // > Shadow games
 // > Giant turtle (the course is on a giant turtle)
 // > Balls
@@ -113,13 +117,13 @@ HoleDisplayer holeDisplayer;
 void setup() {
   //Application Settings
   surface.setTitle("Glolf!");
-  surface.setResizable(true);
+  //surface.setResizable(true);
   surface.setIcon(loadImage("assets/icons/game_icon/bogey2.png"));
   size(1800, 960);
   
   //Font
-  boldFont = loadFont("assets/fonts/PixelOperator-48.vlw");
-  font = loadFont("assets/fonts/PixelOperator-48.vlw");
+  boldFont = loadFont("assets/fonts/pixeloperator/PixelOperator-48.vlw");
+  font = loadFont("assets/fonts/pixeloperator/PixelOperator-48.vlw");
   
   //Initialize Players & TourneyManager
   playerManager.clearAllPlayers();
