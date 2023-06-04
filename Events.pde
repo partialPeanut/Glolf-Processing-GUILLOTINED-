@@ -142,7 +142,7 @@ class EventTourneyStart implements GlolfEvent {
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return EventPhase.COURSE_START; }
+  EventPhase nextPhase() { return statCollection ? EventPhase.HOLE_SETUP : EventPhase.COURSE_START; }
   String toText() {
     return "Wlecome to " + tourney.tourneyName + "!\n" +
            tourney.players.size() + " players, " + tourney.courses.size() + " courses of " + tourney.courses.get(0).holes.size() + " holes, and " + nfc(tourney.prizeMoney) + " $ins up for grabs!" +
@@ -194,7 +194,7 @@ class EventHoleSetup implements GlolfEvent {
   }
   
   PlayState playState() { return playState; }
-  EventPhase nextPhase() { return hasWildlife ? EventPhase.WILDLIFE_REPORT : EventPhase.UP_TOP; }
+  EventPhase nextPhase() { return hasWildlife && !statCollection ? EventPhase.WILDLIFE_REPORT : EventPhase.UP_TOP; }
   String toText() { return "Next up: Hole Number " + holeNumber + "."; }
 }
 
@@ -461,7 +461,7 @@ class EventCourseFinish implements GlolfEvent {
   
   PlayState playState() { return playState; }
   EventPhase nextPhase() {
-    if (!last) return EventPhase.COURSE_START;
+    if (!last) return statCollection ? EventPhase.HOLE_SETUP : EventPhase.COURSE_START;
     else return EventPhase.TOURNEY_FINISH;
   }
   String toText() { return "Course complete! That was Course Number " + courseNumber + "."; }

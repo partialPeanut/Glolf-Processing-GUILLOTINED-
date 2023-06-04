@@ -16,6 +16,10 @@ static class Calculation {
     return -1;
   }
   
+  static float generateRealLength(Hole h) {
+    return sRandom(1000);
+  }
+  
   static float generateRealWidth(Hole h) {
     float ranFactor = sRandom(80,120);
     float len = ranFactor * h.thicc;

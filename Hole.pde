@@ -83,7 +83,7 @@ class Hole {
   }
 
   // Determines the real dimensions of the hole in gallons
-  float generateRealLength() { return random(0, 1000); }
+  float generateRealLength() { return Calculation.generateRealLength(this); }
   float generateRealWidth() { return Calculation.generateRealWidth(this); }
   float generateGreenLength() { return Calculation.generateGreenLength(this); }
   

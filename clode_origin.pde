@@ -84,18 +84,20 @@
 //==================================================================================================
 
 
-
-
 LeagueManager leagueManager = new LeagueManager();
 PlayerManager playerManager = new PlayerManager();
 TourneyManager tourneyManager;
 Feed feed = new Feed();
 UIController uiController = new UIController();
 
-int totalPlayers = 96;
-int playersPerTourney = 16;
+static final boolean statCollection = true;
+int eventsPerFrame = 1000;
+HashMap<Float,Float> sizeAndDataPar = new HashMap<Float,Float>();
+
+int totalPlayers = statCollection ? 1000 : 96;
+int playersPerTourney = statCollection ? 100 : 16;
 int coursesPerTourney = 4;
-int holesPerCourse = 9;
+int holesPerCourse = statCollection ? 18 : 9;
 
 PFont boldFont;
 PFont font;
@@ -155,14 +157,20 @@ void draw() {
       line(0, uiController.buttonSetHeight, width, uiController.buttonSetHeight);
     }
   }
-  
-  
 
   variableDisplayer.display();
   eventDisplayer.display();
   holeDisplayer.display();
   
-  if (playActive && !timeStopped) {
+  if (statCollection) {
+    for (int i = 0; i < eventsPerFrame; i++) {
+      if (feed.lastEvent() instanceof EventTourneyConclude) {
+        tourneyManager.newRandomTourney(playerManager.chooseRandomLivingPlayers(playersPerTourney), coursesPerTourney, holesPerCourse);
+      }
+      nextEvent();
+    }
+  }
+  else if (playActive && !timeStopped) {
     timeButtons[0].unpress();
     timeButtons[1].press();
     timeButtons[2].disable();

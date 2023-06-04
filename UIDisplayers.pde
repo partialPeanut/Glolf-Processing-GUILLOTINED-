@@ -344,6 +344,10 @@ class HoleDisplayer implements UIComponent {
   color arcColor = #7fffa666; // Color of the stroke arc
   
   color knockedColor = #C70039; // Color when a ball is knocked away
+  
+  color pointCol = 150;
+  float maxLength = 1000;
+  float maxPar = 30;
 
   HoleDisplayer(int _x, int _y, int _w, int _h) {
     x = _x;
@@ -402,9 +406,11 @@ class HoleDisplayer implements UIComponent {
     for (int i = 0; i < greenSlope; i++) {
       greenHeights.append(sq(greenSlope-i)*greenBegin/sq(greenSlope));
     }
-    greenHeights.append(new float[greenEnd-greenStart-2*greenSlope]);
-    for (int i = 0; i < greenSlope; i++) {
-      greenHeights.append(sq(i)*greenFinish/sq(greenSlope));
+    if (greenEnd-greenStart-2*greenSlope > 0) {
+      greenHeights.append(new float[greenEnd-greenStart-2*greenSlope]);
+      for (int i = 0; i < greenSlope; i++) {
+        greenHeights.append(sq(i)*greenFinish/sq(greenSlope));
+      }
     }
   }
 
@@ -426,7 +432,17 @@ class HoleDisplayer implements UIComponent {
     }
     
     for (Button b : butts) b.disable();
-    displayHoleVisualizerReal();
+    if (statCollection) {
+      stroke(pointCol);
+      strokeWeight(4);
+      for (HashMap.Entry me : sizeAndDataPar.entrySet()) {
+        float len = (float)me.getKey();
+        float par = (float)me.getValue();
+        point(x+margin + (w-2*margin) * len/maxLength, y+h-margin - (h-2*margin) * par/maxPar);
+      }
+      strokeWeight(1);
+    }
+    else displayHoleVisualizerReal();
   }
   
   void displayTourneyContinue() {
