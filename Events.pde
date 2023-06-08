@@ -144,9 +144,28 @@ class EventTourneyStart implements GlolfEvent {
   PlayState playState() { return playState; }
   EventPhase nextPhase() { return statCollection ? EventPhase.HOLE_SETUP : EventPhase.COURSE_START; }
   String toText() {
-    return "Wlecome to " + tourney.tourneyName + "!\n" +
-           tourney.players.size() + " players, " + tourney.courses.size() + " courses of " + tourney.courses.get(0).holes.size() + " holes, and " + nfc(tourney.prizeMoney) + " $ins up for grabs!" +
+    return "Wlecome to " + tourney.tourneyName + (tourney.mods.contains(Mod.CHARITY_MATCH) ? ", a Charity Match!" : "!") +
+           "\n" + tourney.players.size() + " players, " + tourney.courses.size() + " courses of " + tourney.courses.get(0).holes.size() + " holes, and " +
+             (tourney.mods.contains(Mod.CHARITY_MATCH) ? ("the winner will atone for " + nfc(abs(tourney.prizeMoney)) + " $ins!") : (nfc(tourney.prizeMoney) + " $ins up for grabs!")) +
            "\nGLOLF!! BY ANY MEANS NECESSARY.";
+  }
+}
+
+
+class EventTourneyDonate implements GlolfEvent {
+  PlayState playState = new PlayState();
+  ArrayList<Player> players;
+  int donation;
+  EventPhase nextPhase;
+
+  EventTourneyDonate(ArrayList<Player> ps) {
+    players = ps;
+  }
+  
+  PlayState playState() { return playState; }
+  EventPhase nextPhase() { return nextPhase; }
+  String toText() {
+    return "Hearts swell! Kindness overflowing! Each player atones for " + nfc(donation) + " $ins.";
   }
 }
 
@@ -516,9 +535,10 @@ class EventTourneyReward implements GlolfEvent {
     else return EventPhase.TOURNEY_CONCLUDE;
   }
   String toText() {
+    boolean ltz = prize < 0;
     String text = "The " + getPlace() + " place ";
-    if (winners.size() > 1) text += "winners receive " + nfc(prize) + " $ins each: ";
-    else text += "winner receives " + nfc(prize) + " $ins: ";
+    if (winners.size() > 1) text += "winners " + (ltz ? "atone for " : "receive ")  + nfc(abs(prize)) + " $ins each: ";
+    else text += "winner " + (ltz ? "atones for " : "receives ") + nfc(abs(prize)) + " $ins: ";
     
     for (int i = 0; i < winners.size(); i++) {
       if (i > 0) text += (winners.size() > 2 ? "," : "") + " " + (i == winners.size()-1 ? "and " : "");

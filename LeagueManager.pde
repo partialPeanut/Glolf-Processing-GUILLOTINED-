@@ -19,6 +19,7 @@ class LeagueManager {
       else if (lastEvent instanceof EventQuantumSquid)   { lastEvent = doEventQuantumSquid(lastEvent); }
       else if (lastEvent instanceof EventQuantumUnsquid) { lastEvent = doEventQuantumUnsquid(lastEvent); }
       else if (lastEvent instanceof EventTempestSwap)    { lastEvent = doEventTempestSwap(lastEvent); }
+      else if (lastEvent instanceof EventTourneyDonate)  { lastEvent = doEventTourneyDonate(lastEvent); }
       else if (lastEvent instanceof EventWormBattle)     { lastEvent = doEventWormBattle(lastEvent); }
     }
     else {

@@ -57,16 +57,19 @@ enum ModType {
 }
 
 enum Mod {
-  AGGRESSIVE   ("AGRO", ModType.PLAYER_ONLY,    0.20, 0.8),
-  SEMI_AQUATIC ("AQUA", ModType.PLAYER_ONLY,    0.20, 0.8),
+  AGGRESSIVE    ("AGRO", ModType.PLAYER_ONLY,    0.20, 0.8),
+  SEMI_AQUATIC  ("AQUA", ModType.PLAYER_ONLY,    0.20, 0.8),
   
-  ENTANGLED    ("ETNG", ModType.PLAYER_ONLY,    0.00, 1.0),
-  HARMONIZED   ("HRMZ", ModType.PLAYER_ONLY,    0.00, 1.0),
-  POISONED     ("PSND", ModType.PLAYER_ONLY,    0.00, 1.0),
+  ENTANGLED     ("ETNG", ModType.PLAYER_ONLY,    0.00, 1.0),
+  HARMONIZED    ("HRMZ", ModType.PLAYER_ONLY,    0.00, 1.0),
+  POISONED      ("PSND", ModType.PLAYER_ONLY,    0.00, 1.0),
   
-  COASTAL      ("CSTL", ModType.HOLE_OR_COURSE, 0.00, 1.0),
+  COASTAL       ("CSTL", ModType.HOLE_OR_COURSE, 0.00, 1.0),
   // Proc chance - chance to autosummon mosquitoes // Val0 - Multiplier to mosquito frequency // Val1 - Multiplier to mosquito damage
-  SWAMPLAND    ("SWMP", ModType.HOLE_OR_COURSE, 0.10, 0.5, 1.5, 5.0);
+  SWAMPLAND     ("SWMP", ModType.HOLE_OR_COURSE, 0.10, 0.5, 1.5, 5.0),
+  
+  // Val0 - Multiplier to prize money // Val1 - Amount of average networth donated
+  CHARITY_MATCH ("CHRT", ModType.TOURNEY_ONLY,   1.00, 1.0, -1.0, 0.2);
   
   String brief;
   ModType modType;

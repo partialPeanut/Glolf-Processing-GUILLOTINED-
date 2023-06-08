@@ -8,10 +8,18 @@ class Tourney {
 
   Tourney(ArrayList<Player> ps, int numCourses, int holesPerCourse) {
     players = ps;
-    courses = generateNewCourses(numCourses, holesPerCourse);
     mods = generateRandomMods();
+    courses = generateNewCourses(numCourses, holesPerCourse);
     tourneyName = generateTourneyName();
     prizeMoney = generatePrizeMoney();
+  }
+  
+  ArrayList<Mod> generateRandomMods() {
+    ArrayList<Mod> _mods = new ArrayList<Mod>();
+    for (Mod m : Mod.values()) {
+      if (m.modType.tourneyAllowed && random(1) < m.pickChance) _mods.add(m);
+    }
+    return _mods;
   }
   
   // Generate new courses
@@ -40,17 +48,10 @@ class Tourney {
     }   
   }
   
-  ArrayList<Mod> generateRandomMods() {
-    ArrayList<Mod> _mods = new ArrayList<Mod>();
-    for (Mod m : Mod.values()) {
-      if (m.modType.tourneyAllowed && random(1) < m.pickChance) _mods.add(m);
-    }
-    return _mods;
-  }
-  
   // Determine prize money
   int generatePrizeMoney() {
-    return int(random(100000,200000));
+    float multiplier = mods.contains(Mod.CHARITY_MATCH) ? (float)Mod.CHARITY_MATCH.vals[0] : 1.0;
+    return int(multiplier * random(100000,200000));
   }
   
   Player randomPlayer() {

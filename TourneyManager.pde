@@ -49,6 +49,7 @@ class TourneyManager {
         
       case TOURNEY_START:
         lastEvent = new EventTourneyStart(tourney);
+        leagueManager.interruptWith(new EventTourneyDonate(tourney.players));
         break;
         
       case COURSE_START:
@@ -93,10 +94,12 @@ class TourneyManager {
         break;
         
       case COURSE_FINISH:
-        boolean endOfTourney = (currentCourse == tourney.courses.size()-1);
+        boolean endOfTourney = (currentCourse >= tourney.courses.size()-1);
         lastEvent = new EventCourseFinish(le.playState(), currentCourse, endOfTourney);
-        currentCourse++;
-        currentHole = 0;
+        if (!endOfTourney) {
+          currentCourse++;
+          currentHole = 0;
+        }
         break;
         
       case TOURNEY_FINISH:

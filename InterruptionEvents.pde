@@ -200,6 +200,25 @@ EventTempestSwap doEventTempestSwap(GlolfEvent le) {
   return ts;
 }
 
+EventTourneyDonate doEventTourneyDonate(GlolfEvent le) {
+  EventTourneyDonate td = (EventTourneyDonate)le;
+  PlayState lastPS = feed.lastEvent().playState();
+  PlayState newPS = lastPS.balls == null ? new PlayState() : new PlayState(lastPS);
+  td.nextPhase = feed.lastEvent().nextPhase();
+  
+  int totalNetworth = 0;
+  for (Player p : td.players) {
+    totalNetworth += p.networth;
+  }
+  td.donation = floor(((float)Mod.CHARITY_MATCH.vals[1] * totalNetworth)/td.players.size());
+  
+  for (Player p : td.players) {
+    playerManager.giveSins(p, -td.donation);
+  }
+  
+  return td;
+}
+
 EventWormBattle doEventWormBattle(GlolfEvent le) {
   EventWormBattle wb = (EventWormBattle)le;
   PlayState lastPS = feed.lastEvent().playState();

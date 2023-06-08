@@ -73,7 +73,6 @@
 // > Balls
 // > Clubs (both the sticks and the bougie places)
 // > Tourny of the Damned (Revive player?)
-// > Charity Match: Atone
 // > Sainthood -100000 $ins
 // > Strikes
 
@@ -90,7 +89,7 @@ TourneyManager tourneyManager;
 Feed feed = new Feed();
 UIController uiController = new UIController();
 
-static final boolean statCollection = true;
+static final boolean statCollection = false;
 int eventsPerFrame = 1000;
 HashMap<Float,Integer> sizeAndEstimatedPar = new HashMap<Float,Integer>();
 HashMap<Float,Float> sizeAndDataPar = new HashMap<Float,Float>();
