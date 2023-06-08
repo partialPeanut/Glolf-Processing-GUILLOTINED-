@@ -77,9 +77,15 @@ class Hole {
 
   // Generates a random par
   int lengthToPar(float len) {
-    if (len < 150) return int(4.1);
-    else if (len < 250) return int(-0.009*len + 5.45);
-    else return int(len/150 + 23/15);
+    float plateauPar = 4.1;
+    float plateauLength = 150;
+    float dropSlope = -0.006;
+    float dropLength = 150;
+    float riseSlope = 0.008;
+    
+    if (len < plateauLength) return int(plateauPar);
+    else if (len < plateauPar + dropLength) return int(dropSlope*(len-plateauLength) + plateauPar);
+    else return int(riseSlope * (len-plateauPar-dropLength) + (plateauPar + dropSlope*dropLength));
   }
 
   // Determines the real dimensions of the hole in gallons

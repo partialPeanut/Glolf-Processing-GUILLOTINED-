@@ -346,8 +346,9 @@ class HoleDisplayer implements UIComponent {
   color knockedColor = #C70039; // Color when a ball is knocked away
   
   color pointCol = 150;
+  color lineCol = color(150,0,0);
   float maxLength = 1000;
-  float maxPar = 30;
+  float maxPar = 12;
 
   HoleDisplayer(int _x, int _y, int _w, int _h) {
     x = _x;
@@ -433,11 +434,17 @@ class HoleDisplayer implements UIComponent {
     
     for (Button b : butts) b.disable();
     if (statCollection) {
-      stroke(pointCol);
       strokeWeight(4);
+      stroke(pointCol);
       for (HashMap.Entry me : sizeAndDataPar.entrySet()) {
         float len = (float)me.getKey();
         float par = (float)me.getValue();
+        point(x+margin + (w-2*margin) * len/maxLength, y+h-margin - (h-2*margin) * par/maxPar);
+      }
+      stroke(lineCol);
+      for (HashMap.Entry me : sizeAndEstimatedPar.entrySet()) {
+        float len = (float)me.getKey();
+        int par = (int)me.getValue();
         point(x+margin + (w-2*margin) * len/maxLength, y+h-margin - (h-2*margin) * par/maxPar);
       }
       strokeWeight(1);

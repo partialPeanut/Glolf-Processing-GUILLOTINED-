@@ -64,7 +64,7 @@ enum Mod {
   HARMONIZED   ("HRMZ", ModType.PLAYER_ONLY,    0.00, 1.0),
   POISONED     ("PSND", ModType.PLAYER_ONLY,    0.00, 1.0),
   
-  COASTAL      ("CSTL", ModType.HOLE_OR_COURSE, 0.10, 1.0),
+  COASTAL      ("CSTL", ModType.HOLE_OR_COURSE, 0.00, 1.0),
   // Proc chance - chance to autosummon mosquitoes // Val0 - Multiplier to mosquito frequency // Val1 - Multiplier to mosquito damage
   SWAMPLAND    ("SWMP", ModType.HOLE_OR_COURSE, 0.10, 0.5, 1.5, 5.0);
   

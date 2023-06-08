@@ -81,7 +81,11 @@ class TourneyManager {
           totalStrokes += b.stroke;
         }
         float avg = totalStrokes/le.playState().balls.size();
-        if (statCollection) sizeAndDataPar.put(le.playState().hole.realLength, avg);
+        if (statCollection) {
+          Hole hole = le.playState().hole;
+          sizeAndDataPar.put(hole.realLength, avg);
+          sizeAndEstimatedPar.put(hole.realLength, hole.par);
+        }
         
         boolean endOfCourse = (currentHole == currentCourse().holes.size()-1);
         lastEvent = new EventHoleFinish(le.playState(), currentHole, endOfCourse);

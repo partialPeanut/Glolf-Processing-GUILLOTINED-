@@ -92,6 +92,7 @@ UIController uiController = new UIController();
 
 static final boolean statCollection = true;
 int eventsPerFrame = 1000;
+HashMap<Float,Integer> sizeAndEstimatedPar = new HashMap<Float,Integer>();
 HashMap<Float,Float> sizeAndDataPar = new HashMap<Float,Float>();
 
 int totalPlayers = statCollection ? 1000 : 96;
