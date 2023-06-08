@@ -345,8 +345,9 @@ class HoleDisplayer implements UIComponent {
   
   color knockedColor = #C70039; // Color when a ball is knocked away
   
-  color pointCol = 150;
-  color lineCol = color(150,0,0);
+  color meanCol = color(255,0,0);
+  color medianCol = color(0,255,0);
+  color realCol = color(0,0,255,30);
   float maxLength = 1000;
   float maxPar = 12;
 
@@ -414,11 +415,29 @@ class HoleDisplayer implements UIComponent {
       }
     }
   }
+  
+  void drawReal(float l, float p) {
+    strokeWeight(20);
+    stroke(realCol);
+    point(x+margin + (w-2*margin) * l/maxLength, y+h-margin - (h-2*margin) * p/maxPar);
+  }
+  void drawMedian(float l, float p) {
+    strokeWeight(4);
+    stroke(medianCol);
+    point(x+margin + (w-2*margin) * l/maxLength, y+h-margin - (h-2*margin) * p/maxPar);
+  }
+  void drawMean(float l, float p) {
+    strokeWeight(4);
+    stroke(meanCol);
+    point(x+margin + (w-2*margin) * l/maxLength, y+h-margin - (h-2*margin) * p/maxPar);
+  }
 
   void display() {
     fill(bgCol);
     stroke(strokeCol);
     rect(x, y, w, h);
+    
+    if (statCollection) return;
     
     if (feed.lastEvent() instanceof EventTourneyConclude) {
       displayTourneyContinue();
@@ -433,23 +452,7 @@ class HoleDisplayer implements UIComponent {
     }
     
     for (Button b : butts) b.disable();
-    if (statCollection) {
-      strokeWeight(4);
-      stroke(pointCol);
-      for (HashMap.Entry me : sizeAndDataPar.entrySet()) {
-        float len = (float)me.getKey();
-        float par = (float)me.getValue();
-        point(x+margin + (w-2*margin) * len/maxLength, y+h-margin - (h-2*margin) * par/maxPar);
-      }
-      stroke(lineCol);
-      for (HashMap.Entry me : sizeAndEstimatedPar.entrySet()) {
-        float len = (float)me.getKey();
-        int par = (int)me.getValue();
-        point(x+margin + (w-2*margin) * len/maxLength, y+h-margin - (h-2*margin) * par/maxPar);
-      }
-      strokeWeight(1);
-    }
-    else displayHoleVisualizerReal();
+    displayHoleVisualizerReal();
   }
   
   void displayTourneyContinue() {

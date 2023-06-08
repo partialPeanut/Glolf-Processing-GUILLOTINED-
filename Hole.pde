@@ -78,10 +78,10 @@ class Hole {
   // Generates a random par
   int lengthToPar(float len) {
     float plateauPar = 4.1;
-    float plateauLength = 150;
-    float dropSlope = -0.006;
-    float dropLength = 150;
-    float riseSlope = 0.008;
+    float plateauLength = 100;
+    float dropSlope = -0.0045;
+    float dropLength = 220;
+    float riseSlope = 0.0083;
     
     if (len < plateauLength) return int(plateauPar);
     else if (len < plateauPar + dropLength) return int(dropSlope*(len-plateauLength) + plateauPar);

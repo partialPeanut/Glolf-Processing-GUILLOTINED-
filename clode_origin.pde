@@ -52,13 +52,12 @@
 // ------------------------------------------Main Features------------------------------------------
 // > Main menu
 // > Debug Menu
-// > Feed
+// > Feed (involvesPlayer function)
 // > Different gamemodes
 // > Simultaneous Games: 
 // > 4 courses > 1 tourney
 // > 4 different rankings
 // > Top scoring players in each section + top scoring players overall go on to final match
-// > Course Mods and Hole Mods are interchangable
 
 // -----------------------------------Potential future mechanics------------------------------------
 // > High Score (Double Double Double Double Double Bogey)
@@ -73,7 +72,7 @@
 // > Balls
 // > Clubs (both the sticks and the bougie places)
 // > Tourny of the Damned (Revive player?)
-// > Sainthood -100000 $ins
+// > Sainthood
 // > Strikes
 
 // ----------------------------------------------Bugs-----------------------------------------------
@@ -90,9 +89,11 @@ Feed feed = new Feed();
 UIController uiController = new UIController();
 
 static final boolean statCollection = false;
+boolean firstFrame = true;
 int eventsPerFrame = 1000;
-HashMap<Float,Integer> sizeAndEstimatedPar = new HashMap<Float,Integer>();
-HashMap<Float,Float> sizeAndDataPar = new HashMap<Float,Float>();
+HashMap<Float,Integer> sizeAndCalculatedPar = new HashMap<Float,Integer>();
+HashMap<Float,Integer> sizeAndMedianPar = new HashMap<Float,Integer>();
+HashMap<Float,Float> sizeAndMeanPar = new HashMap<Float,Float>();
 
 int totalPlayers = statCollection ? 1000 : 96;
 int playersPerTourney = statCollection ? 100 : 16;
@@ -145,7 +146,7 @@ void setup() {
 
 // Draw
 void draw() {
-  background(200);
+  if (!statCollection) background(200);
   
   textFont(boldFont);
   for (int i = 0; i < 3; i++) {
@@ -160,7 +161,11 @@ void draw() {
 
   variableDisplayer.display();
   eventDisplayer.display();
-  holeDisplayer.display();
+  if (!statCollection) holeDisplayer.display();
+  else if (firstFrame) {
+    holeDisplayer.display();
+    firstFrame = false;
+  }
   
   if (statCollection) {
     for (int i = 0; i < eventsPerFrame; i++) {

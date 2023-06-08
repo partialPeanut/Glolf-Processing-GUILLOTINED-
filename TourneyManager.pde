@@ -77,15 +77,24 @@ class TourneyManager {
         playerManager.poisonCounters.clear();
         
         float totalStrokes = 0;
+        IntList allStrokes = new IntList();
         for (Ball b : le.playState().balls) {
           tourneyManager.currentScores.add(b.player.id, b.stroke);
           totalStrokes += b.stroke;
+          allStrokes.append(b.stroke);
         }
-        float avg = totalStrokes/le.playState().balls.size();
         if (statCollection) {
+          allStrokes.sort();
+          int median = allStrokes.get(allStrokes.size()/2);
+          float mean = totalStrokes/le.playState().balls.size();
+          
           Hole hole = le.playState().hole;
-          sizeAndDataPar.put(hole.realLength, avg);
-          sizeAndEstimatedPar.put(hole.realLength, hole.par);
+          sizeAndCalculatedPar.put(hole.realLength, hole.par);
+          holeDisplayer.drawReal(hole.realLength, hole.par);
+          sizeAndMedianPar.put(hole.realLength, median);
+          holeDisplayer.drawMedian(hole.realLength, median);
+          sizeAndMeanPar.put(hole.realLength, mean);
+          holeDisplayer.drawMean(hole.realLength, mean);
         }
         
         boolean endOfCourse = (currentHole == currentCourse().holes.size()-1);
