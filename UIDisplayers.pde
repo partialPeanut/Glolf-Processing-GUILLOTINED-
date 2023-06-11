@@ -433,11 +433,16 @@ class HoleDisplayer implements UIComponent {
   }
 
   void display() {
+    if (statCollection && !firstFrame) return;
+    
     fill(bgCol);
     stroke(strokeCol);
     rect(x, y, w, h);
     
-    if (statCollection) return;
+    if (statCollection && firstFrame) {
+      firstFrame = false;
+      return;
+    }
     
     if (feed.lastEvent() instanceof EventTourneyConclude) {
       displayTourneyContinue();

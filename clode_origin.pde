@@ -142,30 +142,21 @@ void setup() {
   eventDisplayer    = (EventDisplayer)uiComponents[3][0];
   holeDisplayer     = (HoleDisplayer)uiComponents[4][0];
   variableDisplayer = (VariableDisplayer)uiComponents[5][0];
+  
+  background(200);
 }
 
 // Draw
 void draw() {
-  if (!statCollection) background(200);
-  
   textFont(boldFont);
-  for (int i = 0; i < 3; i++) {
-    for (UIComponent component : uiComponents[i]) component.display();
-    if (i == 2) {
-      textFont(font);
-      strokeWeight(2);
-      stroke(0);
-      line(0, uiController.buttonSetHeight, width, uiController.buttonSetHeight);
-    }
+  for (UIComponent[] compArray : uiComponents) {
+    for (UIComponent component : compArray) component.display();
   }
-
-  variableDisplayer.display();
-  eventDisplayer.display();
-  if (!statCollection) holeDisplayer.display();
-  else if (firstFrame) {
-    holeDisplayer.display();
-    firstFrame = false;
-  }
+  
+  textFont(font);
+  strokeWeight(2);
+  stroke(0);
+  line(0, uiController.buttonSetHeight, width, uiController.buttonSetHeight);
   
   if (statCollection) {
     for (int i = 0; i < eventsPerFrame; i++) {

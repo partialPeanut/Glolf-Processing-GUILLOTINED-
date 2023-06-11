@@ -69,7 +69,7 @@ enum Mod {
   SWAMPLAND     ("SWMP", ModType.HOLE_OR_COURSE, 0.10, 0.5, 1.5, 5.0),
   
   // Val0 - Multiplier to prize money // Val1 - Amount of average networth donated
-  CHARITY_MATCH ("CHRT", ModType.TOURNEY_ONLY,   1.00, 1.0, -1.0, 0.2);
+  CHARITY_MATCH ("CHRT", ModType.TOURNEY_ONLY,   0.10, 1.0, -1.0, 0.2);
   
   String brief;
   ModType modType;
